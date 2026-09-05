@@ -1,0 +1,64 @@
+# Evidence / source ledger
+
+This ledger separates **directly applicable evidence**, **method priors**, and **strategic/context evidence**. External lift numbers are not treated as guaranteed transfer to the project's exact GPT-4-1106-preview / Mistral-7B-chat pair.
+
+| Source | Year | Evidence used | Applicability to this mission |
+|---|---:|---|---|
+| [RouteLLM paper](https://arxiv.org/html/2406.18665v4) | 2025 rev. | MF routing, APGR; judge augmentation; ~1.5k MMLU gold rows (<2%) materially improve OOD routing; transfer to unseen model pairs | **High method relevance.** Exact strong model matches; published weak model is Mixtral, not Mistral-7B |
+| [RouteLLM repo](https://github.com/lm-sys/RouteLLM) | ongoing | public checkpoints/data; model-pair replacement supported | High for $0 transfer experiments; default MF uses OpenAI embeddings |
+| [RouteLLM GPT-4 judge battles](https://huggingface.co/datasets/routellm/gpt4_judge_battles) | 2024 | 109,101 rows; Apache-2.0; GPT-4-1106-preview vs Mixtral-8x7B | Medium; public prior, **not exact-pair GT** |
+| [RouterBench dataset card](https://huggingface.co/datasets/withmartian/routerbench) | 2024 | >30k prompts; model responses/cost/performance; prompts have correct answers | **Direct** benchmark provenance; supports task-native evaluator idea |
+| [RouterBench paper](https://openreview.net/pdf?id=IVXmV8Uxwh) | 2024 | 405,467 model-response samples; 11 models, 8 datasets, 64 tasks; exact historical model pool includes GPT-4 and Mistral-7B-chat | **Direct** dataset context |
+| [Shnitzer et al., LLM Routing with Benchmark Datasets](https://arxiv.org/abs/2309.15789) | 2023 | routing as per-model binary correctness classification | **High** for alternative target |
+| [EmbedLLM](https://proceedings.iclr.cc/paper_files/paper/2025/hash/bf5e4b85d203481d6e37bd32d9600162-Abstract-Conference.html) | 2025 | correctness forecasting and routing from model/question correctness matrix | High method relevance; dataset is not exact historical pair |
+| [LLMRouterBench](https://arxiv.org/abs/2601.07206) | 2026 | 400K+, 21 datasets, 33 models, 10 routers; leading routers similar; model-recall gap; embedding ablations | **High strategic prior**; contemporary model pool, not direct labels |
+| [LLMRouterBench repo](https://github.com/ynulihao/LLMRouterBench) | 2026 | standardized data/evaluators; up to 31.7% cost saving vs best single in its cost setting | Method/evaluation reference |
+| [ContextualRouter](https://aclanthology.org/2026.eacl-srw.22/) | 2026 | retrieval/kNN historical-performance routing; useful with as little as 1% history | **High** for sparse-clean-label alternative; differs from falsified clustering |
+| [AutoMix](https://proceedings.neurips.cc/paper_files/paper/2024/hash/ecda225cb187b40ea8edc1f46b03ffda-Abstract-Conference.html) | 2024 | weak-answer self-verification + meta-routing; >50% cost reduction at comparable performance | High strategic fallback; changes inference path |
+| [CARGO](https://arxiv.org/abs/2607.20481) | 2026 | training-free offload using weak response agreement + Bayesian early stop; sometimes beats supervised routers | High strategic fallback; extra weak samples/latency |
+| [Smoothie](https://papers.nips.cc/paper_files/paper/2024/hash/e6b57a990462df5afa58d64ce2709db9-Abstract-Conference.html) | 2024 | label-free routing from weak-supervision-style output agreement; up to +10 accuracy points | Medium; requires multiple model outputs |
+| [Single-draw routing-gap analysis](https://arxiv.org/abs/2607.03436) | 2026 | 12–36% of reported router-oracle gap attributed to single-draw noise in studied pools | High second-order implication; argues for expected reliability target |
+| [Pearls from Pebbles / Colander](https://proceedings.neurips.cc/paper_files/paper/2024/hash/1d051fb631f104cb2a621451f37676b9-Abstract-Conference.html) | 2024 | selective auto-labeling; calibration alone insufficient; up to 60% coverage gain under <5% error | **High** for risk/abstention design |
+| [SelectiveNet](https://proceedings.mlr.press/v97/geifman19a) | 2019 | reject-option / risk-coverage training | High conceptual prior |
+| [Causal Judge Evaluation](https://arxiv.org/abs/2512.11150) | 2025 | calibrates cheap judge on sampled oracle labels; 5% oracle labels, 14x cheaper policy ranking in Arena setting | **High** hybrid-label/statistical prior; different evaluation objective |
+| [Correctly Report LLM-as-a-Judge Evaluations](https://arxiv.org/abs/2511.21140) | 2025 | bias correction using judge sensitivity/specificity + adaptive calibration allocation | High calibration prior |
+| [Jury-on-Demand](https://arxiv.org/abs/2512.01786) | 2025 | per-item judge reliability predictors and dynamic jury | **High** for adaptive second judge |
+| [PoLL](https://arxiv.org/abs/2404.18796) | 2024 | diverse small-model jury can beat single large judge and be >7x cheaper | High ensemble prior |
+| [Cost-aware LLM Online Annotation / CaMVo](https://proceedings.neurips.cc/paper_files/paper/2025/hash/054e9f9a286671ababa3213d6e59c1c2-Abstract-Conference.html) | 2025 | adaptively selects lower-cost annotator subset by context/confidence | High annotation-economics prior |
+| [Judging the Judges: position bias](https://aclanthology.org/2025.ijcnlp-long.18/) | 2025 | judge bias varies by judge/task; not random | High support for systematic-noise diagnosis |
+| [LLM uncertainty proxies](https://academic.oup.com/jamia/article/32/1/139/7819854) | 2025 | verbalized confidence overestimates confidence in studied setting | Medium/high warning against raw confidence weights |
+| [Ren et al. example reweighting](https://proceedings.mlr.press/v80/ren18a) | 2018 | meta-learn weights from small clean validation set | Medium; direct algorithmic prior for $0 rescue |
+| [Patrini et al. loss correction](https://openaccess.thecvf.com/content_cvpr_2017/html/Patrini_Making_Deep_Neural_CVPR_2017_paper.html) | 2017 | transition-matrix correction for class-dependent noise | Medium/low due instance-dependent project noise |
+| [Generalized Cross Entropy](https://proceedings.neurips.cc/paper_files/paper/2018/hash/f2925f97bc13ad2852a7a551802feea0-Abstract.html) | 2018 | drop-in noise-robust loss | Medium/low; mostly generic/synthetic-noise evidence |
+| [Early-Learning Regularization](https://proceedings.neurips.cc/paper_files/paper/2020/hash/ea89621bee7c88b2c5be6681c8ef4906-Abstract.html) | 2020 | reduces memorization of noisy labels | Medium/low for tiny MF head/systematic noise |
+| [Data Programming](https://proceedings.neurips.cc/paper/2016/hash/6709e8d64a5f47269ed5cea9f625f7ab-Abstract.html) | 2016 | generative modeling of multiple noisy/conflicting labeling functions | High if heterogeneous verifier sources are assembled |
+| [ALCHEmist](https://proceedings.neurips.cc/paper_files/paper/2024/hash/72802bef5cf1a3449e909b20c2ae18d5-Abstract-Conference.html) | 2024 | generate reusable labeling programs rather than pay for per-row LLM labels; ~500x reported cost reduction across its tasks | Medium/high inspiration for reusable task-native evaluators |
+| [Historical RouterBench cost table reproduced in 2025 work](https://openreview.net/pdf?id=B0iFlb0h4n) | 2025 | GPT-4-1106-preview avg ~$0.00328/query; Mistral-7B-chat ~$0.0000456/query in historical RouterBench data | Planning estimate only; **not current pricing** |
+| [RouterBench evaluation appendix](https://openreview.net/pdf?id=IVXmV8Uxwh) | 2024 | MMLU, HellaSwag, GSM8K, ARC-Challenge and WinoGrande evaluated by exact match; MBPP, MT-Bench and RAG use GPT-4 evaluation | **Direct/high** support for task-native weak grading; verify local 0-shot extraction semantics |
+| [PORT / Efficient Training-Free Online Routing](https://arxiv.org/abs/2509.02718) | 2025 | RouterBench task counts; historical average model costs; online routing from small observed history | High for economic sizing and sparse-history strategy; cost figures are historical only |
+| [Routing with Generated Data / CASCAL](https://aclanthology.org/2026.acl-long.1498/) | 2026 | routers trained on generated queries/answers; generator quality + model differentiation matter; consensus-based CASCAL robust under weak generation | Medium; valuable future augmentation, but multi-model consensus is less natural for a 2-model pool |
+| [C3PO](https://proceedings.neurips.cc/paper_files/paper/2025/hash/79f03e5d0a6a4e34b38ddcc7dd204897-Abstract-Conference.html) | 2025 | self-supervised cascades from unlabeled model outputs with conformal cost constraints | Medium/high strategic fallback; may still require candidate outputs and changes inference semantics |
+
+## Evidence that should *not* be overgeneralized
+
+1. RouteLLM's +0.1-ish APGR gains from small gold augmentation occurred on its data/model setting; they are a prior for direction, not a promised project lift.
+2. Judge jury results come mostly from evaluation tasks, not RouterBench label generation. Correlated judge error must be measured locally.
+3. Robust noisy-label losses often assume class-conditional or synthetic noise; this project has empirical evidence of task/instance-dependent bias.
+4. 1% retrieval sufficiency from ContextualRouter is a published cross-benchmark result, not proof that 1% exact truth will reach 0.6459 APGR here.
+5. Historical response costs are used only to size the possible clean-label budget. Current provider/model prices must be re-quoted at execution time.
+
+## Adversarial-review additions (2026-09-05 second pass)
+
+| Source | Year | Evidence used | Applicability to this mission |
+|---|---:|---|---|
+| [RouteLMT](https://arxiv.org/abs/2604.22520) | 2026 | identifies **marginal gain of large over small** as the optimal signal for budgeted hybrid routing; beats quality/difficulty baselines in MT | **Very high conceptual relevance.** Different task, but directly challenges weak-correctness/absolute-difficulty targets |
+| [EquiRouter / When Routing Collapses](https://arxiv.org/abs/2602.03478) | 2026 | objective-decision mismatch can collapse routers toward expensive models; decision-aware ranking cuts cost ~17% at GPT-4-level performance on RouterBench | **High** target/objective warning; supports decision-aware value/ranking losses |
+| [vLLM Semantic Router intro](https://github.com/vllm-project/semantic-router/blob/main/website/docs/intro.md) | 2026 current | 16 signal families; signals -> projections -> decisions architecture; policy/control-plane framing | **High architectural relevance**, not label evidence |
+| [vLLM SR ML model-selection training](https://github.com/vllm-project/semantic-router/blob/main/src/training/model_selection/ml_model_selection/README.md) | 2026 current | KNN/KMeans/SVM/MLP selectors require benchmarked query/model performance and normally send each query to every candidate model | **Direct negative evidence** that vanilla semantic model selection does not solve label economics |
+| [When to Reason: Semantic Router for vLLM](https://arxiv.org/abs/2510.08731) | 2025 | semantic reasoning-mode classifier: +10.2pp MMLU-Pro accuracy, -47.1% latency, -48.5% tokens in its setting | Medium: proves semantic intent classification can be valuable, but target differs from pairwise model rescue |
+| [Aurelio Semantic Router](https://www.aurelio.ai/semantic-router) | current | zero-LLM-call vector-space intent routing with similarity threshold/abstention | Medium for intent/policy layer; weak evidence for weak-vs-strong quality selection |
+| [LatentGate](https://aclanthology.org/2026.acl-industry.153/) | 2026 | embedding routers can collapse semantically similar/functionally distinct intents; SLM hidden states + PCA whitening + linear probe improve ID/OOD agent routing | **High caution** against raw cosine/embedding routing; different agent-intent task |
+| [PILOT](https://aclanthology.org/2025.findings-emnlp.1301/) | 2025 | contextual-bandit LLM routing; learns from partial bandit feedback rather than exhaustive per-model inference | **Very high strategic relevance** to eliminating full-information retraining |
+| [BaRP](https://arxiv.org/abs/2510.07429) | 2025 | bandit-feedback router trained under deployment-like chosen-arm feedback; preference-tunable cost/quality at inference | **Very high strategic prior**; preprint, so validate locally via replay |
+| [nnPU](https://papers.nips.cc/paper/2017/hash/7cce53cf90577442771720a370c3c723-Abstract.html) | 2017 | non-negative risk estimator for positive-unlabeled learning | **High method relevance** to one-sided judge positives; project violates simple random-selection assumptions, so must ablate carefully |
+| [SCOPE](https://arxiv.org/abs/2602.13110) | 2026 | selective conformal LLM judging; abstains to meet target empirical risk under its assumptions; stronger uncertainty than naive confidence | High design prior for abstention; **do not transfer guarantees** to this judge without new calibration |
