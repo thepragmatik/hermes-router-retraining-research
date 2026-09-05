@@ -1,0 +1,55 @@
+{
+  "schema_version": "2.0",
+  "date": "2026-09-05",
+  "mission": "Identify realistic, cheap and repeatable paths to refresh the Hermes two-model router without full dual-model evaluation, with adversarial review and semantic-routing analysis.",
+  "parent_program": "https://github.com/thepragmatik/hermes-pi-agentic-stack",
+  "baseline": {
+    "weak_model": "mistralai/mistral-7b-chat",
+    "strong_model": "gpt-4-1106-preview",
+    "v1_validation_apgr": 0.6459,
+    "v1_historical_test_apgr": 0.6528,
+    "v2_judge_label_validation_apgr": 0.5304,
+    "judge_label_ground_truth_agreement": 0.8382
+  },
+  "derived_train_judge_analysis": {
+    "approx_precision_judge_needs_strong": 0.9601,
+    "approx_npv_judge_weak_sufficient": 0.5849,
+    "note": "Derived algebraically from rounded mission-provided prevalence/agreement rates; recompute from row-level labels before operational use."
+  },
+  "guardrails": {
+    "test_split": "SEALED",
+    "default_spend_usd": 0,
+    "mission_spend_cap_usd": 5,
+    "remote_judges_require_zdr": true,
+    "production_code_in_scope": false
+  },
+  "ranked_options": [
+    "factorized escalation value: weak failure plus sparse strong rescue",
+    "evaluator-first weak correctness / expected reliability",
+    "one-sided judge supervision / positive-unlabeled learning",
+    "semantic performance memory plus OOD/risk guard",
+    "selective hybrid label factory with random sentinel truth",
+    "bandit-feedback continual router",
+    "selective judge abstention plus adaptive jury",
+    "task-conditioned noise correction",
+    "training-free/self-supervised reliability cascades",
+    "public/synthetic routing priors",
+    "larger router architectures (deferred)"
+  ],
+  "semantic_routing_verdict": "Viable as a signal/control layer and performance-memory/OOD mechanism; not recommended as direct prompt-cluster weak-vs-strong selector.",
+  "next_experiment": "experiments/000-target-audit-prereg.md",
+  "primary_model_experiment": "experiments/003-factorized-escalation-value-prereg.md",
+  "additional_experiments": [
+    "experiments/004-one-sided-pu-prereg.md",
+    "experiments/005-semantic-signal-ablation-prereg.md",
+    "experiments/006-bandit-replay-prereg.md"
+  ],
+  "primary_memo": "memo/2026-09-05_ranked-options-memo.md",
+  "semantic_review": "evidence/semantic-routing-review.md",
+  "judge_noise_analysis": "evidence/judge-noise-derived-analysis.md",
+  "adversarial_review": "evidence/adversarial-review.md",
+  "strategic_design": "designs/router-learning-flywheel.md",
+  "evidence_ledger": "evidence/source-ledger.md",
+  "website": "site/index.html",
+  "license": "Apache-2.0"
+}
