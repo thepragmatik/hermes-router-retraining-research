@@ -2,6 +2,8 @@
 
 Adversarially reviewed research on **cheap, repeatable supervision and continual learning for LLM routing**, conducted as a workstream of [`thepragmatik/hermes-pi-agentic-stack`](https://github.com/thepragmatik/hermes-pi-agentic-stack).
 
+**Status:** **ready for agent consumption and experimental execution; not production promotion.** See [Research sign-off](RESEARCH_SIGNOFF.md) and [Agent handoff](AGENTS.md).
+
 The deployed router already works. This repository asks the strategically harder question:
 
 > How can routing remain economically useful when models, prices and workloads change—without fully evaluating every candidate model on tens of thousands of prompts every retrain?
@@ -34,6 +36,8 @@ See [Semantic routing review](evidence/semantic-routing-review.md).
 
 ## Read first
 
+- [Research sign-off](RESEARCH_SIGNOFF.md)
+- [Agent handoff](AGENTS.md)
 - [Ranked options memo — adversarially reviewed v2](memo/2026-09-05_ranked-options-memo.md)
 - [Adversarial review v2](evidence/adversarial-review.md)
 - [Semantic routing review](evidence/semantic-routing-review.md)
