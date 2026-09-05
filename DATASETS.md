@@ -10,7 +10,7 @@ The mission's qualification truth remains the pinned local RouterBench-0shot tra
 
 ### Tier A — primary exact-pair qualification data
 
-#### `withmartian/routerbench` — pinned `routerbench_0shot.pkl`
+#### [`withmartian/routerbench`](https://huggingface.co/datasets/withmartian/routerbench) — pinned `routerbench_0shot.pkl`
 
 **Role:** mandatory primary dataset.
 
@@ -31,7 +31,7 @@ Why it matters:
 
 These datasets can answer whether a method is robust beyond the exact historical pair. They cannot set the final Hermes promotion gate.
 
-#### `Wikit/RoutingCompendium-perf` + `Wikit/RoutingCompendium-cost`
+#### [`Wikit/RoutingCompendium-perf`](https://huggingface.co/datasets/Wikit/RoutingCompendium-perf) + [`Wikit/RoutingCompendium-cost`](https://huggingface.co/datasets/Wikit/RoutingCompendium-cost)
 
 **Recommended external dataset #1.**
 
@@ -54,7 +54,7 @@ The compendium harmonizes five public routing benchmarks into one row-per-query 
 
 Each split inherits the source benchmark's license; record the exact split, revision and license used.
 
-#### `ynulihao/LLMRouterBench` pre-collected benchmark results
+#### [`ynulihao/LLMRouterBench`](https://github.com/ynulihao/LLMRouterBench) pre-collected benchmark results
 
 **Recommended external dataset #2.**
 
@@ -76,12 +76,12 @@ LLMRouterBench provides standardized per-instance outputs/scores/costs across 21
 
 These may improve representation learning or provide transfer baselines, but the model pair differs from the mission's exact weak model.
 
-#### RouteLLM public datasets
+#### [RouteLLM public datasets](https://huggingface.co/routellm/datasets)
 
 Useful assets include:
 
-- `routellm/gpt4_judge_battles` — ~109k Apache-2.0 pairwise battles, using `gpt-4-1106-preview` vs `mixtral-8x7b-instruct-v0.1`;
-- `routellm/gpt4_dataset` — corresponding prompts/responses/scores;
+- [`routellm/gpt4_judge_battles`](https://huggingface.co/datasets/routellm/gpt4_judge_battles) — ~109k Apache-2.0 pairwise battles, using `gpt-4-1106-preview` vs `mixtral-8x7b-instruct-v0.1`;
+- [`routellm/gpt4_dataset`](https://huggingface.co/datasets/routellm/gpt4_dataset) — corresponding prompts/responses/scores;
 - `routellm/arena_battles_embeddings` and `routellm/gpt4_judge_battles_embeddings` — precomputed embedding variants;
 - `routellm/mmlu_battles` / embeddings — ~1.5k MMLU augmentation rows.
 
@@ -96,9 +96,9 @@ Useful assets include:
 
 Any use must include a local-data-only baseline and report whether external data helps at the same local strong-label budget.
 
-#### `RZ412/EmbedLLM`
+#### [`RZ412/EmbedLLM`](https://huggingface.co/datasets/RZ412/EmbedLLM)
 
-EmbedLLM releases an Apache-2.0 correctness matrix plus train/val/test data, model/question order files, and trained model embeddings. It covers a large multi-model pool (the public artifact is large, roughly tens of GB).
+EmbedLLM releases an Apache-2.0 correctness matrix plus train/val/test data, model/question order files, and trained model embeddings. It covers a large multi-model pool and the full public artifact is large (roughly tens of GB).
 
 **Use for:**
 
@@ -113,7 +113,7 @@ EmbedLLM releases an Apache-2.0 correctness matrix plus train/val/test data, mod
 
 ### Tier D — real-world prompt/preference distribution, not pairwise correctness truth
 
-#### `lmarena-ai/arena-human-preference-55k`
+#### [`lmarena-ai/arena-human-preference-55k`](https://huggingface.co/datasets/lmarena-ai/arena-human-preference-55k)
 
 ~55k real-world Arena battles across 70+ models, Apache-2.0.
 
@@ -126,9 +126,9 @@ EmbedLLM releases an Apache-2.0 correctness matrix plus train/val/test data, mod
 
 **Do not use human preference labels as correctness truth for the Hermes weak/strong pair.** Preference, correctness and marginal rescue are different targets.
 
-#### `lmsys/lmsys-chat-1m` (optional)
+#### [`lmsys/lmsys-chat-1m`](https://huggingface.co/datasets/lmsys/lmsys-chat-1m) (optional)
 
-One million real-world conversations. Useful only if the mission later needs a large unlabeled prompt distribution for semantic/OOD coverage. It is not required for the core experiments and should not be downloaded by default.
+One million real-world conversations. Useful only if the mission later needs a large unlabeled prompt distribution for semantic/OOD coverage. It is not required for the core experiments and should not be downloaded by default. Verify current access terms/license before use.
 
 ---
 
