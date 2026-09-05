@@ -4,6 +4,10 @@
 
 Research and qualify cheap, repeatable routing supervision for [`thepragmatik/hermes-pi-agentic-stack`](https://github.com/thepragmatik/hermes-pi-agentic-stack). The durable objective is a self-renewing routing control plane, not a one-off benchmark classifier.
 
+## Current research status
+
+**Ready for experimental execution, not production promotion.** Read [`RESEARCH_SIGNOFF.md`](RESEARCH_SIGNOFF.md) first. It separates established findings from hypotheses that still require the preregistered $0 tests below.
+
 ## Non-negotiables
 
 - Do not write/ship production router code from this research repo.
@@ -16,6 +20,7 @@ Research and qualify cheap, repeatable routing supervision for [`thepragmatik/he
 
 ## Read order
 
+0. [`RESEARCH_SIGNOFF.md`](RESEARCH_SIGNOFF.md)
 1. [`memo/2026-09-05_ranked-options-memo.md`](memo/2026-09-05_ranked-options-memo.md)
 2. [`evidence/adversarial-review.md`](evidence/adversarial-review.md)
 3. [`evidence/semantic-routing-review.md`](evidence/semantic-routing-review.md)
