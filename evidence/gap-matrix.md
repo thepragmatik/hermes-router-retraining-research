@@ -1,0 +1,17 @@
+# Evidence gap matrix — adversarially reviewed
+
+| Material question | Best evidence found | Confidence | Remaining gap / next falsification |
+|---|---|---|---|
+| Is weak correctness the correct final target? | RouteLMT says marginal large-over-small gain is the correct budget signal; EquiRouter shows objective/decision mismatch can collapse routers | **High concern** | Experiment 000: measure weak/strong overlap and task-level rescue heterogeneity on train |
+| Can expensive strong labels be sparse? | FEV decomposition; ContextualRouter works with sparse history; RouteLLM benefited from small in-domain gold | **Medium-high directional** | Experiment 003: mask strong labels to 0.5/1/2/5% and score val APGR |
+| Is the failed judge still useful? | Derived aggregate confusion implies ~96% precision for judge-strong vs ~58.5% NPV for judge-weak | **High on asymmetry** | Experiment 004: one-sided/PU variants; exact conditional rates should be recomputed from row-level labels when available |
+| Can future broad labels avoid routine strong calls? | RouterBench task-native exact scoring + weak-correctness forecasting | **High for objective families** | Audit pinned local 0-shot corpus/evaluator fidelity; do not assume published mix exactly matches local split |
+| Is semantic routing viable? | vLLM SR production signal plane; When-to-Reason semantic classifier; ContextualRouter sparse performance retrieval | **High as auxiliary/control layer** | Experiment 005; direct cluster/KMeans selector remains falsified |
+| Does raw embedding quality matter much? | LLMRouterBench: limited embedding-backbone impact; LatentGate: embedding anisotropy/collapse in agent routing | **Low EV for embedding swap alone** | Only revisit if semantic feature ablation shows representational bottleneck |
+| Can public routing data replace exact-pair truth? | Large public benchmarks and transfer methods exist | **Low as replacement** | Use only as priors/augmentation; local calibration still required |
+| Do judge ensembles help? | CaMVo/Jury-on-Demand/SCOPE support selective/adaptive judging | **Medium** | <$0.50 pilot only after measuring conditional error correlation on primary-judge mistakes |
+| Can bandit feedback remove full-information retraining? | PILOT peer-reviewed; BaRP preprint uses chosen-arm feedback and RouterBench | **Medium-high strategic prior** | Experiment 006 offline replay under project APGR and safety-compatible exploration |
+| Can label-free cascades replace trained router? | CARGO/C3PO show training-free/self-supervised cascades in reasoning settings | **Medium hedge** | Quantify runtime weak-sampling cost/latency and APGR-equivalent ranking locally |
+| How much one-shot outcome noise exists for exact pair? | Recent routing analyses + CARGO motivate expected reliability | **Medium** | Small repeated-generation audit only if <$0.50 and after higher-EV retrospective tests |
+| Will sparse active labels miss rare model-unique rescues? | LLMRouterBench identifies model-recall failures as a major oracle gap | **High risk** | Mandatory random sentinel share in Experiments 003/006; compare targeted-only vs targeted+sentinel |
+| Are RouterBench gains representative of Hermes missions? | Parent program explicitly optimizes accepted mission quality/cost, not benchmark F1 | **High strategic caveat** | Later shadow evaluation on Hermes task families after validation qualification; not part of sealed-test research |
