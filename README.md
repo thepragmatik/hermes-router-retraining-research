@@ -2,7 +2,7 @@
 
 Adversarially reviewed research on **cheap, repeatable supervision and continual learning for LLM routing**, conducted as a workstream of [`thepragmatik/hermes-pi-agentic-stack`](https://github.com/thepragmatik/hermes-pi-agentic-stack).
 
-**Status:** **ready for agent consumption and experimental execution; not production promotion.** See [Research sign-off](RESEARCH_SIGNOFF.md) and [Agent handoff](AGENTS.md).
+**Status:** **ready for agent consumption and experimental execution; not production promotion.** See [Research sign-off](RESEARCH_SIGNOFF.md), [Agent execution mission](AGENTS.md), and the [final mission-design review](MISSION_DESIGN_REVIEW.md).
 
 The deployed router already works. This repository asks the strategically harder question:
 
@@ -34,10 +34,24 @@ Use semantic routing for task/domain, complexity, historical-performance retriev
 
 See [Semantic routing review](evidence/semantic-routing-review.md).
 
+## Public dataset strategy
+
+The mission now includes a deliberate external-data plan in [`DATASETS.md`](DATASETS.md).
+
+- the pinned RouterBench 0-shot artifact remains the **only exact-pair qualification dataset** for the historical Mistral-7B-chat / GPT-4-1106-preview pair;
+- `Wikit/RoutingCompendium` is the preferred external method stress test because it harmonizes multiple routing benchmarks with per-query model outcomes, prompt embeddings and companion cost data;
+- `LLMRouterBench` is the modern cross-model/task robustness test;
+- RouteLLM and EmbedLLM data are transfer/method priors, not local exact-pair truth;
+- Arena/LMSYS data is useful for real-world semantic/OOD coverage, not pairwise correctness labels.
+
+External data must be provenance-tracked and deduplicated against local train/validation before it can affect training. External scores never override the local validation APGR gate.
+
 ## Read first
 
 - [Research sign-off](RESEARCH_SIGNOFF.md)
-- [Agent handoff](AGENTS.md)
+- [Agent execution mission](AGENTS.md)
+- [Dataset strategy](DATASETS.md)
+- [Final mission-design review](MISSION_DESIGN_REVIEW.md)
 - [Ranked options memo — adversarially reviewed v2](memo/2026-09-05_ranked-options-memo.md)
 - [Adversarial review v2](evidence/adversarial-review.md)
 - [Semantic routing review](evidence/semantic-routing-review.md)
@@ -64,7 +78,7 @@ Earlier preregistrations remain preserved for provenance:
 - $0 default spend; paid work is fail-closed and mission total stays <$5.
 - ZDR is mandatory for remote judge calls.
 - Previously falsified approaches are not recycled without a materially different hypothesis.
-- No production router code is part of this research repository.
+- **Research/experiment code is expected in this repository; production runtime integration belongs in the parent Hermes stack after qualification.**
 - APGR validation baseline for replacing v1 is **0.6459**; 0.55 is only a viability floor.
 
 ## License
