@@ -12,6 +12,18 @@ I sign off this repository as a sound basis for the **next research/experiment a
 
 I do **not** sign off Factorized Escalation Value (FEV), semantic augmentation, one-sided judge training, or bandit learning as empirically proven on this exact RouterBench split yet. Those are deliberately converted into preregistered $0 experiments so the next agent can falsify them without moving the goalposts.
 
+## Execution mandate
+
+`AGENTS.md` is the authoritative execution mission for the next agent.
+
+The next agent is **expected to implement and run research/experimental code** needed to solve the routing-refresh problem: analysis scripts, training/evaluation code, ablations, cost models, and reproducibility utilities are explicitly in scope. What remains out of scope is **production integration into the parent Hermes runtime** before the experimental gates are satisfied.
+
+The mission outcome is not another research memo. It is a measured answer to:
+
+> **What routing refresh method preserves or exceeds v1 quality at the lowest repeatable supervision cost, and what savings does it produce?**
+
+If no cheap method recovers v1, the agent must determine the cheapest viable ground-truth frontier and recommend whether router economics remain justified.
+
 ## What is established with high confidence
 
 1. **The router idea has legs.** The deployed v1 already demonstrates useful routing: the open problem is cheap refresh supervision, not whether routing can ever work.
@@ -42,6 +54,7 @@ The next agent should read `AGENTS.md` and then execute in this order:
 3. In parallel after 000: **Experiment 004** — one-sided judge/PU ablation.
 4. After the best target/label method is known: **Experiment 005** — semantic performance-memory/OOD ablation.
 5. Strategic follow-up: **Experiment 006** — deployment-like bandit replay.
+6. If <=5% strong labels cannot recover v1, simulate the larger strong-label cost frontier before proposing any paid labeling.
 
 Do not spend on new judge calls or touch the sealed test split before the corresponding preregistered evidence warrants it.
 
