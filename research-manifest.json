@@ -1,7 +1,7 @@
 {
-  "schema_version": "2.0",
+  "schema_version": "2.1",
   "date": "2026-09-05",
-  "mission": "Identify realistic, cheap and repeatable paths to refresh the Hermes two-model router without full dual-model evaluation, with adversarial review and semantic-routing analysis.",
+  "mission": "Experimentally determine the cheapest repeatable way to refresh the Hermes weak/strong router while preserving or exceeding router-v1 validation quality, and quantify both refresh and runtime economics.",
   "parent_program": "https://github.com/thepragmatik/hermes-pi-agentic-stack",
   "baseline": {
     "weak_model": "mistralai/mistral-7b-chat",
@@ -21,7 +21,19 @@
     "default_spend_usd": 0,
     "mission_spend_cap_usd": 5,
     "remote_judges_require_zdr": true,
-    "production_code_in_scope": false
+    "research_experiment_code_in_scope": true,
+    "production_runtime_integration_in_scope": false
+  },
+  "success": {
+    "replacement_validation_apgr": 0.6459,
+    "viability_validation_apgr": 0.55,
+    "preferred_max_strong_label_fraction": 0.02,
+    "primary_max_strong_label_fraction": 0.05,
+    "final_decisions": [
+      "PROMOTE TO HERMES SHADOW EVALUATION",
+      "KEEP V1 / USE CHEAPEST REFRESH FRONTIER",
+      "ROUTER ECONOMICS NOT YET JUSTIFIED"
+    ]
   },
   "ranked_options": [
     "factorized escalation value: weak failure plus sparse strong rescue",
@@ -36,6 +48,20 @@
     "public/synthetic routing priors",
     "larger router architectures (deferred)"
   ],
+  "dataset_strategy": {
+    "primary_exact_pair": "withmartian/routerbench routerbench_0shot.pkl (pinned local artifact)",
+    "preferred_external_stress_test": "Wikit/RoutingCompendium-perf + Wikit/RoutingCompendium-cost",
+    "modern_cross_pool_stress_test": "ynulihao/LLMRouterBench pre-collected results",
+    "transfer_priors": [
+      "routellm/gpt4_judge_battles and related RouteLLM datasets",
+      "RZ412/EmbedLLM"
+    ],
+    "optional_unlabeled_ood": [
+      "lmarena-ai/arena-human-preference-55k",
+      "lmsys/lmsys-chat-1m"
+    ],
+    "policy": "External data is an evidence amplifier, not a substitute for local exact-pair validation; provenance, licensing and train/validation deduplication are mandatory."
+  },
   "semantic_routing_verdict": "Viable as a signal/control layer and performance-memory/OOD mechanism; not recommended as direct prompt-cluster weak-vs-strong selector.",
   "next_experiment": "experiments/000-target-audit-prereg.md",
   "primary_model_experiment": "experiments/003-factorized-escalation-value-prereg.md",
@@ -44,6 +70,10 @@
     "experiments/005-semantic-signal-ablation-prereg.md",
     "experiments/006-bandit-replay-prereg.md"
   ],
+  "execution_mission": "AGENTS.md",
+  "dataset_guide": "DATASETS.md",
+  "mission_design_review": "MISSION_DESIGN_REVIEW.md",
+  "research_signoff": "RESEARCH_SIGNOFF.md",
   "primary_memo": "memo/2026-09-05_ranked-options-memo.md",
   "semantic_review": "evidence/semantic-routing-review.md",
   "judge_noise_analysis": "evidence/judge-noise-derived-analysis.md",
