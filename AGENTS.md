@@ -34,6 +34,20 @@ A successful outcome should achieve all of the following on the existing **valid
 
 Passing this research mission does **not** itself authorize production deployment. Production promotion belongs in the parent Hermes stack after shadow evaluation on real Hermes missions.
 
+## Metric and budget definitions
+
+Use these definitions consistently across every experiment and result table:
+
+- **Validation APGR:** the project's existing RouteLLM-style routing metric. The frozen v1 validation reference is **0.6459**.
+- **Viability floor:** **0.55 validation APGR**. Passing 0.55 alone is not a replacement result.
+- **PGR / weak-route fraction:** when this repository uses PGR operationally, report the fraction of eligible requests routed to the weak model / strong calls avoided. Also report the exact strong-route fraction so there is no ambiguity.
+- **Strong-label budget:** `number of train rows for which a fresh strong-model counterfactual outcome would be required / total train rows`. A stored strong outcome revealed during retrospective simulation counts against the simulated budget exactly as if it had to be purchased in a future refresh.
+- **Weak-label budget:** report separately when weak outputs must be regenerated. Weak-model generation is cheap but not free.
+- **Refresh cost:** all supervision/data-generation cost required to produce a refreshed router checkpoint, including model calls, judges, paid compute, and any materially non-trivial external-data processing.
+- **Runtime cost:** inference cost of the routed policy after training. Never mix runtime savings with refresh/training savings in one number.
+
+If a paper or external dataset uses different metric definitions, keep its native metric clearly separate from project APGR/PGR.
+
 ## What you are explicitly authorized and expected to do
 
 **You SHOULD write code for research and experiments.** The previous wording about “production code” must not be interpreted as “do not implement experiments.”
@@ -46,6 +60,7 @@ You may and should:
 - inspect and use the hash-defined **train** split and **validation** split according to each preregistration;
 - use stored train labels for retrospective masking/sparse-label simulations;
 - use existing weak responses, judge labels/confidence, task metadata, and embeddings;
+- use relevant public routing datasets under the policy in [`DATASETS.md`](DATASETS.md);
 - create new preregistered experiments when an observed result exposes a genuinely new uncertainty;
 - use local CPU/MPS first and Vast GPU only when the experiment scale clearly warrants it;
 - update the README, manifest, evidence, results, and Pages site as findings change.
@@ -55,7 +70,8 @@ You must **not**:
 - modify or ship runtime/production routing code into `hermes-pi-agentic-stack` from this research mission;
 - inspect, score, tune against, or re-evaluate the sealed RouterBench test split;
 - rerun a FALSIFIED approach unchanged just to see whether it gets lucky;
-- silently spend money or silently fall back to a non-ZDR judge/provider.
+- silently spend money or silently fall back to a non-ZDR judge/provider;
+- treat external model-pair labels as exact truth for the local Mistral-7B/GPT-4 pair unless the pair and evaluation semantics actually match.
 
 Research code is required. Production integration is out of scope.
 
@@ -65,7 +81,7 @@ Research code is required. Production integration is out of scope.
 - **Default spend is $0.** Paid work requires an explicit fail-closed environment gate such as `SPEND_GO=1` and total research spend must remain **< $5**.
 - All remote judge requests must enforce ZDR with no silent fallback.
 - Normalize local paths to `~/`; publish no personal absolute home paths or credentials.
-- Preserve seeds, split logic, model identifiers, and provenance for every result.
+- Preserve seeds, split logic, model identifiers, dataset revisions, and provenance for every result.
 - Validation APGR **0.6459** is the meaningful replacement baseline; **0.55** is only viability.
 - Do not move gates after seeing validation results. If a new experiment is needed, preregister its hypothesis, variants, metric, and decision rule first.
 
@@ -85,11 +101,40 @@ Before training anything, confirm which of these are available and record paths/
 
 If something is missing, continue with experiments whose prerequisites are present. Do **not** substitute the sealed test split.
 
+## Public datasets — use strategically, not indiscriminately
+
+Read [`DATASETS.md`](DATASETS.md) before downloading or fitting on external data.
+
+The dataset hierarchy is:
+
+1. **Primary exact-pair truth — pinned `withmartian/routerbench` 0-shot artifact.** This is the only dataset that directly qualifies the historical Mistral-7B-chat / GPT-4-1106-preview pair for this mission.
+2. **Preferred external stress test — `Wikit/RoutingCompendium-perf` + `Wikit/RoutingCompendium-cost`.** It harmonizes RouterBench, Sprout, EmbedLLM, FusionBench and R2Bench with per-query model performance, prompt embeddings and companion cost data. Use it to stress-test sparse-label acquisition, performance-memory, FEV/value routing, bandit replay and Pareto-frontier logic across different model pools.
+3. **Modern cross-pool stress test — `ynulihao/LLMRouterBench`.** Use its pre-collected standardized outputs/scores/costs across modern datasets/model pools when a modern-model generalization check can change the decision.
+4. **Transfer prior — RouteLLM public data** such as `routellm/gpt4_judge_battles`, `gpt4_dataset`, embeddings and MMLU augmentation. These use GPT-4-1106-preview with **Mixtral-8x7B**, not this mission's Mistral-7B-chat, so they are warm-start/transfer evidence only.
+5. **Optional correctness-matrix stress test — `RZ412/EmbedLLM`.** Useful for many-model correctness forecasting and sparse-label scaling; prefer the lighter RoutingCompendium EmbedLLM split unless the full artifact is specifically justified.
+6. **Optional real-world prompt/OOD data — `lmarena-ai/arena-human-preference-55k` and, only if justified, `lmsys/lmsys-chat-1m`.** Use for semantic coverage/OOD analysis, not as exact-pair correctness truth.
+
+### Mandatory external-data hygiene
+
+Before external data affects a trained candidate:
+
+- record source, revision, license, split/files and content hashes where practical;
+- classify every dataset as `exact_pair`, `transfer_prior`, `stress_test`, or `unlabeled_ood`;
+- remove exact duplicates against local **train and validation** before fitting;
+- for benchmark-derived data, run a lightweight near-duplicate check against local validation because many public sources reuse benchmark prompts;
+- never inspect the sealed local test split for deduplication or any other purpose;
+- preserve a local-data-only baseline at the same local strong-label budget;
+- never promote a candidate based only on an external score.
+
+For a **PROMOTE TO HERMES SHADOW EVALUATION** recommendation, run at least one compatible external robustness/stress test after the local candidate reaches viability, unless the agent documents why no external dataset can validly exercise that method. The default is RoutingCompendium because it is harmonized and already includes embeddings/cost information. External results strengthen confidence but **do not override the local APGR gate**.
+
+Do not download every dataset up front. Start local; acquire external data only when the next decision benefits from it.
+
 ## Execution plan
 
 ### Phase 0 — establish the baseline and mission ledger
 
-1. Read `RESEARCH_SIGNOFF.md` and the ranked memo.
+1. Read `RESEARCH_SIGNOFF.md`, `DATASETS.md`, and the ranked memo.
 2. Inventory all local artifacts and record availability.
 3. Reproduce **v1 validation APGR = 0.6459** using the existing validation harness. If this cannot be reproduced, stop model comparison and diagnose the evaluation pipeline first.
 4. Create/update a mission ledger containing:
@@ -97,6 +142,7 @@ If something is missing, continue with experiments whose prerequisites are prese
    - data hashes/split counts;
    - environment/package versions;
    - baseline metrics;
+   - dataset provenance/revisions actually used;
    - spend-to-date = $0 unless explicitly authorized.
 
 ### Phase 1 — answer the most important target question at $0
@@ -146,6 +192,18 @@ Test semantics as:
 
 Keep semantic features only if they improve the preregistered APGR/rescue-risk gates.
 
+### Phase 3B — external robustness check
+
+Once a local candidate reaches at least **0.60 validation APGR** or otherwise becomes a serious finalist, test whether its core idea generalizes beyond the local pair.
+
+Default order:
+
+1. `Wikit/RoutingCompendium` for the first method-level stress test;
+2. `LLMRouterBench` if modern-model/task evidence can change confidence or design;
+3. RouteLLM/EmbedLLM only for a specific preregistered transfer question.
+
+Report external results separately from project APGR. A strong external result cannot rescue a local failure; a broad external failure should lower confidence even if local validation passes.
+
 ### Phase 4 — test the long-term refresh architecture
 
 Run **Experiment 006 — bandit replay** after the immediate supervised candidates are understood.
@@ -180,6 +238,7 @@ Estimate or measure:
 - percentage/count of strong counterfactual generations;
 - judge/jury cost, if any;
 - GPU cost, if any;
+- external dataset download/embedding/training overhead when materially non-trivial;
 - total estimated cost for refreshing a 29k-row-scale training set;
 - reduction versus full dual-model labeling.
 
@@ -201,6 +260,8 @@ Commit all work to this repository. At minimum, the completed mission must conta
 - `results/EXPERIMENT_000.md` and equivalent result reports for every experiment actually run;
 - machine-readable result table(s) with seeds, metrics, label budgets, and costs;
 - reproducible research/experiment code and commands;
+- a dataset/provenance ledger covering local and external data actually used;
+- external robustness results for any candidate recommended for shadow evaluation, or a written reason the test was not applicable;
 - `COST_MODEL.md` with refresh-cost and runtime-cost comparisons;
 - `FINAL_RECOMMENDATION.md` containing:
   - the winning approach;
@@ -208,6 +269,7 @@ Commit all work to this repository. At minimum, the completed mission must conta
   - required strong-label fraction;
   - estimated refresh cost;
   - runtime economics;
+  - external robustness evidence, if applicable;
   - risks/limitations;
   - explicit promotion decision;
 - updated `research-manifest.json`;
@@ -220,6 +282,8 @@ If the winning experiment produces a small research checkpoint, record its path/
 
 Use the existing literature and adversarial review as **priors**, not as substitutes for local evidence.
 
+Use public datasets as **evidence amplifiers**, not as a way to avoid the exact-pair validation problem.
+
 Do additional web research only when an experiment exposes a specific uncertainty that could change the next decision. The project is now in an **evidence-generation phase**, not another broad literature phase.
 
 Prefer the simplest method that passes the gates. A sophisticated model that matches a simpler method loses on maintenance cost unless it creates a clear quality or label-efficiency advantage.
@@ -227,12 +291,13 @@ Prefer the simplest method that passes the gates. A sophisticated model that mat
 ## Read order
 
 0. [`RESEARCH_SIGNOFF.md`](RESEARCH_SIGNOFF.md)
-1. [`memo/2026-09-05_ranked-options-memo.md`](memo/2026-09-05_ranked-options-memo.md)
-2. [`evidence/adversarial-review.md`](evidence/adversarial-review.md)
-3. [`designs/router-learning-flywheel.md`](designs/router-learning-flywheel.md)
-4. [`evidence/semantic-routing-review.md`](evidence/semantic-routing-review.md)
-5. experiment preregistrations `000`, `001`, `002`, `003`, `004`, `005`, `006`
-6. [`evidence/source-ledger.md`](evidence/source-ledger.md)
+1. [`DATASETS.md`](DATASETS.md)
+2. [`memo/2026-09-05_ranked-options-memo.md`](memo/2026-09-05_ranked-options-memo.md)
+3. [`evidence/adversarial-review.md`](evidence/adversarial-review.md)
+4. [`designs/router-learning-flywheel.md`](designs/router-learning-flywheel.md)
+5. [`evidence/semantic-routing-review.md`](evidence/semantic-routing-review.md)
+6. experiment preregistrations `000`, `001`, `002`, `003`, `004`, `005`, `006`
+7. [`evidence/source-ledger.md`](evidence/source-ledger.md)
 
 ## Current recommended first move
 
