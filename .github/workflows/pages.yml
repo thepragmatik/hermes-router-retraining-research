@@ -28,8 +28,11 @@ jobs:
           cp evidence/*.md _site/evidence/
           cp experiments/*.md _site/experiments/
           cp designs/*.md _site/designs/
-          cp LICENSE README.md AGENTS.md _site/
+          cp LICENSE README.md AGENTS.md RESEARCH_SIGNOFF.md DATASETS.md MISSION_DESIGN_REVIEW.md research-manifest.json _site/
           test -s _site/index.html
+          test -s _site/AGENTS.md
+          test -s _site/DATASETS.md
+          test -s _site/MISSION_DESIGN_REVIEW.md
           test -s _site/memo/2026-09-05_ranked-options-memo.md
       - uses: actions/configure-pages@v5
         with:
