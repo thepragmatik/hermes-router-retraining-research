@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Adversarially reviewed research on cheap, repeatable LLM router retraining for Hermes." />
+  <title>Hermes Value Router Research</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="hero">
+  <nav class="nav shell"><a class="brand" href="#top">Hermes Value Router Lab</a><div class="navlinks"><a href="#thesis">Thesis</a><a href="#semantic">Semantic routing</a><a href="#options">Options</a><a href="#experiments">Experiments</a></div></nav>
+  <div class="shell hero-grid" id="top">
+    <div>
+      <p class="eyebrow">HERMES + PI · ADVERSARIAL REVIEW V2 · 2026-09-05</p>
+      <h1>Route on value, not difficulty.</h1>
+      <p class="lede">The durable router should estimate the <strong>marginal value of paying for strong</strong>, learn weak failure cheaply, learn strong rescue sparsely, and continuously refresh from accepted outcomes.</p>
+      <div class="hero-actions"><a class="button primary" href="memo/2026-09-05_ranked-options-memo.md">Read the reviewed memo</a><a class="button" href="designs/router-learning-flywheel.md">See the flywheel</a></div>
+    </div>
+    <div class="scorecard">
+      <div><span>v1 val APGR</span><strong>0.6459</strong></div>
+      <div><span>failed judge-label v2</span><strong>0.5304</strong></div>
+      <div><span>derived judge-strong precision</span><strong>≈96%</strong></div>
+      <div><span>first research spend</span><strong>$0</strong></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="section shell" id="thesis">
+  <div class="section-head"><p class="eyebrow">WHAT THE RED TEAM CHANGED</p><h2>Weak correctness is useful. Marginal rescue is better.</h2><p>A weak failure is economically relevant only when strong is likely to improve it. The revised target decomposes escalation value so broad labels can remain cheap while strong counterfactual labels become sparse.</p></div>
+  <div class="flow three">
+    <article><span class="num">01</span><h3>Weak fails?</h3><p>Learn broadly from weak-only inference and task/mission-native grading.</p></article><div class="arrow">×</div>
+    <article><span class="num">02</span><h3>Strong rescues?</h3><p>Learn from sparse strong labels, performance memory and targeted audits.</p></article><div class="arrow">−</div>
+    <article class="accent"><span class="num">03</span><h3>Worth the cost?</h3><p>Route by expected incremental quality minus incremental spend.</p></article>
+  </div>
+</section>
+
+<section class="section band" id="semantic">
+  <div class="shell">
+    <div class="section-head compact"><p class="eyebrow">SEMANTIC ROUTING VERDICT</p><h2>Yes—but as the coordinate system, not the oracle.</h2><p>Naive prompt-cluster → model selection is falsified-adjacent. The viable form uses semantics to describe task/domain/complexity, retrieve measured historical outcomes, quantify OOD support, calibrate judges and allocate label budget.</p></div>
+    <div class="two-col">
+      <div class="diagram-box"><h3>Rejected form</h3><div class="mini-flow"><span>prompt embedding</span><b>→</b><span>cluster / nearest intent</span><b>→</b><span>weak or strong</span></div><p>This is too close to the failed cluster router and assumes semantic similarity implies model complementarity.</p></div>
+      <div class="diagram-box accent-box"><h3>Recommended form</h3><div class="mini-flow"><span>semantic signals</span><b>→</b><span>performance memory + support</span><b>→</b><span>value model</span></div><p>Semantics locates trustworthy evidence; outcomes determine model value. <a href="evidence/semantic-routing-review.md">Read the review →</a></p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section shell" id="options">
+  <div class="section-head"><p class="eyebrow">RANKED AFTER ADVERSARIAL REVIEW</p><h2>Highest expected-value paths.</h2></div>
+  <div class="cards">
+    <article class="card top"><div class="rank">1</div><h3>Factorized Escalation Value</h3><p>Weak failure × strong rescue, then subtract incremental cost.</p><span class="tag">New top option</span></article>
+    <article class="card"><div class="rank">2</div><h3>Evaluator-first weak reliability</h3><p>Cheap broad supervision and the first factor of the value model.</p><span class="tag">Weak-only labels</span></article>
+    <article class="card"><div class="rank">3</div><h3>One-sided judge / PU</h3><p>Exploit ~96%-precision judge-strong positives; stop treating judge-weak as clean negative.</p><span class="tag">Recovered signal</span></article>
+    <article class="card"><div class="rank">4</div><h3>Semantic performance memory</h3><p>Retrieve measured neighbor outcomes and use distance as an OOD/risk signal.</p><span class="tag">Not clustering</span></article>
+    <article class="card"><div class="rank">5</div><h3>Selective label factory</h3><p>Verifier → one-sided judge → adaptive jury → sparse exact truth + random sentinel.</p><span class="tag">Robust fallback</span></article>
+    <article class="card"><div class="rank">6</div><h3>Bandit continual learning</h3><p>Learn from the chosen model's outcome rather than demanding full counterfactual labels.</p><span class="tag">Strategic end state</span></article>
+    <article class="card"><div class="rank">7</div><h3>Risk-controlled jury</h3><p>Abstain first; buy a second judge only where its errors are demonstrably different.</p><span class="tag">Selective spend</span></article>
+    <article class="card"><div class="rank">8+</div><h3>Noise correction / label-free cascades / priors</h3><p>Useful supporting options, but below target and feedback redesign.</p><span class="tag">Supporting bets</span></article>
+  </div>
+</section>
+
+<section class="section dark" id="experiments">
+  <div class="shell experiment-grid">
+    <div><p class="eyebrow">RISK-RETIREMENT QUEUE · $0 FIRST</p><h2>Falsify the architecture before paying for labels.</h2><p class="lede-sm">The highest-value next step is not another API run. It is a train-only audit that reveals whether strong actually rescues weak failures consistently enough for weak correctness to stand alone.</p></div>
+    <ol class="gates">
+      <li><strong>000</strong><span>Audit weak/strong overlap and rescue heterogeneity. No training.</span></li>
+      <li><strong>003</strong><span>Mask strong labels to 0.5 / 1 / 2 / 5%; test Factorized Escalation Value.</span></li>
+      <li><strong>004</strong><span>Train from high-precision judge positives + unlabeled/verified negatives.</span></li>
+      <li><strong>005</strong><span>Ablate task, kNN performance memory and OOD support. No KMeans rerun.</span></li>
+      <li><strong>006</strong><span>Bandit replay: reveal only chosen-arm feedback plus a tiny sentinel stream.</span></li>
+      <li><strong>SEALED</strong><span>Validation-only selection; RouterBench test remains untouched.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section shell">
+  <div class="section-head"><p class="eyebrow">THE JUDGE FAILURE CONTAINED A GEM</p><h2>Aggregate agreement hid one-sided reliability.</h2></div>
+  <div class="two-col">
+    <div class="diagram-box"><h3>Judge says “needs strong”</h3><p class="bigstat">≈96.0%</p><p>Derived precision from the mission-reported prevalence and agreement rates. Potentially useful positive supervision.</p></div>
+    <div class="diagram-box"><h3>Judge says “weak sufficient”</h3><p class="bigstat">≈58.5%</p><p>Derived NPV. Too unreliable to be treated as a clean negative label. <a href="evidence/judge-noise-derived-analysis.md">See derivation →</a></p></div>
+  </div>
+</section>
+
+<section class="section band" id="evidence">
+  <div class="shell">
+    <div class="section-head compact"><p class="eyebrow">EVIDENCE THAT MOVED THE PLAN</p><h2>Recent work points toward value, memory and feedback.</h2></div>
+    <div class="evidence-list">
+      <article><h3>Marginal gain beats generic difficulty.</h3><p>RouteLMT identifies large-over-small marginal gain as the optimal budget signal in its hybrid translation setting.</p><a href="https://arxiv.org/abs/2604.22520">RouteLMT ↗</a></article>
+      <article><h3>Sparse performance memory can work.</h3><p>ContextualRouter reports simple kNN outcome retrieval competitive with more complex routers and useful with ~1% history.</p><a href="https://aclanthology.org/2026.eacl-srw.22/">ContextualRouter ↗</a></article>
+      <article><h3>Embedding swaps are not the main lever.</h3><p>LLMRouterBench finds many routers similar under unified evaluation, limited embedding-backbone impact and persistent model-recall failures.</p><a href="https://aclanthology.org/2026.findings-acl.1881/">LLMRouterBench ↗</a></article>
+      <article><h3>Semantic routing is becoming a control plane.</h3><p>vLLM SR separates signals, projections, decisions and model selection—useful architecture, but its ML selector still needs measured model outcomes.</p><a href="https://github.com/vllm-project/semantic-router/blob/main/website/docs/intro.md">vLLM SR ↗</a></article>
+      <article><h3>Deployment feedback can train routing.</h3><p>PILOT and BaRP frame routing as contextual bandit learning rather than full-information supervised classification.</p><a href="https://aclanthology.org/2025.findings-emnlp.1301/">PILOT ↗</a></article>
+      <article><h3>Judges should abstain, not bluff.</h3><p>SCOPE, CaMVo and Jury-on-Demand support selective risk control and adaptive annotator choice instead of static confidence/majority vote.</p><a href="https://arxiv.org/abs/2602.13110">SCOPE ↗</a></article>
+    </div>
+  </div>
+</section>
+
+<section class="section shell strategy">
+  <div class="section-head"><p class="eyebrow">STRATEGIC END STATE</p><h2>A self-renewing routing learning flywheel.</h2></div>
+  <div class="loop"><span>Policy-safe request</span><b>→</b><span>Semantic support</span><b>→</b><span>Escalation value</span><b>→</b><span>Weak / strong</span><b>→</b><span>Outcome telemetry</span><b>↻</b></div>
+  <p class="strategy-copy">The durable asset is not `mf_router.pt`. It is the mechanism that turns cheap operational outcomes, deterministic evaluators, sparse counterfactual audits and a tiny unbiased sentinel stream into continuously refreshed routing evidence.</p>
+</section>
+</main>
+
+<footer><div class="shell footer-grid"><div><strong>Hermes Value Router Lab</strong><p>Research artifact for the Hermes + Pi agentic-stack uplift.</p></div><div><a href="evidence/adversarial-review.md">Adversarial review</a><a href="evidence/source-ledger.md">Source ledger</a><a href="experiments/000-target-audit-prereg.md">Experiment 000</a></div><div><span>Apache-2.0.</span><span>Test split sealed.</span><span>Paid research remains fail-closed.</span></div></div></footer>
+</body>
+</html>
