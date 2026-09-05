@@ -6,6 +6,27 @@ This mission may use public routing datasets to reduce experimental cost, stress
 
 The mission's qualification truth remains the pinned local RouterBench-0shot train/validation data for `mistralai/mistral-7b-chat` vs `gpt-4-1106-preview`. The sealed RouterBench test split remains untouched.
 
+## Core dataset principle — useful only when used with discipline
+
+> **A few datasets are genuinely useful, but only if the mission is disciplined about how they are used.**
+
+More data is not automatically better for this routing problem. Routing labels are unusually context-specific: they depend on the exact model pair, evaluator, prompt distribution, task semantics, sampling behavior, and sometimes the price assumptions used to define a preferred route. A large external dataset can therefore make an experiment look statistically stronger while making it **less relevant to the actual Hermes routing decision**.
+
+The agent must treat each dataset as evidence for a specific purpose, not as generic training material. Before using an external dataset, answer four questions:
+
+1. **What question is this dataset allowed to answer?** Exact-pair qualification, transfer/warm start, method stress test, or unlabeled/OOD coverage?
+2. **What can it not answer?** For example, a Mixtral-vs-GPT-4 preference label is not ground truth for Mistral-7B-vs-GPT-4 marginal rescue.
+3. **Could it contaminate local validation?** Benchmark reuse and near-duplicate prompts are common across routing datasets.
+4. **Does it change the decision enough to justify its complexity/cost?** If not, do not download, embed, or train on it.
+
+This principle has three practical consequences:
+
+- **local exact-pair evidence always outranks external evidence** for the immediate router-refresh decision;
+- **external datasets are used selectively as evidence amplifiers**, not pooled indiscriminately into one training set;
+- **every external-data experiment keeps a local-data-only control at the same local strong-label budget**, so any claimed benefit is attributable and economically meaningful.
+
+The mission should prefer a smaller, clearly relevant dataset over a larger but mismatched one. The goal is not maximum data volume; the goal is the **cheapest trustworthy evidence needed to make the routing decision**.
+
 ## Dataset tiers
 
 ### Tier A — primary exact-pair qualification data
