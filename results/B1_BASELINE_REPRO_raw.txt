@@ -1,0 +1,9 @@
+n_val = 3626
+metric                    recorded  measured  abs_diff  verdict
+weak_acc                    0.2289    0.2289    0.0000  OK
+strong_acc                  0.6448    0.6448    0.0000  OK
+always_strong_apgr          0.6459    0.6459    0.0000  OK
+v1_routed_acc               0.6395    0.6395    0.0000  OK
+v1_frac_strong              0.7686    0.7686    0.0000  OK
+v1_pgr                      0.9874    0.9874    0.0000  OK
+BASELINE_REPRO: PASS

@@ -1,6 +1,5 @@
 policy,quality,total_cost_usd,frontier_calls,mid_calls,cheap_extra_samples,verifier_calls,p50_latency_s,p95_latency_s,notes
-always_weak,,,0,0,0,0,,,filled by P0/B
-always_strong_simulated,,,0,0,0,0,,,simulated from stored labels
-router_v1_tagged,,,0,0,0,0,,,tag router-v1-frozen, threshold 0.30
-one_answer_cheap,,,0,0,0,0,,,
-naive_cascade_cheap_then_frontier,,,0,0,0,0,,,
+always_weak,0.2167,0.0000458,0,0,0,0,,,train stored-label sim (P0)
+always_strong_simulated,0.6429,0.0032889,1,0,0,0,,,train stored-label sim (P0)
+cascade_disagree_weak+Yi,0.5278,0.0015213,0.4219,0,1,0,,,no learned layer; weak+Yi disagree->strong (P0)
+router_v1_tagged,0.6395,0.0014420,0.7686,0,0,0,,,val-side B1 operating point; tag router-v1-frozen; thr 0.30

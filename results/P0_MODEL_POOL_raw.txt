@@ -1,0 +1,68 @@
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:50: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  weak = tr[WEAK].fillna(0).astype(int).to_numpy()
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:51: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  strong = tr[STRONG].fillna(0).astype(int).to_numpy()
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:64: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  acc = tr[m].fillna(0).astype(int).to_numpy()
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:64: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  acc = tr[m].fillna(0).astype(int).to_numpy()
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:64: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  acc = tr[m].fillna(0).astype(int).to_numpy()
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:64: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  acc = tr[m].fillna(0).astype(int).to_numpy()
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:64: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  acc = tr[m].fillna(0).astype(int).to_numpy()
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:64: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  acc = tr[m].fillna(0).astype(int).to_numpy()
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:64: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  acc = tr[m].fillna(0).astype(int).to_numpy()
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:64: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  acc = tr[m].fillna(0).astype(int).to_numpy()
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:64: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  acc = tr[m].fillna(0).astype(int).to_numpy()
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:89: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B.update({m: tr[m].fillna(0).astype(int).to_numpy() for m in model_cols})
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:89: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B.update({m: tr[m].fillna(0).astype(int).to_numpy() for m in model_cols})
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:89: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B.update({m: tr[m].fillna(0).astype(int).to_numpy() for m in model_cols})
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:89: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B.update({m: tr[m].fillna(0).astype(int).to_numpy() for m in model_cols})
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:89: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B.update({m: tr[m].fillna(0).astype(int).to_numpy() for m in model_cols})
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:89: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B.update({m: tr[m].fillna(0).astype(int).to_numpy() for m in model_cols})
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:89: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B.update({m: tr[m].fillna(0).astype(int).to_numpy() for m in model_cols})
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:89: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B.update({m: tr[m].fillna(0).astype(int).to_numpy() for m in model_cols})
+/Users/rath/src/hermes-router-retraining-research/experiments/p0_model_pool_audit.py:89: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B.update({m: tr[m].fillna(0).astype(int).to_numpy() for m in model_cols})
+train rows 29193 | weak acc 0.2167 ($0.000046/call) | strong acc 0.6429 ($0.003289/call)
+P(strong ok | weak fail) = 0.5806 (upper bound on any single-tier rescue)
+
+                            model  train_acc  rescue_rate_on_weak_fail  unique_successes_vs_weak  cofail_jaccard_vs_weak  mean_cost_per_call  cost_x_weak  unique_rescues_per_extra_dollar
+                        claude-v2     0.4946                    0.4763                     10891                  0.4669            0.002417        52.80                        4592615.7
+          zero-one-ai/Yi-34B-Chat     0.5315                    0.4702                     10752                  0.4959            0.000186         4.05                       76930176.4
+               gpt-3.5-turbo-1106     0.4922                    0.4602                     10523                  0.4869            0.000243         5.32                       53248628.2
+                        claude-v1     0.4960                    0.4491                     10268                  0.5043            0.002143        46.81                        4896493.6
+                claude-instant-v1     0.4655                    0.4345                      9935                  0.5063            0.000233         5.09                       53087028.6
+      mistralai/mixtral-8x7b-chat     0.4366                    0.3374                      7716                  0.6270            0.000135         2.94                       86820950.5
+       WizardLM/WizardLM-13B-V1.2     0.3232                    0.2251                      5147                  0.7114            0.000073         1.59                      189388529.8
+            meta/llama-2-70b-chat     0.2174                    0.2017                      4613                  0.6647            0.000203         4.43                       29389264.6
+meta/code-llama-instruct-34b-chat     0.1032                    0.0125                       285                  0.8532            0.000172         3.76                        2254719.5
+
+pairwise co-failure Jaccard (top complements to the weak model):
+  gpt-3.5-turbo-1106 + meta/code-llama-instruct-34b-chat: 0.4852
+  meta/code-llama-instruct-34b-chat + zero-one-ai/Yi-34B-Chat: 0.4951
+  claude-v2 + meta/code-llama-instruct-34b-chat: 0.4984
+  claude-v1 + meta/code-llama-instruct-34b-chat: 0.5135
+  meta/llama-2-70b-chat + zero-one-ai/Yi-34B-Chat: 0.5265
+
+naive cascade (weak+Yi disagree->strong): acc 0.5278 frac_strong 0.4219 cost/row $0.001521 PGR 0.7299 savings 53.7%
+
+frontier rows (train, stored-label simulation):
+always_weak,0.2167,0.0000458,0,0,0,0,,,
+always_strong_simulated,0.6429,0.0032889,0,0,0,0,,,
+cascade_disagree_weak+Yi,0.5278,0.0015213,0,0,0,0,,,no learned layer
+router_v1_tagged,0.6395,0.0014420,0,0,0,0,,,val-side operating point from B1 (tag router-v1-frozen, thr 0.30)

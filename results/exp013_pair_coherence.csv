@@ -1,0 +1,7 @@
+weak,strong,rescue_d1,rescue_d2,n_d2
+meta/code-llama-instruct-34b-chat,zero-one-ai/Yi-34B-Chat,0.44481441048034936,0.44407768058535513,18177
+mistralai/mistral-7b-chat,zero-one-ai/Yi-34B-Chat,0.36724890829694323,0.36881773670022555,18177
+meta/llama-2-70b-chat,zero-one-ai/Yi-34B-Chat,0.35387554585152836,0.35066292567530394,18177
+WizardLM/WizardLM-13B-V1.2,meta/code-llama-instruct-34b-chat,0.022762008733624453,0.028607581008967375,18177
+gpt-4-1106-preview,meta/llama-2-70b-chat,0.01566593886462882,0.015899213291522253,18177
+gpt-4-1106-preview,meta/code-llama-instruct-34b-chat,0.0111353711790393,0.012048192771084338,18177

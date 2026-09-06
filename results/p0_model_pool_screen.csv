@@ -1,0 +1,10 @@
+model,train_acc,rescue_rate_on_weak_fail,unique_successes_vs_weak,cofail_jaccard_vs_weak,mean_cost_per_call,cost_x_weak,unique_rescues_per_extra_dollar
+claude-v2,0.4946,0.4763,10891,0.4669,0.0024172,52.8,4592615.7
+zero-one-ai/Yi-34B-Chat,0.5315,0.4702,10752,0.4959,0.0001855,4.05,76930176.4
+gpt-3.5-turbo-1106,0.4922,0.4602,10523,0.4869,0.0002434,5.32,53248628.2
+claude-v1,0.496,0.4491,10268,0.5043,0.0021428,46.81,4896493.6
+claude-instant-v1,0.4655,0.4345,9935,0.5063,0.0002329,5.09,53087028.6
+mistralai/mixtral-8x7b-chat,0.4366,0.3374,7716,0.627,0.0001347,2.94,86820950.5
+WizardLM/WizardLM-13B-V1.2,0.3232,0.2251,5147,0.7114,7.3e-05,1.59,189388529.8
+meta/llama-2-70b-chat,0.2174,0.2017,4613,0.6647,0.0002027,4.43,29389264.6
+meta/code-llama-instruct-34b-chat,0.1032,0.0125,285,0.8532,0.0001722,3.76,2254719.5

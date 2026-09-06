@@ -1,0 +1,20 @@
+selected pairs (from D1 only; roles frozen):
+                             weak                  strong  acc_weak_d1  acc_strong_d1  rescue_d1
+meta/code-llama-instruct-34b-chat zero-one-ai/Yi-34B-Chat     0.104967       0.533788   0.444814
+meta/code-llama-instruct-34b-chat      gpt-3.5-turbo-1106     0.104967       0.492140   0.437500
+meta/code-llama-instruct-34b-chat               claude-v2     0.104967       0.498090   0.432587
+                claude-instant-v1               claude-v2     0.467904       0.498090   0.109880
+                claude-instant-v1               claude-v1     0.467904       0.498690   0.103221
+                        claude-v2               claude-v1     0.498090       0.498690   0.087227
+
+D2 verification:
+                             weak                  strong  rescue_d1  rescue_d2  n_d2
+meta/code-llama-instruct-34b-chat zero-one-ai/Yi-34B-Chat   0.444814   0.444078 18177
+meta/code-llama-instruct-34b-chat      gpt-3.5-turbo-1106   0.437500   0.435881 18177
+meta/code-llama-instruct-34b-chat               claude-v2   0.432587   0.428784 18177
+                claude-instant-v1               claude-v2   0.109880   0.105683 18177
+                claude-instant-v1               claude-v1   0.103221   0.097816 18177
+                        claude-v2               claude-v1   0.087227   0.085988 18177
+
+D2 top3 mean rescue 0.4362 bottom3 0.0965 lift +0.3398 order_ok=True n_ok=True
+PAIR-COHERENCE COHERENT (pair selection worth a paid study)

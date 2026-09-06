@@ -91,4 +91,14 @@ $0.00 (cap $5.00). All experiments so far use stored labels only.
 
 - 2026-09-06: V1 frozen at tag `router-v1-frozen` as read-only Tier-0 prior; pivot
   mission builds on it (P0 baseline + composition reference), per operator direction.
+- 2026-09-06 (B1): baseline reproduction PASS — all six frozen metrics exact
+  (weak 0.2289 / strong 0.6448 / always-strong APGR 0.6459 / v1 routed 0.6395 /
+  frac_strong 0.7686 / PGR 0.9874). Note: APGR integrates PGR over the call-fraction
+  axis (per eval_apgr.py); the threshold-axis variant reads 0.6096 and is WRONG.
+- 2026-09-06 (P0): keep historical weak tier as primary cheap tier; Yi-34B-Chat
+  carried as mid-tier/heterogeneous-sample candidate (best rescue-per-dollar
+  0.4702 @ 4.05× weak cost); claude-v2 + code-llama-34b + llama-2-70b rejected
+  (kill rules); naive disagree-cascade (PGR 0.7299) does not beat v1 (PGR 0.9874).
+  Pool-currency question (current cheap models not in stored pool) logged as open
+  follow-up requiring Tier B public results or SPEND_GO-gated calls.
 - (phase decisions appended as the mission proceeds)
