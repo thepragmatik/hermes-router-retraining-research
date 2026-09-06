@@ -140,4 +140,20 @@ $0.00 (cap $5.00). All experiments so far use stored labels only.
   all dynamic triggers dead, P5 must test the mid tier on P0 complementarity
   economics; if it also fails, mission outcome trends to ROUTING NOT ECONOMIC
   (v1 remains a single-model router, not a cascade).
+- 2026-09-06 (F/P5): prereg frozen (f3837b8) BEFORE scoring. Arms on the
+  v1-weak stratum vs C1=v1: C2a oracle-arbiter three-tier FAIL both gates
+  (-0.1538 acc dev); C2b deployable weak+Yi-only FAIL both (-0.1099);
+  C3 always-three-tier with oracle "strong iff both wrong" PASSED both gates
+  dev-side and on the single holdout pass (+0.0672 [+0.0594,+0.0748] acc,
+  -0.0010129 cost) — but C3 is an ORACLE UPPER BOUND (strong-call selection
+  uses stored correctness; prereg discloses this). With every real trigger
+  dead (P2 best precision 0.67 vs 0.90 gate; P3 all arms; P4 no surviving
+  layer), no deployable three-tier cascade exists; C3 numerically reproduces
+  the P1a pair-oracle ceiling, so the mid tier adds nothing the pair oracle
+  lacked. P5 VERDICT: mid tier survives only under a perfect arbiter;
+  v1 @0.30 remains the only qualified layer. Spend $0. Remaining mission
+  phases: P6 (failure-focused cheap-tier uplift, uses stored-response mining,
+  $0-eligible) and optional sandbox; mission decision now hinges on whether
+  the oracle headroom (+6.7pp/-39%) justifies declaring PARTIAL STACK (works
+  only with an arbiter this corpus cannot supply) vs ROUTING NOT ECONOMIC.
  - (phase decisions appended as the mission proceeds)

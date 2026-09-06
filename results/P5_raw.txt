@@ -1,0 +1,12 @@
+SECTION 0: train 29193 | dev-fit 24835 | pivot-holdout 4358 | test rows loaded: 0 (sealed)
+stored cost/call: weak $0.0000458 mid $0.0001855 strong $0.0032889
+
+SECTION 1: dev-fit arms vs C1 (v1)
+  C1 v1: acc 0.6400 cost 0.0025682
+  C2a_oracle_arbiter   acc 0.4862 (d -0.1538 [-0.1583,-0.1495]) cost 0.0019302 (d -0.0006380 [-0.0006564,-0.0006211]) G1=fail G2=fail
+  C2b_yi_only          acc 0.5301 (d -0.1099 [-0.1155,-0.1046]) cost 0.0002232 (d -0.0023450 [-0.0023600,-0.0023277]) G1=fail G2=fail
+  C3_always3_oracle    acc 0.7080 (d +0.0680 [+0.0651,+0.0711]) cost 0.0015987 (d -0.0009695 [-0.0010008,-0.0009333]) G1=PASS G2=PASS
+  dev-side passing arms: ['C3_always3_oracle']
+
+SECTION 2: PIVOT-HOLDOUT single pass (dev-passing arms only)
+  C3_always3_oracle    acc 0.7148 (d +0.0672 [+0.0594,+0.0748]) cost 0.0015814 (d -0.0010129 [-0.0010869,-0.0009397]) G1=PASS G2=PASS
