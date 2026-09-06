@@ -180,3 +180,4 @@ $0.00 (cap $5.00). All experiments so far use stored labels only.
   weak call on v1-weak rows, holdout acc 0.6475 @ $0.0025943/row.
   Total mission spend: $0.00 of $5.00 cap. Sealed test split: never loaded.
  - (phase decisions appended as the mission proceeds)
+ - 2026-09-06 V1 operationalised as shadow CLI + HTTP kill-switch, tag router-v1-frozen untouched, smoke PASS (routed_acc 0.6395, frac_strong 0.7686, n=3626, exact).
