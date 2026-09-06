@@ -101,4 +101,15 @@ $0.00 (cap $5.00). All experiments so far use stored labels only.
   (kill rules); naive disagree-cascade (PGR 0.7299) does not beat v1 (PGR 0.9874).
   Pool-currency question (current cheap models not in stored pool) logged as open
   follow-up requiring Tier B public results or SPEND_GO-gated calls.
+- 2026-09-06 (C/P1+P2): prereg frozen (d8af031) BEFORE holdout scoring. Two harness
+  bugs found and fixed dev-side before the final single holdout pass (Series-vs-scalar
+  verifier call; anchor cost-scaling); first two passes VOID, fixes in
+  results/BINARIZATION_NOTE.md. Binarization convention verified = build_winrate.py
+  fillna(0).astype(int) truncation (partial-credit columns; convention preserved).
+  Results: P1b disagreement-escalate KILLED (acc -0.0078, cost +22.1% vs v1 on
+  holdout); P1c verifier-gated pair KILLED (acc 0.2545 vs 0.6475); P2 all four
+  verifier families FAIL precision gate (best 0.67 vs gate 0.90; mbpp has zero
+  asserts, no JSON blocks). P1a oracle ceiling: +6.7pp acc at -39.8% cost vs v1 —
+  headroom target for P3/P4 runtime trigger, not deployable. Spend $0.
+  Next: Phase D = P3 internal confidence (trigger must capture >=50% of oracle lift).
 - (phase decisions appended as the mission proceeds)

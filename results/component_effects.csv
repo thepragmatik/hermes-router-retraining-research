@@ -1,1 +1,7 @@
 layer,quality_delta,cost_delta_usd,frontier_call_delta,uniquely_fixed,newly_broken,overlap_with,decision
+P1,heterogeneous weak+Yi pair (deployable triggers),KILL,0,holdout: P1b -0.0078 acc / +22.1% cost vs v1; P1c -0.3931 acc; both FAIL frozen gate
+P1,oracle-pair ceiling,DIAGNOSTIC,0,"+6.7pp acc at -39.8% cost vs v1 [CI +0.0594,+0.0748] - headroom target for P3/P4 runtime trigger"
+P2,VF answer-format verifier,KILL (conditional),0,"accept precision 0.33 weak / 0.67 mid, gate 0.90; re-activates if deployment has machine-checkable contracts"
+P2,VN numeric sanity,KILL,0,precision 0.0 on gsm8k accepts
+P2,VJ JSON validity,KILL,0,coverage 0.0 (no JSON blocks in corpus)
+P2,VM mbpp compile/exec,KILL,0,0 prompts with asserts in stored corpus; exec coverage 0 by data

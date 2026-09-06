@@ -3,3 +3,6 @@ always_weak,0.2167,0.0000458,0,0,0,0,,,train stored-label sim (P0)
 always_strong_simulated,0.6429,0.0032889,1,0,0,0,,,train stored-label sim (P0)
 cascade_disagree_weak+Yi,0.5278,0.0015213,0.4219,0,1,0,,,no learned layer; weak+Yi disagree->strong (P0)
 router_v1_tagged,0.6395,0.0014420,0.7686,0,0,0,,,val-side B1 operating point; tag router-v1-frozen; thr 0.30
+p1a_oracle_pair_ceiling,0.7148,0.0015411,0.4105,0,1,0,0,,,"holdout single-pass; oracle trigger, NOT deployable (ceiling target for P3/P4)"
+p1b_disagree_escalate,0.6397,0.0031255,0.1314,0.1314,1,0,0,,,holdout; KILLED by frozen gate
+p1c_verifier_gated_pair,0.2545,9.99e-05,0.0262,0.0262,1,1,0,,,holdout; KILLED by frozen gate

@@ -1,0 +1,62 @@
+SECTION 0: train 29193 | dev-fit 24835 | pivot-holdout 4358 (0.1493) | test rows loaded: 0 (sealed)
+/Users/rath/src/hermes-router-retraining-research/experiments/p1_p2_sampling_verifiers.py:275: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B = {m: tr[m].fillna(0).astype(int).to_numpy() for m in
+/Users/rath/src/hermes-router-retraining-research/experiments/p1_p2_sampling_verifiers.py:275: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B = {m: tr[m].fillna(0).astype(int).to_numpy() for m in
+/Users/rath/src/hermes-router-retraining-research/experiments/p1_p2_sampling_verifiers.py:275: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B = {m: tr[m].fillna(0).astype(int).to_numpy() for m in
+stored cost/call: weak $0.0000458 mid(Yi) $0.0001855 strong $0.0032889
+
+SECTION 1: verifier diagnostics by family (rows: dev-fit only)
+  VF weak choice     n= 11389 coverage=0.8576 accept_precision=0.3343 false_reject=0.0000
+  VF weak gsm8k      n=  5076 coverage=0.0581 accept_precision=0.0000 false_reject=0.0054
+  VF weak hellaswag  n=  6851 coverage=1.0000 accept_precision=0.2550 false_reject=nan
+  VF weak mbpp       n=   304 coverage=1.0000 accept_precision=0.3388 false_reject=nan
+  VF weak open       n=  1215 coverage=1.0000 accept_precision=0.1959 false_reject=nan
+  VF mid  choice     n= 11389 coverage=0.9999 accept_precision=0.6716 false_reject=0.0000
+  VF mid  gsm8k      n=  5076 coverage=0.0857 accept_precision=0.0046 false_reject=0.0026
+  VF mid  hellaswag  n=  6851 coverage=1.0000 accept_precision=0.7450 false_reject=nan
+  VF mid  mbpp       n=   304 coverage=0.9605 accept_precision=0.3973 false_reject=0.0000
+  VF mid  open       n=  1215 coverage=1.0000 accept_precision=0.2444 false_reject=nan
+  VN weak gsm8k n=5076 coverage=0.0581 precision=0.0000 (VF-only precision=0.0000)
+  VJ weak all-dev: json-block coverage=0.0000 (expected <2%; abstain=1.0000)
+  VM weak mbpp n=304 prompts-with-asserts=0 structural_compile_pass=0.9770
+
+SECTION 2: P1 pair measures (dev-fit)
+  P(mid repairs | weak fails) = 0.4693
+  P(co-failure AND agreement) = 0.0283
+  agreement->correctness calibration: P(weak ok | agree) = 0.7704  Wilson95 [0.7552,0.7850]  n_agree=3058
+  disagreement rate (dev) = 0.8769
+
+SECTION 3: dev-fit operating points (selection surface)
+  policy                           acc   cost/row frac_strong     PGR
+  always_weak                   0.2166  0.0000458      0.0000  0.0000
+  always_strong                 0.6418  0.0032889      1.0000  1.0000
+  v1@0.30                       0.6400  0.0025331      0.7669  0.9958
+  P1a_oracle_pair(ceiling)      0.7080  0.0015585      0.4157  1.1559
+  P1b_disagree_escalate         0.6313  0.0031152      0.7460  0.9754
+  P1c_verifier_gated_pair       0.2537  0.0005908      0.1554  0.0872
+
+SECTION 4: FROZEN for single holdout scoring (per prereg):
+  policies: always_weak, always_strong, v1@0.30, P1a(ceiling), P1b, P1c; gates: P1 keep = quality up at <=matched cost OR cost -5% at >=matched quality vs v1 (holdout); P2 keep = dev accept-precision >=0.90 AND coverage >=5%, and P1c must beat P1b.
+
+SECTION 5: PIVOT-HOLDOUT single-pass results
+  policy                           acc   cost/row frac_strong     PGR         d_acc_vs_v1 [95%]
+  always_weak                   0.2175  0.0000458      0.0000  0.0000  -0.4300 [-0.4461,-0.4139]
+  always_strong                 0.6494  0.0032889      1.0000  1.0000  +0.0018 [-0.0002,+0.0039]
+  v1@0.30                       0.6475  0.0025589      0.7749  0.9957  +0.0000 [+0.0000,+0.0000]
+  P1a_oracle_pair(ceiling)      0.7148  0.0015411      0.4105  1.1514  +0.0672 [+0.0594,+0.0748]
+  P1b_disagree_escalate         0.6397  0.0031255      0.1314  0.9777  -0.0078 [-0.0124,-0.0032]
+  P1c_verifier_gated_pair       0.2545  0.0000999      0.0262  0.0855  -0.3931 [-0.4091,-0.3768]
+
+  paired cost deltas vs v1 (holdout, per-row service cost):
+  P1a_oracle_pair(ceiling)     d_cost -0.0010178 [-0.0010925,-0.0009439]
+  P1b_disagree_escalate        d_cost +0.0005667 [+0.0005126,+0.0006199]
+  P1c_verifier_gated_pair      d_cost -0.0018894 [-0.0019640,-0.0018183]
+
+SECTION 6: frozen-gate verdicts (holdout)
+  P1b_disagree_escalate        keep_gate=FAIL  (d_acc -0.0078, d_cost +0.0005667, -22.1% cost vs v1)
+  P1c_verifier_gated_pair      keep_gate=FAIL  (d_acc -0.3931, d_cost -0.0024589, +96.1% cost vs v1)
+  P1a_oracle_pair(ceiling)     keep_gate=PASS  (d_acc +0.0672, d_cost -0.0010178, +39.8% cost vs v1)
+  P1c beats P1b (quality): NO (0.2545 vs 0.6397)
+EXIT=0
