@@ -6,3 +6,7 @@ router_v1_tagged,0.6395,0.0014420,0.7686,0,0,0,,,val-side B1 operating point; ta
 p1a_oracle_pair_ceiling,0.7148,0.0015411,0.4105,0,1,0,0,,,"holdout single-pass; oracle trigger, NOT deployable (ceiling target for P3/P4)"
 p1b_disagree_escalate,0.6397,0.0031255,0.1314,0.1314,1,0,0,,,holdout; KILLED by frozen gate
 p1c_verifier_gated_pair,0.2545,9.99e-05,0.0262,0.0262,1,1,0,,,holdout; KILLED by frozen gate
+p3_O1_quality_trigger,0.5656,0.0025558,0.7632,0,0,0,0,,,holdout; KILLED: acc -8.2pp vs v1 at ~matched cost
+p3_O2_cost_trigger,0.6485,0.0033105,0.9927,0,0,0,0,,,holdout; KILLED: +27.6% cost at noise-level quality delta
+p3_O3_cov_matched,0.5665,0.0025611,0.7648,0,0,0,0,,,holdout; KILLED (same failure mode as O1)
+realizable_ceiling_over_v1,0.6508,0.0026049,0.7754,0,0,0,0,,,oracle diagnostic: only +0.0032 acc available behind v1's weak-side rows

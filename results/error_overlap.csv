@@ -5,3 +5,4 @@ mistralai/mistral-7b-chat,claude-v2,0.4669,11975,29193
 mistralai/mistral-7b-chat,meta/code-llama-instruct-34b-chat,0.8532,22581,29193
 zero-one-ai/Yi-34B-Chat,gpt-3.5-turbo-1106,0.5956,10640,29193
 claude-v2,zero-one-ai/Yi-34B-Chat,0.6444,11142,29193
+P3-vs-v1,answer-aware risk ranking vs v1 P(strong),high,AUROC R+V 0.6924 -> R+V+P 0.7385: P-conf carries most lift; answer-side adds ~0.05 AUROC only

@@ -5,3 +5,5 @@ P2,VF answer-format verifier,KILL (conditional),0,"accept precision 0.33 weak / 
 P2,VN numeric sanity,KILL,0,precision 0.0 on gsm8k accepts
 P2,VJ JSON validity,KILL,0,coverage 0.0 (no JSON blocks in corpus)
 P2,VM mbpp compile/exec,KILL,0,0 prompts with asserts in stored corpus; exec coverage 0 by data
+P3,answer-aware trigger (R+V+P probe) over v1,KILL (conditional),0,OOF AUROC 0.7385 but no economic conversion over v1; v1 weak-side rows are both-models-fail stratum (weak 4.7%/strong 5.5%); revival needs logprobs/hidden states or a weak-first prereg
+P3,realizable-ceiling discovery,DIAGNOSTIC,0,v1-anchored cascade ceiling only +0.3-0.4pp (vs weak-first oracle +6.7pp): v1 prompt-signal already captures recoverable mass

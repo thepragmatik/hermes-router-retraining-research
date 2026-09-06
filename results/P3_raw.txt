@@ -1,0 +1,52 @@
+SECTION 0: train 29193 | dev-fit 24835 | pivot-holdout 4358 (0.1493) | test rows loaded: 0 (sealed)
+stored cost/call: weak $0.0000458 strong $0.0032889
+LEAKAGE AUDIT: features = [weak response text -> R-shape+V-out; v1 cached P(strong)]; correctness/cost/oracle/other-models never enter feature matrices (see build_features)
+
+SECTION 1: dev-fit 5-fold OOF (md5 fold blocks; 3 salts averaged)
+  R      C=0.03  AUROC 0.6706 | q-arm d_acc -0.3878 d_cost -0.0016814 | c-arm d_cost +0.0007665
+  R      C=0.3   AUROC 0.6711 | q-arm d_acc -0.3825 d_cost -0.0016755 | c-arm d_cost +0.0007665
+  R      C=3.0   AUROC 0.6703 | q-arm d_acc -0.3826 d_cost -0.0016778 | c-arm d_cost +0.0007665
+  V      C=0.03  AUROC 0.6665 | q-arm d_acc -0.3732 d_cost -0.0016354 | c-arm d_cost +0.0007665
+  V      C=0.3   AUROC 0.6665 | q-arm d_acc -0.3732 d_cost -0.0016354 | c-arm d_cost +0.0007665
+  V      C=3.0   AUROC 0.6665 | q-arm d_acc -0.3732 d_cost -0.0016354 | c-arm d_cost +0.0007665
+  R+V    C=0.03  AUROC 0.6858 | q-arm d_acc -0.3798 d_cost -0.0016986 | c-arm d_cost +0.0007665
+  R+V    C=0.3   AUROC 0.6924 | q-arm d_acc -0.3754 d_cost -0.0016979 | c-arm d_cost +0.0007665
+  R+V    C=3.0   AUROC 0.6921 | q-arm d_acc -0.3736 d_cost -0.0016968 | c-arm d_cost +0.0007665
+  R+V+P  C=0.03  AUROC 0.7365 | q-arm d_acc -0.3767 d_cost -0.0017001 | c-arm d_cost +0.0007665
+  R+V+P  C=0.3   AUROC 0.7382 | q-arm d_acc -0.3735 d_cost -0.0017001 | c-arm d_cost +0.0007665
+  R+V+P  C=3.0   AUROC 0.7385 | q-arm d_acc -0.3731 d_cost -0.0017001 | c-arm d_cost +0.0007665
+  SELECTED (dev-fit): set=R+V+P C=3.0
+
+SECTION 2: frozen operating points (dev-fit OOF, pooled salts)
+/Users/rath/src/hermes-router-retraining-research/experiments/p3_internal_confidence.py:314: RuntimeWarning: Mean of empty slice
+  oof = np.nanmean(np.vstack(parts), axis=0)
+  v1 dev: acc 0.6400 cost 0.0025682 fs 0.7669
+  realizable oracle ceiling (dev): acc 0.6438 (+0.0038 vs v1) cost 0.0025806 escalated_share 0.0038
+  O1_quality       thr=0.3731588583753043 acc 0.5567 cost 0.0025656 esc_share 0.7662
+  O2_cost          thr=0.2118333643222724 acc 0.6401 cost 0.0033018 esc_share 0.9900
+  O3_cov_matched   thr=0.3729102557263241 acc 0.5572 cost 0.0025682 esc_share 0.7669
+  control_wf_v1    thr=  v1@0.30 acc 0.6400 cost 0.0025682 esc_share 0.7669
+FROZEN: set=R+V+P C=3.0 tau_q=0.373159 tau_c=0.211833 tau_cov=0.372910 v1_acc_d=0.639984 v1_cost_d=0.0025682
+
+SECTION 3: PIVOT-HOLDOUT single-pass results
+  v1 holdout: acc 0.6475 cost 0.0025943 fs 0.7749
+  realizable ceiling (holdout): acc 0.6508 (+0.0032) cost 0.0026049 escalated_share 0.0032
+  arm                  acc   cost/row esc_share            d_acc [95%]           d_cost [95%]
+  O1_quality        0.5656  0.0025558    0.7632 -0.0819 [-0.0918,-0.0723] -0.0000385 [-0.0000982,+0.0000204]
+  O2_cost           0.6485  0.0033105    0.9927 +0.0009 [-0.0009,+0.0030] +0.0007162 [+0.0006784,+0.0007555]
+  O3_cov_matched    0.5665  0.0025611    0.7648 -0.0810 [-0.0909,-0.0714] -0.0000332 [-0.0000929,+0.0000249]
+  control_wf_v1     0.6475  0.0025943    0.7749 +0.0000 [+0.0000,+0.0000] +0.0000000 [+0.0000000,+0.0000000]
+  REALIZ_CEIL       0.6508  0.0026049    0.0005 +0.0032 [+0.0018,+0.0050] +0.0000106 [+0.0000060,+0.0000166]
+
+SECTION 4: frozen-gate verdicts (holdout)
+  O1_quality       gate=FAIL (capture -2550.0% of realizable lift; beats_control=NO)
+  O2_cost          gate=FAIL (capture 28.6% of realizable lift; beats_control=NO)
+  O3_cov_matched   gate=FAIL (capture -2521.4% of realizable lift; beats_control=NO)
+
+SECTION 5: per-family OOF AUROC (dev, selected set, pooled salts)
+  choice     n= 11389 AUROC 0.6514
+  gsm8k      n=  5076 AUROC 0.7846
+  hellaswag  n=  6851 AUROC 0.5596
+  mbpp       n=   304 AUROC 0.7127
+  open       n=  1215 AUROC 0.8208
+EXIT=0

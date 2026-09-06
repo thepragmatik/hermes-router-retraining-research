@@ -112,4 +112,17 @@ $0.00 (cap $5.00). All experiments so far use stored labels only.
   asserts, no JSON blocks). P1a oracle ceiling: +6.7pp acc at -39.8% cost vs v1 —
   headroom target for P3/P4 runtime trigger, not deployable. Spend $0.
   Next: Phase D = P3 internal confidence (trigger must capture >=50% of oracle lift).
-- (phase decisions appended as the mission proceeds)
+- 2026-09-06 (D/P3): prereg frozen (b10df12) BEFORE holdout scoring. Feasibility:
+  corpus has no logprobs/hidden states — tested R-shape + V-out + v1 P (prompt-side,
+  baseline arm). Dev-fit CV: R+V+P selected (OOF AUROC 0.7385; C=3.0 from full
+  grid). STRUCTURAL FINDING: v1's weak-side rows are a both-models-fail stratum
+  (weak 4.7% / strong 5.5% correct there) -> v1-anchored realizable ceiling only
+  +0.3-0.4pp (vs weak-first oracle +6.7pp). Holdout single pass: O1 quality arm
+  FAIL (acc -8.2pp), O2 cost arm FAIL (+27.6% cost at noise-level quality), O3
+  FAIL; control (weak-first with v1 trigger) = v1 itself. P3 answer-aware trigger
+  KILLED for this corpus/architecture (conditional revival: logprobs/hidden states
+  via paid generation, or weak-first-architecture prereg). Two crashed runs died
+  before any holdout output was consumed; final complete run = the single pass.
+  Spend $0. Next: Phase E = P4 stack composition (P1-P3 all killed -> stack is
+  v1 alone unless P4 composes killed layers differently; expect short phase).
+ - (phase decisions appended as the mission proceeds)
