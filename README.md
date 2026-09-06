@@ -10,11 +10,16 @@ That result changes the research direction.
 
 > **Current thesis: stop looking for one perfect prompt-only router. Build and measure a stack of small, response-aware interventions that can compound: cheap answer → trust signals → extra cheap compute/verifier → curated mid-tier → frontier, while using recurring frontier rescues to improve the cheap tier.**
 
-Start with:
+### Active execution documents
 
+- **[Canonical mission — Stackable Trust, Escalation, and Agentic Routing](STACKABLE_ROUTING_MISSION.md)** — source of truth for objective, experiment order, gates, economics, stop rules, and deliverables.
+- **[Launch prompt](LAUNCH_AGENT_PROMPT.md)** — ready-to-paste instruction for an execution-capable agent.
+- [Agent entrypoint](AGENTS.md) — concise repository-level instructions that point to the canonical mission.
 - [Pivot memo — stackable gains after the first experiments failed](memo/2026-09-06_pivot-stackable-gains.md)
-- [Pivot execution plan](PIVOT_EXECUTION_PLAN.md)
 - [Pivot evidence/source ledger](evidence/pivot-source-ledger.md)
+- [Dataset strategy](DATASETS.md)
+
+The older `PIVOT_EXECUTION_PLAN.md` remains useful design provenance, but `STACKABLE_ROUTING_MISSION.md` is now the canonical active specification if the two differ.
 
 The prior FEV/weak-correctness/judge/semantic/bandit research is preserved below as **historical provenance**, not the current recommended center of effort.
 
@@ -57,14 +62,15 @@ Every layer must independently move the measured cost/quality frontier or it is 
 
 1. **Model-pool audit:** determine whether the historical Mistral weak tier itself is now the bottleneck; screen a few current inexpensive models for complementary successes, not just aggregate score.
 2. **Adaptive cheap sampling:** test whether a second/third local answer resolves enough uncertainty to avoid frontier calls.
-3. **Internal confidence probe:** use the answering model's hidden states/logits rather than only prompt embeddings or verbal confidence.
-4. **Trust-stack ablation:** add deterministic checks, internal confidence, extra sampling, verifier and abstention one at a time; retain only paying layers.
-5. **Three-tier cascade:** test `local → inexpensive modern mid-tier → frontier` instead of forcing a binary old-7B/frontier boundary.
-6. **Failure-focused weak-model uplift:** LoRA/distill on recurring economically valuable failure/rescue clusters using stored strong evidence first.
-7. **Hermes workflow-stage routing:** measure whether expensive intelligence is needed only at particular turns/stages of real agent missions.
-8. **Optional draft/repair:** reuse cheap work when escalating rather than discarding it.
+3. **Deterministic verification:** use tests, schemas, tools and task-native checks to safely accept/reject a subset before learned trust models.
+4. **Internal confidence probe:** use the answering model's hidden states/logits rather than only prompt embeddings or verbal confidence.
+5. **Trust-stack ablation:** add answer-aware layers one at a time; retain only paying layers and measure error overlap.
+6. **Three-tier cascade:** test `local → inexpensive modern mid-tier → frontier` instead of forcing a binary old-7B/frontier boundary.
+7. **Failure-focused weak-model uplift:** LoRA/distill on recurring economically valuable failure/rescue clusters using stored strong evidence first.
+8. **Hermes workflow-stage routing:** measure whether expensive intelligence is needed only at particular turns/stages of real agent missions.
+9. **Optional draft/repair:** reuse cheap work when escalating rather than discarding it.
 
-See [PIVOT_EXECUTION_PLAN.md](PIVOT_EXECUTION_PLAN.md) for frozen experimental discipline and deliverables.
+See [STACKABLE_ROUTING_MISSION.md](STACKABLE_ROUTING_MISSION.md) for the complete frozen execution discipline and deliverables.
 
 ## Public dataset strategy
 
@@ -101,6 +107,7 @@ Historical starting points:
 - Research/experiment code is expected; production runtime integration belongs in the parent Hermes stack after qualification.
 - Previously falsified/failed approaches are not recycled unchanged.
 - Public/external data must be provenance-tracked and must not contaminate local validation.
+- Iterative pivot work should use train-only development / the canonical pivot-holdout protocol; historical validation is reserved for finalists.
 - Cost, latency, retries and end-to-end accepted mission quality matter more than router-classifier accuracy alone.
 - Prefer a simple stack of independently positive components over a complicated system with unproven interactions.
 
