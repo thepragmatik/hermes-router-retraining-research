@@ -1,308 +1,285 @@
-# Agent execution mission — solve cheap, repeatable Hermes routing
+# Agent execution mission — stackable trust-and-escalation pivot
+
+## Status
+
+**Active mission as of 2026-09-06.**
+
+The project operator reports that the previous experiment family (weak-correctness/FEV, one-sided judge, semantic-signal and bandit-oriented variants) **did not pass its gates**. Do not rerun those experiments unchanged. Their files remain in the repository as historical evidence.
+
+Read first:
+
+1. [`memo/2026-09-06_pivot-stackable-gains.md`](memo/2026-09-06_pivot-stackable-gains.md)
+2. [`PIVOT_EXECUTION_PLAN.md`](PIVOT_EXECUTION_PLAN.md)
+3. [`evidence/pivot-source-ledger.md`](evidence/pivot-source-ledger.md)
+4. [`DATASETS.md`](DATASETS.md)
+5. historical research only as needed to avoid repeating failed ideas.
 
 ## Mission objective
 
-Your job is **not to produce another research memo**. Your job is to use the research in this repository to experimentally determine the best practical way to keep the Hermes weak/strong router effective **while making future refreshes dramatically cheaper**.
+Your job is **not to find another single magical router classifier**.
 
-The north-star outcome is:
+Your job is to determine whether several small, independently useful interventions can be **stacked** into a system that reduces expensive/frontier-model use while preserving end-to-end quality.
 
-> **A reproducible routing-training/refresh recipe that preserves or exceeds router-v1 validation quality while minimizing the amount and cost of strong-model supervision required each time models, prices, or workloads change.**
+The working architecture is:
 
-The deployed v1 proves that routing itself can work. The unsolved problem is **cheap, repeatable supervision and refresh**.
+```text
+policy-safe request
+      ↓
+cheap model produces an answer
+      ↓
+trust bundle
+  ├─ deterministic/test/tool checks
+  ├─ internal hidden-state/logit confidence
+  ├─ adaptive extra cheap sample + agreement
+  ├─ task-specific verifier
+  └─ OOD / calibrated abstention
+      ↓
+accept? ─ yes → return
+  │
+  no
+  ↓
+curated mid-tier / specialist
+      ↓
+accept? ─ yes → return
+  │
+  no
+  ↓
+frontier
+      ↓
+record rescue/failure → improve cheap tier
+```
 
-If the proposed cheap methods cannot recover v1 quality, do not hide that result. Determine the **cheapest viable ground-truth path**, quantify its cost, and recommend whether continuing the router remains economically worthwhile.
+For real Hermes missions, also investigate **turn/workflow-stage routing**: expensive intelligence may be valuable only at particular stages of an agent trajectory.
 
 ## Definition of done
 
-This mission is complete only when the agent produces an evidence-backed decision, not merely more analysis.
+The mission is complete only when it produces an evidence-backed economic decision about the **composed system**.
 
-A successful outcome should achieve all of the following on the existing **validation split only**:
+Required outcomes:
 
-1. **Quality:** validation APGR >= **0.6459** (router-v1 replacement baseline). `0.55` is only a viability floor, not success.
-2. **Cheap refresh:** recover that quality with the smallest possible strong-label budget. The primary research target is <= **5%** of train rows requiring strong counterfactual labels; <=2% is preferred.
-3. **Economic result:** quantify future refresh cost and the routing quality/cost frontier. Show how the recommended method compares with:
-   - always strong;
-   - always weak;
-   - deployed v1;
-   - full dual-model retraining;
-   - the best cheap-label candidate found in this mission.
-4. **Reproducibility:** all experiment code, configs, seeds, commands, result tables, and assumptions required to reproduce the decision are committed to this repository.
-5. **Decision:** explicitly recommend one of:
-   - **PROMOTE TO HERMES SHADOW EVALUATION** — candidate meets the research quality/economic gates;
-   - **KEEP V1 / USE CHEAPEST REFRESH FRONTIER** — no new method beats v1, but a viable refresh strategy is identified;
-   - **ROUTER ECONOMICS NOT YET JUSTIFIED** — evidence says maintenance/label cost overwhelms the achievable savings or quality.
+1. establish which individual layers move the quality/cost frontier;
+2. quantify whether those gains actually compose or are redundant/correlated;
+3. identify the simplest paying stack;
+4. quantify total runtime cost, latency and frontier-call rate at matched quality;
+5. quantify any refresh/fine-tuning cost;
+6. test whether replacing/adding the cheap model dominates router-side improvements;
+7. when Hermes mission traces exist, evaluate mission-level/stage-aware savings separately from RouterBench;
+8. finish with one explicit decision:
+   - **STACK WORKS — PROMOTE TO HERMES SHADOW**;
+   - **PARTIAL STACK — KEEP ONLY PAYING LAYERS**;
+   - **MODEL-POOL PIVOT**;
+   - **AGENTIC-ONLY PIVOT**;
+   - **ROUTING NOT ECONOMIC**.
 
-Passing this research mission does **not** itself authorize production deployment. Production promotion belongs in the parent Hermes stack after shadow evaluation on real Hermes missions.
+A negative decision is a valid successful mission if it is supported by reproducible evidence.
 
-## Metric and budget definitions
+## What you are expected to implement
 
-Use these definitions consistently across every experiment and result table:
+**Research and experiment code is required.** Production integration is not.
 
-- **Validation APGR:** the project's existing RouteLLM-style routing metric. The frozen v1 validation reference is **0.6459**.
-- **Viability floor:** **0.55 validation APGR**. Passing 0.55 alone is not a replacement result.
-- **PGR / weak-route fraction:** when this repository uses PGR operationally, report the fraction of eligible requests routed to the weak model / strong calls avoided. Also report the exact strong-route fraction so there is no ambiguity.
-- **Strong-label budget:** `number of train rows for which a fresh strong-model counterfactual outcome would be required / total train rows`. A stored strong outcome revealed during retrospective simulation counts against the simulated budget exactly as if it had to be purchased in a future refresh.
-- **Weak-label budget:** report separately when weak outputs must be regenerated. Weak-model generation is cheap but not free.
-- **Refresh cost:** all supervision/data-generation cost required to produce a refreshed router checkpoint, including model calls, judges, paid compute, and any materially non-trivial external-data processing.
-- **Runtime cost:** inference cost of the routed policy after training. Never mix runtime savings with refresh/training savings in one number.
+You may and should write:
 
-If a paper or external dataset uses different metric definitions, keep its native metric clearly separate from project APGR/PGR.
+- data/audit scripts;
+- model-screening harnesses;
+- local generation/resampling experiments;
+- hidden-state/logit extraction and tiny probes;
+- verifier adapters and deterministic checks;
+- cascade simulations;
+- LoRA/fine-tuning experiments on train-safe failure clusters;
+- cost/latency analysis and plots;
+- replay/shadow analysis for Hermes trajectories;
+- reproducibility tests and result tables.
 
-## What you are explicitly authorized and expected to do
-
-**You SHOULD write code for research and experiments.** The previous wording about “production code” must not be interpreted as “do not implement experiments.”
-
-You may and should:
-
-- write analysis scripts, training scripts, evaluation scripts, data loaders, ablations, plotting/reporting utilities, and reproducibility tests in this research repository;
-- train experimental router variants locally;
-- reproduce the frozen v1 validation result before comparing candidates;
-- inspect and use the hash-defined **train** split and **validation** split according to each preregistration;
-- use stored train labels for retrospective masking/sparse-label simulations;
-- use existing weak responses, judge labels/confidence, task metadata, and embeddings;
-- use relevant public routing datasets under the policy in [`DATASETS.md`](DATASETS.md);
-- create new preregistered experiments when an observed result exposes a genuinely new uncertainty;
-- use local CPU/MPS first and Vast GPU only when the experiment scale clearly warrants it;
-- update the README, manifest, evidence, results, and Pages site as findings change.
-
-You must **not**:
-
-- modify or ship runtime/production routing code into `hermes-pi-agentic-stack` from this research mission;
-- inspect, score, tune against, or re-evaluate the sealed RouterBench test split;
-- rerun a FALSIFIED approach unchanged just to see whether it gets lucky;
-- silently spend money or silently fall back to a non-ZDR judge/provider;
-- treat external model-pair labels as exact truth for the local Mistral-7B/GPT-4 pair unless the pair and evaluation semantics actually match.
-
-Research code is required. Production integration is out of scope.
+Do not modify/ship production runtime code into the parent Hermes stack from this research mission.
 
 ## Hard guardrails
 
-- **RouterBench test split is SEALED.** Never access it during this mission.
-- **Default spend is $0.** Paid work requires an explicit fail-closed environment gate such as `SPEND_GO=1` and total research spend must remain **< $5**.
-- All remote judge requests must enforce ZDR with no silent fallback.
-- Normalize local paths to `~/`; publish no personal absolute home paths or credentials.
-- Preserve seeds, split logic, model identifiers, dataset revisions, and provenance for every result.
-- Validation APGR **0.6459** is the meaningful replacement baseline; **0.55** is only viability.
-- Do not move gates after seeing validation results. If a new experiment is needed, preregister its hypothesis, variants, metric, and decision rule first.
+- **RouterBench test split remains SEALED.** Never access it.
+- Use train and validation only according to the existing split discipline.
+- Default paid research spend remains **$0**; any API spend requires explicit fail-closed authorization such as `SPEND_GO=1`, and total paid research spend remains **< $5** unless the project operator changes that rule.
+- Remote judges/providers must preserve required ZDR behavior with no silent fallback.
+- Do not rerun failed/falsified methods unchanged.
+- Do not treat an external benchmark/model pair as local exact-pair truth.
+- Do not promote a component because of classifier accuracy alone; measure the end-to-end cost/quality effect.
+- Do not assume gains add. Measure composition and error overlap.
+- Use multiple seeds where a trained probe/adapter can be seed-sensitive.
+- Preserve model IDs, provider, prices, dataset revisions, hashes, commands and environment provenance.
 
-## Required starting inventory
+## Core design principle — stack gains, not assumptions
 
-Before training anything, confirm which of these are available and record paths/hashes in a mission log:
+Every candidate layer must pass a marginal-value test.
 
-- pinned RouterBench-0shot data/pickle;
-- reproducible hash-defined train/validation frames;
-- row-level weak and strong correctness/outcome columns for retrospective train-only analysis;
-- stored weak responses;
-- judge labels and confidence;
-- task/dataset identifiers;
-- frozen v1 embeddings or ability to reproduce them;
-- v1 router weights and evaluation harness;
-- current model/provider prices if any cost projection will use live pricing.
+For each layer answer:
 
-If something is missing, continue with experiments whose prerequisites are present. Do **not** substitute the sealed test split.
+- What new information/action does it add that earlier layers do not?
+- Which failure cases does it uniquely fix?
+- Which new errors/latency/cost does it create?
+- Does it move the Pareto frontier after all costs are counted?
+- Does its value survive when composed with the other retained layers?
 
-## Public datasets — use strategically, not indiscriminately
+If it does not, remove it.
 
-Read [`DATASETS.md`](DATASETS.md) before downloading or fitting on external data.
+Prefer a simple 2–3-layer stack with real gains over a sophisticated 7-layer stack whose components overlap.
 
-The dataset hierarchy is:
+## Execution order
 
-1. **Primary exact-pair truth — pinned `withmartian/routerbench` 0-shot artifact.** This is the only dataset that directly qualifies the historical Mistral-7B-chat / GPT-4-1106-preview pair for this mission.
-2. **Preferred external stress test — `Wikit/RoutingCompendium-perf` + `Wikit/RoutingCompendium-cost`.** It harmonizes RouterBench, Sprout, EmbedLLM, FusionBench and R2Bench with per-query model performance, prompt embeddings and companion cost data. Use it to stress-test sparse-label acquisition, performance-memory, FEV/value routing, bandit replay and Pareto-frontier logic across different model pools.
-3. **Modern cross-pool stress test — `ynulihao/LLMRouterBench`.** Use its pre-collected standardized outputs/scores/costs across modern datasets/model pools when a modern-model generalization check can change the decision.
-4. **Transfer prior — RouteLLM public data** such as `routellm/gpt4_judge_battles`, `gpt4_dataset`, embeddings and MMLU augmentation. These use GPT-4-1106-preview with **Mixtral-8x7B**, not this mission's Mistral-7B-chat, so they are warm-start/transfer evidence only.
-5. **Optional correctness-matrix stress test — `RZ412/EmbedLLM`.** Useful for many-model correctness forecasting and sparse-label scaling; prefer the lighter RoutingCompendium EmbedLLM split unless the full artifact is specifically justified.
-6. **Optional real-world prompt/OOD data — `lmarena-ai/arena-human-preference-55k` and, only if justified, `lmsys/lmsys-chat-1m`.** Use for semantic coverage/OOD analysis, not as exact-pair correctness truth.
+### P0 — model-pool audit first
 
-### Mandatory external-data hygiene
+Before making the router smarter, check whether the historical Mistral cheap tier is now the bottleneck.
 
-Before external data affects a trained candidate:
+Screen Mistral plus 2–3 current inexpensive candidates on a **train-derived/calibration sample**.
 
-- record source, revision, license, split/files and content hashes where practical;
-- classify every dataset as `exact_pair`, `transfer_prior`, `stress_test`, or `unlabeled_ood`;
-- remove exact duplicates against local **train and validation** before fitting;
-- for benchmark-derived data, run a lightweight near-duplicate check against local validation because many public sources reuse benchmark prompts;
-- never inspect the sealed local test split for deduplication or any other purpose;
-- preserve a local-data-only baseline at the same local strong-label budget;
-- never promote a candidate based only on an external score.
+Measure:
 
-For a **PROMOTE TO HERMES SHADOW EVALUATION** recommendation, run at least one compatible external robustness/stress test after the local candidate reaches viability, unless the agent documents why no external dataset can validly exercise that method. The default is RoutingCompendium because it is harmonized and already includes embeddings/cost information. External results strengthen confidence but **do not override the local APGR gate**.
+- standalone task success;
+- unique success/rescue relative to other cheap candidates;
+- co-failure rate;
+- token/API/local-compute cost;
+- latency;
+- structured output/tool compatibility where relevant.
 
-Do not download every dataset up front. Start local; acquire external data only when the next decision benefits from it.
+Choose models by **complementarity per cost**, not leaderboard score or aggregate accuracy alone.
 
-## Execution plan
+Current model prices must be looked up at execution time and recorded; do not reuse stale prices from the research memo.
 
-### Phase 0 — establish the baseline and mission ledger
+### P1 — adaptive cheap resampling
 
-1. Read `RESEARCH_SIGNOFF.md`, `DATASETS.md`, and the ranked memo.
-2. Inventory all local artifacts and record availability.
-3. Reproduce **v1 validation APGR = 0.6459** using the existing validation harness. If this cannot be reproduced, stop model comparison and diagnose the evaluation pipeline first.
-4. Create/update a mission ledger containing:
-   - git commit;
-   - data hashes/split counts;
-   - environment/package versions;
-   - baseline metrics;
-   - dataset provenance/revisions actually used;
-   - spend-to-date = $0 unless explicitly authorized.
+On the local/cheapest viable tier, test 1/2/3/5 samples with early stopping.
 
-### Phase 1 — answer the most important target question at $0
+Measure agreement vs correctness, incremental gain, and latency/compute. Use task-native verification where possible.
 
-Run **Experiment 000** exactly as preregistered.
+Agreement is evidence, not truth; calibrate it and inspect confident co-failures.
 
-Measure the train-only 2x2 weak/strong outcome table:
+### P2 — internal-state answer confidence
 
-- both correct;
-- weak wrong / strong correct = valuable rescue;
-- weak correct / strong wrong = negative escalation;
-- both wrong = wasted escalation.
+Test whether the answering model's own hidden states/logits contain usable correctness/reliability information.
 
-This determines whether `weak correctness` is a sufficient target or whether the router must model the **marginal value of escalation**.
+Start with lightweight frozen-state probes and compare against:
 
-### Phase 2 — find the cheapest supervision strategy
+- prompt-only embedding baseline;
+- log-prob/token statistics;
+- hidden-state probe;
+- prompt + hidden-state probe;
+- task-conditioned variants.
 
-Use the Phase-1 result to choose the branch.
+Evaluate downstream cascade economics, not only AUROC.
 
-**If strong almost always rescues weak failures and rescue rates are homogeneous:**
+### P3 — incremental trust-stack ablation
 
-- test evaluator-first weak correctness (Experiment 001);
-- compare selective hybrid fallback (Experiment 002).
+Starting from one cheap answer, add layers **one at a time**:
 
-**Otherwise (expected default):**
+1. deterministic/schema/test/tool checks;
+2. internal confidence probe;
+3. adaptive extra cheap sample + agreement;
+4. task verifier;
+5. OOD/support + calibrated abstention.
 
-- run **Experiment 003 — Factorized Escalation Value (FEV)**;
-- simulate strong-label budgets of 0.5%, 1%, 2%, and 5%;
-- compare uniform sampling with targeted acquisition + random sentinel;
-- report APGR versus strong-label percentage and estimated refresh cost.
+For every addition record the marginal quality, frontier-call, latency and cost effect. Run pairwise ablations for overlapping layers.
 
-In parallel after Experiment 000, run **Experiment 004** to test whether the existing judge is useful as a **one-sided high-precision signal** rather than symmetric ground truth.
+### P4 — three-tier cascade
 
-### Phase 3 — test semantic routing only where it can add information
+Compare:
 
-After the best target/supervision method is known, run **Experiment 005**.
+- cheap → frontier;
+- cheap → modern inexpensive mid-tier/specialist → frontier.
 
-Semantic routing is **not** authorized as `prompt -> cluster -> fixed weak/strong route`; that is falsified-adjacent.
+The middle tier survives only if the frontier spend it avoids justifies its own cost and latency.
 
-Test semantics as:
+### P5 — failure-focused cheap-tier uplift
 
-- task/domain conditioning;
-- kNN retrieval of **measured historical model outcomes**;
-- OOD/support distance;
-- calibration/risk features;
-- label-acquisition coverage.
+Use recurring train-safe cases where a stronger model rescued the cheap tier as a curriculum.
 
-Keep semantic features only if they improve the preregistered APGR/rescue-risk gates.
+Prefer stored teacher outputs/trajectories before buying new labels. Test LoRA/adapter fine-tuning with matched replay/easy examples to control regressions.
 
-### Phase 3B — external robustness check
+Do not attempt broad teacher imitation until targeted failure uplift has been tested.
 
-Once a local candidate reaches at least **0.60 validation APGR** or otherwise becomes a serious finalist, test whether its core idea generalizes beyond the local pair.
+### P6 — Hermes workflow-stage routing
 
-Default order:
+When replayable/shadow Hermes traces are available, test where expensive capability actually changes accepted mission outcomes.
 
-1. `Wikit/RoutingCompendium` for the first method-level stress test;
-2. `LLMRouterBench` if modern-model/task evidence can change confidence or design;
-3. RouteLLM/EmbedLLM only for a specific preregistered transfer question.
+Candidate stage signals include:
 
-Report external results separately from project APGR. A strong external result cannot rescue a local failure; a broad external failure should lower confidence even if local validation passes.
+- repeated tests/tool failures;
+- no-progress/spinning behavior;
+- unfamiliar/OOD tool operations;
+- high-impact planning/final decisions;
+- long-context synthesis;
+- recovery after an error.
 
-### Phase 4 — test the long-term refresh architecture
+Compare whole-mission fixed-model strategies with stage-aware escalation. Include retries, switching/latency and total accepted-mission cost.
 
-Run **Experiment 006 — bandit replay** after the immediate supervised candidates are understood.
+### P7 — draft/verify/repair, optional
 
-The strategic question is whether the router can learn from the outcome of the **chosen model** plus a tiny unbiased sentinel stream, instead of periodically purchasing a full counterfactual label matrix.
+Only after a useful cascade exists, test whether escalated models can reuse the cheap draft rather than regenerate from scratch.
 
-This is the path to a self-renewing router rather than repeated batch retraining.
+This is optional systems research, not a prerequisite for the core pivot.
 
-### Phase 5 — if <=5% strong labels cannot recover v1
+## Dataset discipline
 
-Do not declare failure prematurely and do not spend money yet.
+Follow [`DATASETS.md`](DATASETS.md).
 
-Using the already stored retrospective train truth, preregister and simulate a **strong-label cost frontier** at larger budgets (for example 10%, 20%, 40%, 100%) to answer:
+A few external datasets are useful only when used for a specific question. Do not pool data indiscriminately. Classify external data as exact-pair, transfer prior, stress test or unlabeled/OOD; deduplicate against local train/validation where applicable; preserve a local-only control.
 
-> What is the minimum amount of strong truth actually required to recover v1 quality?
+For this pivot, external routing datasets are especially useful for **method-level robustness** of:
 
-Then translate that minimum label fraction into an execution-time dollar estimate using current prices.
+- model-pool complementarity;
+- adaptive test-time sampling;
+- performance/cost frontiers;
+- cascade simulations.
 
-This produces the required fallback answer: the **cheapest viable ground-truth path**.
+They never override local or Hermes mission evidence.
 
-Only after the retrospective frontier is known may a real paid label run be proposed, and it must still satisfy the mission spend cap.
+## Cost accounting
 
-## Cost accounting — mandatory
+For every serious candidate report separately:
 
-For every serious candidate, report two separate economics:
+- cheap-tier inference/local compute;
+- additional cheap samples;
+- verifier/tool calls;
+- mid-tier calls;
+- frontier calls;
+- training/fine-tuning cost;
+- latency;
+- for agentic missions, retries and wasted loops where measurable.
 
-### A. Refresh / training-supervision cost
-
-Estimate or measure:
-
-- weak-model generation cost;
-- percentage/count of strong counterfactual generations;
-- judge/jury cost, if any;
-- GPU cost, if any;
-- external dataset download/embedding/training overhead when materially non-trivial;
-- total estimated cost for refreshing a 29k-row-scale training set;
-- reduction versus full dual-model labeling.
-
-### B. Runtime routing economics
-
-On validation only, produce a cost-quality/PGR curve showing:
-
-- fraction routed weak vs strong;
-- APGR/quality proxy;
-- projected inference cost relative to always strong and always weak;
-- comparison with the deployed v1 operating point when comparable.
-
-Do not optimize to a single pretty number. Preserve the Pareto frontier so Hermes can later choose its quality/cost operating point.
+The decision metric is **total end-to-end cost at a target quality/accepted-mission outcome**, not router accuracy.
 
 ## Required deliverables
 
-Commit all work to this repository. At minimum, the completed mission must contain:
+Commit all experimental work and conclusions to this repository. At minimum:
 
-- `results/EXPERIMENT_000.md` and equivalent result reports for every experiment actually run;
-- machine-readable result table(s) with seeds, metrics, label budgets, and costs;
-- reproducible research/experiment code and commands;
-- a dataset/provenance ledger covering local and external data actually used;
-- external robustness results for any candidate recommended for shadow evaluation, or a written reason the test was not applicable;
-- `COST_MODEL.md` with refresh-cost and runtime-cost comparisons;
-- `FINAL_RECOMMENDATION.md` containing:
-  - the winning approach;
-  - measured validation metrics;
-  - required strong-label fraction;
-  - estimated refresh cost;
-  - runtime economics;
-  - external robustness evidence, if applicable;
-  - risks/limitations;
-  - explicit promotion decision;
-- updated `research-manifest.json`;
-- updated README and GitHub Pages site summarizing the experimentally validated outcome;
-- a decision log explaining why candidates were promoted, rejected, or deferred.
+- `results/P0_MODEL_POOL.md`
+- `results/P1_CHEAP_SAMPLING.md`
+- `results/P2_INTERNAL_CONFIDENCE.md`
+- `results/P3_TRUST_STACK.md`
+- `results/P4_THREE_TIER.md` if applicable
+- `results/P5_WEAK_UPLIFT.md` if applicable
+- `results/P6_AGENTIC_STAGE_ROUTING.md` when traces exist
+- machine-readable per-component and composed cost/quality results;
+- a decision/error-overlap log showing why layers were kept/removed;
+- `PIVOT_FINAL_RECOMMENDATION.md`;
+- updated README, manifest and Pages site with measured outcomes.
 
-If the winning experiment produces a small research checkpoint, record its path/hash and reproduction command. Do not silently make that checkpoint a production artifact.
+## What not to do
 
-## Research discipline
+Do not center the next phase on:
 
-Use the existing literature and adversarial review as **priors**, not as substitutes for local evidence.
+- another prompt-embedding router;
+- another KMeans/semantic cluster → model decision;
+- a larger classifier trained on the same failed supervision;
+- another generic symmetric LLM judge label set;
+- blindly adding many models;
+- optimizing RouterBench APGR as the sole definition of Hermes value.
 
-Use public datasets as **evidence amplifiers**, not as a way to avoid the exact-pair validation problem.
+Those approaches may remain baselines or tiny components only when a new hypothesis materially changes their role.
 
-Do additional web research only when an experiment exposes a specific uncertainty that could change the next decision. The project is now in an **evidence-generation phase**, not another broad literature phase.
+## First move
 
-Prefer the simplest method that passes the gates. A sophisticated model that matches a simpler method loses on maintenance cost unless it creates a clear quality or label-efficiency advantage.
+**Run P0 and P1 before training a new router.**
 
-## Read order
+They answer two basic questions the previous phase did not settle:
 
-0. [`RESEARCH_SIGNOFF.md`](RESEARCH_SIGNOFF.md)
-1. [`DATASETS.md`](DATASETS.md)
-2. [`memo/2026-09-05_ranked-options-memo.md`](memo/2026-09-05_ranked-options-memo.md)
-3. [`evidence/adversarial-review.md`](evidence/adversarial-review.md)
-4. [`designs/router-learning-flywheel.md`](designs/router-learning-flywheel.md)
-5. [`evidence/semantic-routing-review.md`](evidence/semantic-routing-review.md)
-6. experiment preregistrations `000`, `001`, `002`, `003`, `004`, `005`, `006`
-7. [`evidence/source-ledger.md`](evidence/source-ledger.md)
+1. is the old weak model itself now obsolete as the cheap tier?
+2. can extra cheap inference provide enough new evidence/correctness to avoid some frontier calls?
 
-## Current recommended first move
-
-**Run Experiment 000 now.**
-
-It costs $0, requires no model training, and tells us whether the next router should predict weak failure or the more economically correct quantity: **strong model rescue / marginal escalation value**.
-
-Then execute the branch above until the mission produces a validated quality/cost answer.
+Only then build P2/P3 around the best cheap tier and the actual response-aware signals it exposes.
