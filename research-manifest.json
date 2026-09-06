@@ -1,20 +1,23 @@
 {
-  "schema_version": "2.1",
-  "date": "2026-09-05",
-  "mission": "Experimentally determine the cheapest repeatable way to refresh the Hermes weak/strong router while preserving or exceeding router-v1 validation quality, and quantify both refresh and runtime economics.",
+  "schema_version": "3.0",
+  "date": "2026-09-06",
+  "mission": "Determine whether a stack of response-aware trust, verification, adaptive cheap-compute, model-pool and workflow-stage interventions can reduce frontier-model use while preserving end-to-end Hermes quality and improving total economics.",
   "parent_program": "https://github.com/thepragmatik/hermes-pi-agentic-stack",
-  "baseline": {
+  "phase_status": {
+    "previous_phase": "reported failed by project operator; exact result tables not yet committed in this repository",
+    "active_phase": "stackable trust-and-escalation pivot",
+    "do_not_rerun_unchanged": [
+      "weak-correctness / FEV sparse-label family",
+      "one-sided judge / PU family",
+      "semantic-signal router family",
+      "bandit-oriented router family from the previous mission"
+    ]
+  },
+  "historical_baseline": {
     "weak_model": "mistralai/mistral-7b-chat",
     "strong_model": "gpt-4-1106-preview",
     "v1_validation_apgr": 0.6459,
-    "v1_historical_test_apgr": 0.6528,
-    "v2_judge_label_validation_apgr": 0.5304,
-    "judge_label_ground_truth_agreement": 0.8382
-  },
-  "derived_train_judge_analysis": {
-    "approx_precision_judge_needs_strong": 0.9601,
-    "approx_npv_judge_weak_sufficient": 0.5849,
-    "note": "Derived algebraically from rounded mission-provided prevalence/agreement rates; recompute from row-level labels before operational use."
+    "v1_historical_test_apgr": 0.6528
   },
   "guardrails": {
     "test_split": "SEALED",
@@ -24,62 +27,38 @@
     "research_experiment_code_in_scope": true,
     "production_runtime_integration_in_scope": false
   },
-  "success": {
-    "replacement_validation_apgr": 0.6459,
-    "viability_validation_apgr": 0.55,
-    "preferred_max_strong_label_fraction": 0.02,
-    "primary_max_strong_label_fraction": 0.05,
-    "final_decisions": [
-      "PROMOTE TO HERMES SHADOW EVALUATION",
-      "KEEP V1 / USE CHEAPEST REFRESH FRONTIER",
-      "ROUTER ECONOMICS NOT YET JUSTIFIED"
-    ]
-  },
-  "ranked_options": [
-    "factorized escalation value: weak failure plus sparse strong rescue",
-    "evaluator-first weak correctness / expected reliability",
-    "one-sided judge supervision / positive-unlabeled learning",
-    "semantic performance memory plus OOD/risk guard",
-    "selective hybrid label factory with random sentinel truth",
-    "bandit-feedback continual router",
-    "selective judge abstention plus adaptive jury",
-    "task-conditioned noise correction",
-    "training-free/self-supervised reliability cascades",
-    "public/synthetic routing priors",
-    "larger router architectures (deferred)"
+  "active_thesis": "Stop searching for one perfect prompt-only classifier. Let the cheap model do useful work first, then combine independent response-aware trust signals, adaptive cheap compute/verifiers, a curated mid-tier when useful, and frontier escalation; use recurring rescues to improve the cheap tier.",
+  "active_experiment_order": [
+    "P0 model-pool complementarity audit",
+    "P1 adaptive cheap resampling / stochastic recoverability audit",
+    "P2 task-conditioned internal-state confidence probe",
+    "P3 incremental trust-stack ablation and error-overlap analysis",
+    "P4 three-tier cascade",
+    "P5 failure-focused cheap-tier LoRA/distillation",
+    "P6 Hermes workflow-stage routing",
+    "P7 optional draft/verify/repair"
+  ],
+  "promotion_decisions": [
+    "STACK WORKS — PROMOTE TO HERMES SHADOW",
+    "PARTIAL STACK — KEEP ONLY PAYING LAYERS",
+    "MODEL-POOL PIVOT",
+    "AGENTIC-ONLY PIVOT",
+    "ROUTING NOT ECONOMIC"
   ],
   "dataset_strategy": {
     "primary_exact_pair": "withmartian/routerbench routerbench_0shot.pkl (pinned local artifact)",
     "preferred_external_stress_test": "Wikit/RoutingCompendium-perf + Wikit/RoutingCompendium-cost",
     "modern_cross_pool_stress_test": "ynulihao/LLMRouterBench pre-collected results",
-    "transfer_priors": [
-      "routellm/gpt4_judge_battles and related RouteLLM datasets",
-      "RZ412/EmbedLLM"
-    ],
-    "optional_unlabeled_ood": [
-      "lmarena-ai/arena-human-preference-55k",
-      "lmsys/lmsys-chat-1m"
-    ],
-    "policy": "External data is an evidence amplifier, not a substitute for local exact-pair validation; provenance, licensing and train/validation deduplication are mandatory."
+    "policy": "External data is an evidence amplifier, not a substitute for local exact-pair or Hermes mission evidence; provenance, licensing and train/validation deduplication are mandatory."
   },
-  "semantic_routing_verdict": "Viable as a signal/control layer and performance-memory/OOD mechanism; not recommended as direct prompt-cluster weak-vs-strong selector.",
-  "next_experiment": "experiments/000-target-audit-prereg.md",
-  "primary_model_experiment": "experiments/003-factorized-escalation-value-prereg.md",
-  "additional_experiments": [
-    "experiments/004-one-sided-pu-prereg.md",
-    "experiments/005-semantic-signal-ablation-prereg.md",
-    "experiments/006-bandit-replay-prereg.md"
-  ],
   "execution_mission": "AGENTS.md",
+  "pivot_memo": "memo/2026-09-06_pivot-stackable-gains.md",
+  "pivot_execution_plan": "PIVOT_EXECUTION_PLAN.md",
+  "pivot_evidence_ledger": "evidence/pivot-source-ledger.md",
+  "pivot_adversarial_notes": "evidence/pivot-adversarial-notes.md",
   "dataset_guide": "DATASETS.md",
-  "mission_design_review": "MISSION_DESIGN_REVIEW.md",
-  "research_signoff": "RESEARCH_SIGNOFF.md",
-  "primary_memo": "memo/2026-09-05_ranked-options-memo.md",
-  "semantic_review": "evidence/semantic-routing-review.md",
-  "judge_noise_analysis": "evidence/judge-noise-derived-analysis.md",
-  "adversarial_review": "evidence/adversarial-review.md",
-  "strategic_design": "designs/router-learning-flywheel.md",
-  "evidence_ledger": "evidence/source-ledger.md",
+  "historical_memo": "memo/2026-09-05_ranked-options-memo.md",
+  "historical_adversarial_review": "evidence/adversarial-review.md",
   "website": "site/index.html",
   "license": "Apache-2.0"
 }
