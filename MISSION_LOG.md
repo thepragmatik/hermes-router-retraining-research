@@ -181,3 +181,18 @@ $0.00 (cap $5.00). All experiments so far use stored labels only.
   Total mission spend: $0.00 of $5.00 cap. Sealed test split: never loaded.
  - (phase decisions appended as the mission proceeds)
  - 2026-09-06 V1 operationalised as shadow CLI + HTTP kill-switch, tag router-v1-frozen untouched, smoke PASS (routed_acc 0.6395, frac_strong 0.7686, n=3626, exact).
+ - 2026-09-06 (007 shadow A/B replay): prereg frozen (dc93803) BEFORE the eval run.
+  Replay of RECORDED outcomes on the 3626-row val frame, $0 spend, decisions cached
+  (val_decisions.npz). A1 PASS (replay exact: acc 0.6395477109762824, frac_strong
+  0.7686155543298401). H1 router vs always-weak: +0.410645 acc, CI [0.3927, 0.4286]
+  (A2 PASS); H2 router vs seeded random at cost parity: +0.235521 acc, CI
+  [0.2201, 0.2507] (A3 PASS) — the router's value is the selection, not the budget;
+  H3 vs always-strong: -0.00524 acc for 55.81% lower cost (reported, not gated);
+  oracle headroom 0.0378 (A4). Latency (A5 PASS): in-process p50 0.0186 s /
+  HTTP p95 0.0158 s vs CLI-per-call 7.276 s — any stack integration must use the
+  service or in-process import, never CLI-per-prompt. Chaos kill-switch checks 4/4
+  (A6 PASS). Sealed test split integrity: sha256 unchanged Task 0 -> Task 8
+  (e938142c..., SEALED_OK; never read). In-sample caveat applies: threshold 0.30
+  was frozen on val, deltas are upper bounds on out-of-sample impact. Memo:
+  evidence/ab/shadow-ab-memo-2026-09-06.md. Next: gated live leg drafted
+  (c9a6d88), SPEND_GO-gated, deliberately not run; pushes deferred to operator review.
