@@ -20,6 +20,13 @@ TARGET_FRAC_STRONG = 0.7686
 TOL = 0.02
 
 
+def test_v1_frozen_threshold_still_030():
+    import sys
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+    from router_v1.route import THRESHOLD
+    assert THRESHOLD == 0.30
+
+
 def test_v1_val_reproduction():
     if not VAL_FRAME.exists() or not VAL_PROBS.exists():
         pytest.skip("val artifacts not mounted")
