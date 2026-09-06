@@ -1,0 +1,6 @@
+# Router V1 operationalisation — single kill switch.
+# enabled: false = every call returns decision "disabled" without loading the model.
+router:
+  enabled: false          # flip to true to enable; nothing else needs touching
+  threshold: 0.30         # frozen; CLI exits 2 if this is changed
+  log: evidence/shadow/shadow_log.jsonl
