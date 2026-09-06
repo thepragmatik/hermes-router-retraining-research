@@ -1,15 +1,17 @@
 {
-  "schema_version": "3.0",
+  "schema_version": "3.1",
   "date": "2026-09-06",
-  "mission": "Determine whether a stack of response-aware trust, verification, adaptive cheap-compute, model-pool and workflow-stage interventions can reduce frontier-model use while preserving end-to-end Hermes quality and improving total economics.",
+  "mission": "Determine whether a stack of response-aware trust, verification, adaptive cheap compute, model-pool curation, targeted cheap-tier uplift, and workflow-stage escalation can reduce frontier-model use while preserving end-to-end Hermes quality and improving total economics.",
   "parent_program": "https://github.com/thepragmatik/hermes-pi-agentic-stack",
   "phase_status": {
     "previous_phase": "reported failed by project operator; exact result tables not yet committed in this repository",
     "active_phase": "stackable trust-and-escalation pivot",
+    "canonical_mission": "STACKABLE_ROUTING_MISSION.md",
+    "launch_prompt": "LAUNCH_AGENT_PROMPT.md",
     "do_not_rerun_unchanged": [
       "weak-correctness / FEV sparse-label family",
       "one-sided judge / PU family",
-      "semantic-signal router family",
+      "semantic-cluster or prompt-only semantic router family",
       "bandit-oriented router family from the previous mission"
     ]
   },
@@ -25,18 +27,28 @@
     "mission_spend_cap_usd": 5,
     "remote_judges_require_zdr": true,
     "research_experiment_code_in_scope": true,
-    "production_runtime_integration_in_scope": false
+    "production_runtime_integration_in_scope": false,
+    "pivot_development_protocol": "iterate using train-only cross-validation or a deterministic train-derived pivot holdout; reserve the historical validation set for finalists and record every exposure"
   },
-  "active_thesis": "Stop searching for one perfect prompt-only classifier. Let the cheap model do useful work first, then combine independent response-aware trust signals, adaptive cheap compute/verifiers, a curated mid-tier when useful, and frontier escalation; use recurring rescues to improve the cheap tier.",
+  "active_thesis": "Do not ask one prompt-only classifier to predict the future. Let cheap computation create answer-aware evidence, retain only independently paying trust/intervention layers, use a curated mid-tier when it pays, reserve frontier intelligence for unresolved cases, and convert recurring rescues into cheap-tier capability.",
+  "materiality_defaults": {
+    "component_relative_runtime_cost_reduction_at_matched_quality": 0.05,
+    "component_absolute_frontier_call_reduction_at_matched_quality": 0.05,
+    "component_absolute_quality_gain_at_matched_cost": 0.01,
+    "shadow_candidate_preferred_relative_runtime_cost_reduction": 0.10,
+    "note": "Mission-design thresholds to prevent chasing noise; final decisions use full Pareto evidence and uncertainty analysis."
+  },
   "active_experiment_order": [
+    "mission ledger and pivot development/qualification freeze",
     "P0 model-pool complementarity audit",
-    "P1 adaptive cheap resampling / stochastic recoverability audit",
-    "P2 task-conditioned internal-state confidence probe",
-    "P3 incremental trust-stack ablation and error-overlap analysis",
-    "P4 three-tier cascade",
-    "P5 failure-focused cheap-tier LoRA/distillation",
-    "P6 Hermes workflow-stage routing",
-    "P7 optional draft/verify/repair"
+    "P1 adaptive cheap inference / stochastic recoverability audit",
+    "P2 deterministic and tool-grounded verification",
+    "P3 task-conditioned internal-state/logit confidence",
+    "P4 incremental trust-stack composition and error-overlap ablation",
+    "P5 three-tier / specialist cascade",
+    "P6 failure-focused cheap-tier uplift",
+    "P7 Hermes workflow-stage routing when traces exist",
+    "P8 optional draft/verify/repair reuse"
   ],
   "promotion_decisions": [
     "STACK WORKS — PROMOTE TO HERMES SHADOW",
@@ -49,11 +61,13 @@
     "primary_exact_pair": "withmartian/routerbench routerbench_0shot.pkl (pinned local artifact)",
     "preferred_external_stress_test": "Wikit/RoutingCompendium-perf + Wikit/RoutingCompendium-cost",
     "modern_cross_pool_stress_test": "ynulihao/LLMRouterBench pre-collected results",
-    "policy": "External data is an evidence amplifier, not a substitute for local exact-pair or Hermes mission evidence; provenance, licensing and train/validation deduplication are mandatory."
+    "policy": "A few datasets are genuinely useful only when used for a specific question. External data is an evidence amplifier, not a substitute for local exact-pair or Hermes mission evidence; provenance, licensing and train/validation deduplication are mandatory."
   },
-  "execution_mission": "AGENTS.md",
+  "execution_entrypoint": "AGENTS.md",
+  "canonical_mission": "STACKABLE_ROUTING_MISSION.md",
+  "launch_prompt": "LAUNCH_AGENT_PROMPT.md",
   "pivot_memo": "memo/2026-09-06_pivot-stackable-gains.md",
-  "pivot_execution_plan": "PIVOT_EXECUTION_PLAN.md",
+  "legacy_pivot_execution_plan": "PIVOT_EXECUTION_PLAN.md",
   "pivot_evidence_ledger": "evidence/pivot-source-ledger.md",
   "pivot_adversarial_notes": "evidence/pivot-adversarial-notes.md",
   "dataset_guide": "DATASETS.md",
