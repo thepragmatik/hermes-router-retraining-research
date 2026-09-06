@@ -1,85 +1,108 @@
 # Hermes Router Retraining Research
 
-Adversarially reviewed research on **cheap, repeatable supervision and continual learning for LLM routing**, conducted as a workstream of [`thepragmatik/hermes-pi-agentic-stack`](https://github.com/thepragmatik/hermes-pi-agentic-stack).
+Research on **cost-effective, adaptive LLM/agent routing** for [`thepragmatik/hermes-pi-agentic-stack`](https://github.com/thepragmatik/hermes-pi-agentic-stack).
 
-**Status:** **ready for agent consumption and experimental execution; not production promotion.** See [Research sign-off](RESEARCH_SIGNOFF.md), [Agent execution mission](AGENTS.md), and the [final mission-design review](MISSION_DESIGN_REVIEW.md).
+## Current status — 2026-09-06 pivot
 
-The deployed router already works. This repository asks the strategically harder question:
+The project operator reports that the first execution phase's proposed router experiments **did not pass their gates**. Exact result tables are not yet committed here, so this repository does not invent margins or rewrite those attempts as near-successes.
 
-> How can routing remain economically useful when models, prices and workloads change—without fully evaluating every candidate model on tens of thousands of prompts every retrain?
+That result changes the research direction.
 
-## Revised headline finding
+> **Current thesis: stop looking for one perfect prompt-only router. Build and measure a stack of small, response-aware interventions that can compound: cheap answer → trust signals → extra cheap compute/verifier → curated mid-tier → frontier, while using recurring frontier rescues to improve the cheap tier.**
 
-The strongest design after the second-pass red team is **Factorized Escalation Value (FEV)**:
+Start with:
+
+- [Pivot memo — stackable gains after the first experiments failed](memo/2026-09-06_pivot-stackable-gains.md)
+- [Pivot execution plan](PIVOT_EXECUTION_PLAN.md)
+- [Pivot evidence/source ledger](evidence/pivot-source-ledger.md)
+
+The prior FEV/weak-correctness/judge/semantic/bandit research is preserved below as **historical provenance**, not the current recommended center of effort.
+
+## Why the pivot
+
+Recent unified evidence suggests router architecture itself often has limited leverage: many sophisticated routers perform similarly, embeddings are not the main bottleneck, and careful model-pool curation matters. At the same time, newer cascade research shows gains from using information that exists **after a cheap model answers**, from adaptive multiple cheap samples, from internal confidence signals, from verification, and from routing across workflow stages rather than only at the initial prompt.
+
+The new design therefore treats routing as an **adaptive trust-and-escalation ladder**:
 
 ```text
-weak-failure probability
-        ×
-strong-rescue probability
-        −
-incremental model cost
-        =
-expected value of escalation
+policy-safe request
+      ↓
+cheap model answers
+      ↓
+trust bundle
+  ├─ deterministic checks / tests / tools
+  ├─ internal hidden-state/logit confidence
+  ├─ adaptive extra cheap sample + agreement
+  ├─ task verifier
+  └─ OOD / abstention calibration
+      ↓
+accept? ─ yes → return
+  │
+  no
+  ↓
+curated mid-tier / specialist
+      ↓
+accept? ─ yes → return
+  │
+  no
+  ↓
+frontier
+      ↓
+store rescue → improve cheap tier
 ```
 
-Broad weak-model correctness can often be regenerated cheaply from weak-only outputs and task-native/mission-native evaluators. Strong-model labels are then needed only to learn **where the strong model actually rescues the weak model**, making sparse strong evaluation plausible.
+Every layer must independently move the measured cost/quality frontier or it is removed. The objective is **not to maximize stack complexity**.
 
-A second important finding: the failed evidence-mode judge is not uniformly bad. The mission's aggregate rates imply its `needs strong` predictions are ~96% precise, while its `weak sufficient` predictions are only ~58.5% reliable. The repository therefore proposes **one-sided / positive-unlabeled supervision** rather than treating all judge labels as symmetric ground truth.
+## Highest-value pivot tests
 
-## Semantic routing verdict
+1. **Model-pool audit:** determine whether the historical Mistral weak tier itself is now the bottleneck; screen a few current inexpensive models for complementary successes, not just aggregate score.
+2. **Adaptive cheap sampling:** test whether a second/third local answer resolves enough uncertainty to avoid frontier calls.
+3. **Internal confidence probe:** use the answering model's hidden states/logits rather than only prompt embeddings or verbal confidence.
+4. **Trust-stack ablation:** add deterministic checks, internal confidence, extra sampling, verifier and abstention one at a time; retain only paying layers.
+5. **Three-tier cascade:** test `local → inexpensive modern mid-tier → frontier` instead of forcing a binary old-7B/frontier boundary.
+6. **Failure-focused weak-model uplift:** LoRA/distill on recurring economically valuable failure/rescue clusters using stored strong evidence first.
+7. **Hermes workflow-stage routing:** measure whether expensive intelligence is needed only at particular turns/stages of real agent missions.
+8. **Optional draft/repair:** reuse cheap work when escalating rather than discarding it.
 
-**Viable as a signal/control layer; not as a naive prompt-similarity final selector.**
-
-Use semantic routing for task/domain, complexity, historical-performance retrieval, OOD/support detection, judge calibration and label-budget allocation. Do not rerun the falsified KMeans cluster-to-route approach.
-
-See [Semantic routing review](evidence/semantic-routing-review.md).
+See [PIVOT_EXECUTION_PLAN.md](PIVOT_EXECUTION_PLAN.md) for frozen experimental discipline and deliverables.
 
 ## Public dataset strategy
 
-The mission now includes a deliberate external-data plan in [`DATASETS.md`](DATASETS.md).
+Use [`DATASETS.md`](DATASETS.md) deliberately. External data is an evidence amplifier, not exact-pair truth.
 
-- the pinned RouterBench 0-shot artifact remains the **only exact-pair qualification dataset** for the historical Mistral-7B-chat / GPT-4-1106-preview pair;
-- `Wikit/RoutingCompendium` is the preferred external method stress test because it harmonizes multiple routing benchmarks with per-query model outcomes, prompt embeddings and companion cost data;
-- `LLMRouterBench` is the modern cross-model/task robustness test;
-- RouteLLM and EmbedLLM data are transfer/method priors, not local exact-pair truth;
-- Arena/LMSYS data is useful for real-world semantic/OOD coverage, not pairwise correctness labels.
+- pinned RouterBench 0-shot remains the historical exact-pair qualification corpus;
+- RoutingCompendium and LLMRouterBench are useful cross-pool stress tests;
+- RouteLLM/EmbedLLM are transfer/method priors;
+- Arena/LMSYS are useful for semantic/OOD coverage, not local correctness truth.
 
-External data must be provenance-tracked and deduplicated against local train/validation before it can affect training. External scores never override the local validation APGR gate.
+## Historical phase — retained for provenance
 
-## Read first
+The earlier research explored:
 
-- [Research sign-off](RESEARCH_SIGNOFF.md)
-- [Agent execution mission](AGENTS.md)
-- [Dataset strategy](DATASETS.md)
-- [Final mission-design review](MISSION_DESIGN_REVIEW.md)
-- [Ranked options memo — adversarially reviewed v2](memo/2026-09-05_ranked-options-memo.md)
-- [Adversarial review v2](evidence/adversarial-review.md)
+- Factorized Escalation Value / sparse strong rescue labels;
+- evaluator-first weak correctness;
+- one-sided judge / positive-unlabeled learning;
+- semantic performance memory/OOD signals;
+- bandit feedback;
+- selective hybrid labels.
+
+Those documents remain useful as evidence and negative results. Do not rerun them unchanged after the reported failure of that experiment phase.
+
+Historical starting points:
+
+- [2026-09-05 ranked options memo](memo/2026-09-05_ranked-options-memo.md)
+- [Adversarial review](evidence/adversarial-review.md)
 - [Semantic routing review](evidence/semantic-routing-review.md)
-- [Derived judge-noise analysis](evidence/judge-noise-derived-analysis.md)
-- [Hermes Value Router Learning Flywheel](designs/router-learning-flywheel.md)
-- [Source ledger](evidence/source-ledger.md)
-
-## Experiment queue
-
-1. [Experiment 000 — target sufficiency / rescue audit](experiments/000-target-audit-prereg.md) — **run first, $0**
-2. [Experiment 003 — Factorized Escalation Value](experiments/003-factorized-escalation-value-prereg.md) — $0 retrospective sparse-label simulation
-3. [Experiment 004 — one-sided judge / PU](experiments/004-one-sided-pu-prereg.md) — $0
-4. [Experiment 005 — semantic-signal ablation](experiments/005-semantic-signal-ablation-prereg.md) — $0, explicitly not a cluster rerun
-5. [Experiment 006 — bandit replay](experiments/006-bandit-replay-prereg.md) — $0 strategic continual-learning test
-
-Earlier preregistrations remain preserved for provenance:
-
-- [Experiment 001 — evaluator-first weak correctness](experiments/001-weak-correctness-prereg.md)
-- [Experiment 002 — selective hybrid fallback](experiments/002-selective-hybrid-prereg.md)
+- [Original learning flywheel](designs/router-learning-flywheel.md)
 
 ## Guardrails
 
 - RouterBench test split remains sealed.
-- $0 default spend; paid work is fail-closed and mission total stays <$5.
-- ZDR is mandatory for remote judge calls.
-- Previously falsified approaches are not recycled without a materially different hypothesis.
-- **Research/experiment code is expected in this repository; production runtime integration belongs in the parent Hermes stack after qualification.**
-- APGR validation baseline for replacing v1 is **0.6459**; 0.55 is only a viability floor.
+- Research/experiment code is expected; production runtime integration belongs in the parent Hermes stack after qualification.
+- Previously falsified/failed approaches are not recycled unchanged.
+- Public/external data must be provenance-tracked and must not contaminate local validation.
+- Cost, latency, retries and end-to-end accepted mission quality matter more than router-classifier accuracy alone.
+- Prefer a simple stack of independently positive components over a complicated system with unproven interactions.
 
 ## License
 
