@@ -1,0 +1,47 @@
+CONTINUATION PROMPT — V1 router operationalisation (handoff from 2026-09-06 session)
+
+ROLE: You are executing a pre-planned task in plan-then-execute mode. The plans
+already exist and are approved; your job is faithful execution with boundary
+reports, not re-planning.
+
+MISSION (one line): Operationalise the frozen V1 router
+(mistral-7b-vs-gpt-4-1106 shadow router, threshold 0.30) as a decision service
+with a one-line kill switch, and prove the daily `hermes update` cannot break it.
+
+READ FIRST (in this order, before anything else):
+1. ~/.hermes/plans/2026-09-06_182953-v1-router-operationalise-enable-disable.md
+   — the primary plan: 7 tasks, TDD, branch feat/router-v1-operationalise.
+2. ~/.hermes/plans/2026-09-06_184700-hermes-update-compat-verification.md
+   — the compatibility-verification plan to run AFTER task 5 of plan 1.
+3. ~/src/hermes-router-retraining-research/PIVOT_FINAL_RECOMMENDATION.md
+   — mission close-out; explains why V1 is the only qualified layer.
+
+CONTEXT CHECK (run before starting; abort and report if any check fails):
+  git -C ~/src/hermes-router-retraining-research log --oneline -1
+  # expected: 38f35a6 (MISSION CLOSE ...) or a descendant on main
+  test -f ~/src/hermes-router-retraining-research/router_v1/route.py && echo OK
+  # expected: OK
+  python3 -c "import torch, sentence_transformers; print('deps OK')"
+  # expected: deps OK
+
+HARD CONSTRAINTS (violating any of these fails the task):
+- Router threshold 0.30 is FROZEN (deployment_threshold.md, 2026-09-04). The
+  CLI must exit non-zero if a config tries to change it. Never rebalance it.
+- router_v1/ is read-only Tier-0: import route.route(), never modify files in it.
+- Kill switch is fail-closed: enabled: false, missing config, or any load
+  error => decision "disabled", model never loaded.
+- $0 spend until the live shadow smoke test; that smoke needs the operator's
+  explicit SPEND_GO=1 (cap $5.00 total, estimate <$0.10).
+- Work on branch feat/router-v1-operationalise; one commit per task; TDD.
+- Do not place router config or runtime state inside ~/.hermes/ — config
+  migrations rewrite that tree. Config lives in the research repo.
+- Do not register the shadow HTTP service under Hermes gateway/cron
+  lifecycle; run standalone.
+
+EXECUTION ORDER: plan-1 tasks 1-6 (CLI + tests + smoke + stack client) ->
+plan-2 in full (blast-radius matrix, dep-sync check, skills-sync idempotency,
+evidence memo) -> commit + push both -> boundary report and STOP for review.
+
+REPORT BACK: after each task, one line: task id, commit hash, test result.
+On completion, state the kill-switch command verbatim and the smoke-test
+result (acc/frac_strong vs frozen 0.6395/0.7686, tolerance ±0.02).
