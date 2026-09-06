@@ -125,4 +125,19 @@ $0.00 (cap $5.00). All experiments so far use stored labels only.
   before any holdout output was consumed; final complete run = the single pass.
   Spend $0. Next: Phase E = P4 stack composition (P1-P3 all killed -> stack is
   v1 alone unless P4 composes killed layers differently; expect short phase).
+- 2026-09-06 (E/P4): prereg frozen (38c67d6) BEFORE scoring with a revised
+  build order justified by P1-P3 kills: test the killed layers as a stack on
+  the weak-first architecture (the only one with headroom). Structural control
+  L1 (weak-first re-serialization of v1's partition) asserted equal to v1 and
+  reproduced holdout acc 0.6475 exactly. Marginal retention ladder (dev-fit
+  paired bootstrap): NO layer survives — L2 disagreement -0.0098 acc
+  [+0.0003 cost], L3 VF gate identical to L2, L4 probe -0.0065 acc
+  [+0.0005 cost]. Holdout confirm: L2 -0.0078 [+0.0005], L4 -0.0023
+  [+0.0007] — matches Phase C P1b kill almost exactly (mission 14
+  two-clean-ablations rule satisfied). P4 outcome (prereg branch 1): V1 ALONE
+  IS THE STACK; v1 @0.30 is the only qualified routing layer into P5. Spend $0.
+  Next: Phase F = P5 three-tier cascade (cheap -> Yi mid -> frontier) — with
+  all dynamic triggers dead, P5 must test the mid tier on P0 complementarity
+  economics; if it also fails, mission outcome trends to ROUTING NOT ECONOMIC
+  (v1 remains a single-model router, not a cascade).
  - (phase decisions appended as the mission proceeds)

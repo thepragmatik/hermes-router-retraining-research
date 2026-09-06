@@ -1,0 +1,27 @@
+SECTION 0: train 29193 | dev-fit 24835 | pivot-holdout 4358 | test rows loaded: 0 (sealed)
+stored cost/call: weak $0.0000458 mid $0.0001855 strong $0.0032889
+
+SECTION 1: dev-fit marginal retention ladder (paired bootstrap, seed 42)
+  v1@0.30 (L0/L1) dev: acc 0.6400 cost 0.0025682
+  L2_disagree          acc 0.6251 (d -0.0098 [-0.0107,-0.0067]) cost 0.0025122 (d +0.0002859 [+0.0003385,+0.0003871]) esc_share 0.7460 -> REMOVE
+  L3_disagree_vfgate   acc 0.6251 (d -0.0098 [-0.0107,-0.0067]) cost 0.0025122 (d +0.0002859 [+0.0003385,+0.0003871]) esc_share 0.7460 -> REMOVE
+  L4_stack_probe       acc 0.6284 (d -0.0065 [-0.0065,-0.0031]) cost 0.0026824 (d +0.0004561 [+0.0005563,+0.0005990]) esc_share 0.8016 -> REMOVE
+  surviving stack: L1_wf_v1trigger
+
+SECTION 2: PIVOT-HOLDOUT single-pass results
+  v1 holdout: acc 0.6475 cost 0.0025943 fs 0.7749
+  arm                      acc   cost/row esc_share            d_acc [95%]           d_cost [95%]
+  L1_wf_v1trigger       0.6475  0.0027799    0.7749 +0.0000 [+0.0000,+0.0000] +0.0001855 [+0.0001855,+0.0001855]
+  L2_disagree           0.6397  0.0031255    0.8800 -0.0078 [-0.0124,-0.0032] +0.0005312 [+0.0004768,+0.0005848]
+  L3_disagree_vfgate    0.6397  0.0031255    0.8800 -0.0078 [-0.0124,-0.0032] +0.0005312 [+0.0004768,+0.0005848]
+  L4_stack_probe        0.6453  0.0033232    0.9401 -0.0023 [-0.0057,+0.0014] +0.0007289 [+0.0006798,+0.0007757]
+
+SECTION 3: frozen qualification gates on surviving stack (L1_wf_v1trigger)
+  d_acc +0.0000  d_cost +0.0001855
+  Q1 (quality: d_acc>=+0.020 & d_cost<=+0.0002): FAIL
+  Q2 (cost: d_cost<=-0.0002 & d_acc>=-0.002):   FAIL
+
+SECTION 4: error overlap (holdout, surviving stack vs v1)
+  uniquely fixed 0 | newly broken 0 | both-correct 2822 | both-wrong 1536
+
+VERDICT: V1 ALONE IS THE STACK (no paying dynamic layer; proceed to P5 with v1 as only qualified layer)
