@@ -1,0 +1,7 @@
+{
+  "snapshot_date": "2026-09-06",
+  "purpose": "execution-time model price snapshot for screening only; prices move, verify before any paid run",
+  "spend_gate": "default $0; paid runs fail closed unless SPEND_GO=1; mission cap $5",
+  "sources_note": "fill source URL + per-model timestamp when populated (P0). Historical pair prices are embedded in stored RouterBench cost columns and take precedence for stored-label simulations.",
+  "models": {}
+}

@@ -1,0 +1,6 @@
+policy,quality,total_cost_usd,frontier_calls,mid_calls,cheap_extra_samples,verifier_calls,p50_latency_s,p95_latency_s,notes
+always_weak,,,0,0,0,0,,,filled by P0/B
+always_strong_simulated,,,0,0,0,0,,,simulated from stored labels
+router_v1_tagged,,,0,0,0,0,,,tag router-v1-frozen, threshold 0.30
+one_answer_cheap,,,0,0,0,0,,,
+naive_cascade_cheap_then_frontier,,,0,0,0,0,,,
