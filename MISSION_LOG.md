@@ -156,4 +156,27 @@ $0.00 (cap $5.00). All experiments so far use stored labels only.
   $0-eligible) and optional sandbox; mission decision now hinges on whether
   the oracle headroom (+6.7pp/-39%) justifies declaring PARTIAL STACK (works
   only with an arbiter this corpus cannot supply) vs ROUTING NOT ECONOMIC.
+- 2026-09-06 (G/P6): prereg frozen (3715f34) BEFORE scoring; training stage
+  out of mission scope ($0, no SPEND_GO) — mining + economic-ceiling stage
+  only. Two harness bugs caught pre-result by sanity checks (mined pairs must
+  be a subset of v1 dev errors): stratum-label inversion (mined set 15938 >
+  8897 total dev errors — impossible) and v1-mask bool-cast bug
+  (np.asarray(probs, dtype=bool) makes all probs True -> 0 mined pairs).
+  Final run EXIT=0, cross-checks consistent. Findings: 98.3% of v1-weak
+  failures are the both-fail stratum (5420/5514 dev); only 94 mined pairs
+  (0.38% of dev), 4 recurring templates, no clusterable family >=20 rows;
+  perfect narrow-uplift ceiling +0.0038 acc (matches P3's +0.3-0.4pp);
+  v1 escalation savings $0 (trigger independent of weak failures). P6 keep
+  gate (>=+2.0pp projected) FAIL by an order of magnitude -> LoRA training
+  handoff NOT justified. P6 closes NEGATIVE. Spend $0.
+- 2026-09-06 (MISSION CLOSE): P0-P6 complete. Every deployable layer beyond
+  v1 failed its frozen gate across both architectures (P1b/P1c/P2/P3/P4);
+  the mid tier pays only under a perfect arbiter that this corpus cannot
+  supply (P5 oracle bound, holdout-confirmed +6.7pp/-39%); mining has no
+  material to work with (P6). Mission outcome: ROUTING NOT ECONOMIC (outcome
+  E) with the oracle headroom recorded as a revival condition — see
+  PIVOT_FINAL_RECOMMENDATION.md. v1 @0.30 (tag router-v1-frozen) is the
+  final operational artifact: single frontier call on v1-strong rows,
+  weak call on v1-weak rows, holdout acc 0.6475 @ $0.0025943/row.
+  Total mission spend: $0.00 of $5.00 cap. Sealed test split: never loaded.
  - (phase decisions appended as the mission proceeds)

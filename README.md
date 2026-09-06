@@ -2,13 +2,25 @@
 
 Research on **cost-effective, adaptive LLM/agent routing** for [`thepragmatik/hermes-pi-agentic-stack`](https://github.com/thepragmatik/hermes-pi-agentic-stack).
 
-## Current status — 2026-09-06 pivot
+## Current status — 2026-09-06 pivot MISSION COMPLETE
 
-The project operator reports that the first execution phase's proposed router experiments **did not pass their gates**. Exact result tables are not yet committed here, so this repository does not invent margins or rewrite those attempts as near-successes.
+**Outcome (2026-09-06): `ROUTING NOT ECONOMIC` — promotion decision E.** See **[PIVOT_FINAL_RECOMMENDATION.md](PIVOT_FINAL_RECOMMENDATION.md)** and **[MISSION_LOG.md](MISSION_LOG.md)**.
 
-That result changes the research direction.
+The stackable trust-and-escalation mission ran to completion across seven preregistered experiment families (P0–P6), at **$0.00 total spend** (stored responses only), with the RouterBench test split never loaded. Every deployable dynamic layer failed its frozen quality/cost gate on both the v1-anchored and the weak-first architecture. The only configuration that beats V1 — a three-tier cascade under a *perfect* correctness arbiter (+6.7pp accuracy at −39% cost, holdout-confirmed) — requires a signal this corpus cannot supply. The final operational artifact is **V1 @ threshold 0.30** (tag `router-v1-frozen`): holdout accuracy 0.6475 at $0.0025943/row.
 
-> **Current thesis: stop looking for one perfect prompt-only router. Build and measure a stack of small, response-aware interventions that can compound: cheap answer → trust signals → extra cheap compute/verifier → curated mid-tier → frontier, while using recurring frontier rescues to improve the cheap tier.**
+Measured per-phase verdicts (single frozen-gate holdout passes, full detail in `results/`):
+
+| phase | question | verdict |
+|---|---|---|
+| P0 | is the weak tier still the right foundation? | keep mistral-7b; Yi-34B best mid-tier (47% repair @ 4.05× cost) |
+| P1 | do extra cheap samples avoid frontier calls? | disagree-escalate KILLED; oracle pair ceiling +6.7pp/−39% (not deployable) |
+| P2 | can deterministic verifiers safely accept weak answers? | all 4 families FAIL precision gate (best 0.67 vs 0.90) |
+| P3 | does an answer-aware confidence probe beat embedding-only routing? | all 3 arms FAIL; v1-weak rows are 95% both-models-fail |
+| P4 | do killed layers pay as a stack on weak-first? | no layer survives retention; V1 ALONE IS THE STACK |
+| P5 | does a mid tier justify a three-tier cascade? | oracle-only PASS (+6.7pp/−39%); no deployable arbiter exists |
+| P6 | can weak-model failures be mined into uplift training? | 98.3% of v1-weak failures are both-fail; 94 minable rows; ceiling +0.38pp — FAIL |
+
+**Revival conditions** (recorded in the final recommendation): a corpus with logprobs/hidden states, machine-checkable answer contracts, or a paid trained arbiter — under new preregs.
 
 ### Active execution documents
 

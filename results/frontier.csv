@@ -19,3 +19,4 @@ p5_C2a_oracle_arbiter_dev,0.4862,0.0019302,0.0,0,0,0,0,,,dev-fit; FAIL both gate
 p5_C2b_yi_only_dev,0.5301,0.0002232,0.0,0,0,0,0,,,dev-fit; FAIL both gates; deployable weak+Yi service is -11pp vs v1
 p5_C3_always3_oracle_dev,0.708,0.0015987,0.0,0,0,0,0,,,dev-fit; PASS G1+G2 but oracle-arbiter (upper bound)
 p5_C3_always3_oracle_holdout,0.7148,0.0015814,0.0,0,0,0,0,,,"holdout +0.0672/+0.0594,0.0748; cost -0.0010129; PASS but ORACLE (not deployable; all triggers dead per P4)"
+p6_perfect_narrow_uplift_ceiling_dev,0.6438,0.0025682,0.7669,0,0,0,0,,,dev-fit ceiling only: 94 mined pairs (0.38% of dev) repaired under perfect uplift; v1 escalation savings $0; training gate FAIL

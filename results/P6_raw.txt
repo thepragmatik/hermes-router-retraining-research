@@ -1,0 +1,33 @@
+SECTION 0: train 29193 | dev-fit 24835 | pivot-holdout 4358 | test rows loaded: 0 (sealed)
+SECTION 1: v1-weak failure strata (dev-fit)
+  weak-fail-strong-ok        94  (0.0038 of dev)
+  both-fail                5420  (0.2182 of dev)
+  both-fail share of v1-weak failures (dev): 0.9830
+
+SECTION 2: mined pairs weak-fail -> strong-repair: 94 dev / 14 holdout
+  recurring failure patterns (same template, >=2 occurrences): 4 patterns covering 37 dev rows (0.3936 of mined pairs)
+stored cost/call: weak $0.0000458 mid $0.0001855 strong $0.0032889
+
+SECTION 3: perfect narrow-uplift ceiling (dev, unchanged v1 stack)
+  v1 baseline: acc 0.6400 cost 0.0025682
+  all 94 mined pairs repaired: acc 0.6438 (++0.0038)
+  escalation-savings ceiling under v1: $0.0000000 (v1's trigger is independent of weak failures; savings would accrue only to weak-first stacks, which P4 killed)
+
+SECTION 4: semantic clustering of mined failures (analysis only, never routing)
+  mined rows in clusterable families (>=20 rows): 0/94
+  rows near own-family centroid (cos>=0.55): 86 (0.9149)
+  clusterable curriculum mass (both): 0 (0.0000 of mined)
+  top-10 mined failure families:
+    bias_detection                                             17  centroid_cos_ge_0.55 1.000
+    mbpp                                                       17  centroid_cos_ge_0.55 0.882
+    consensus_summary                                          14  centroid_cos_ge_0.55 0.571
+    chinese_famous_novel                                        7  centroid_cos_ge_0.55 1.000
+    Chinese_character_riddles                                   6  centroid_cos_ge_0.55 1.000
+    winogrande                                                  6  centroid_cos_ge_0.55 1.000
+    grade-school-math                                           4  centroid_cos_ge_0.55 1.000
+    chinese_chu_ci                                              2  centroid_cos_ge_0.55 1.000
+    chinese_hard_translations                                   2  centroid_cos_ge_0.55 1.000
+    chinese_poem                                                2  centroid_cos_ge_0.55 1.000
+
+VERDICT-SUMMARY: {"mined_pairs_dev": 94, "recurring_templates": 4, "clusterable_mass_share": 0.0, "perfect_uplift_acc_gain": 0.0038, "v1_escalation_savings": 0.0, "weak_first_savings_note": "weak-first stacks killed in P4"}
+EXIT=0

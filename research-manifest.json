@@ -4,7 +4,7 @@
   "mission": "Determine whether a stack of response-aware trust, verification, adaptive cheap compute, model-pool curation, targeted cheap-tier uplift, and workflow-stage escalation can reduce frontier-model use while preserving end-to-end Hermes quality and improving total economics.",
   "parent_program": "https://github.com/thepragmatik/hermes-pi-agentic-stack",
   "phase_status": {
-    "previous_phase": "reported failed by project operator; exact result tables not yet committed in this repository",
+    "previous_phase": "MISSION COMPLETE 2026-09-06: stackable pivot P0-P6 executed at $0 spend, 7 frozen preregs, 0 sealed-test rows loaded. Outcome: ROUTING NOT ECONOMIC (promotion decision E). v1 @0.30 (tag router-v1-frozen) is the final operational artifact; oracle headroom +6.7pp/-39% recorded as revival condition requiring a correctness-arbiter corpus. See PIVOT_FINAL_RECOMMENDATION.md and MISSION_LOG.md",
     "active_phase": "stackable trust-and-escalation pivot",
     "canonical_mission": "STACKABLE_ROUTING_MISSION.md",
     "launch_prompt": "LAUNCH_AGENT_PROMPT.md",
@@ -35,7 +35,7 @@
     "component_relative_runtime_cost_reduction_at_matched_quality": 0.05,
     "component_absolute_frontier_call_reduction_at_matched_quality": 0.05,
     "component_absolute_quality_gain_at_matched_cost": 0.01,
-    "shadow_candidate_preferred_relative_runtime_cost_reduction": 0.10,
+    "shadow_candidate_preferred_relative_runtime_cost_reduction": 0.1,
     "note": "Mission-design thresholds to prevent chasing noise; final decisions use full Pareto evidence and uncertainty analysis."
   },
   "active_experiment_order": [
@@ -51,8 +51,8 @@
     "P8 optional draft/verify/repair reuse"
   ],
   "promotion_decisions": [
-    "STACK WORKS — PROMOTE TO HERMES SHADOW",
-    "PARTIAL STACK — KEEP ONLY PAYING LAYERS",
+    "STACK WORKS \u2014 PROMOTE TO HERMES SHADOW",
+    "PARTIAL STACK \u2014 KEEP ONLY PAYING LAYERS",
     "MODEL-POOL PIVOT",
     "AGENTIC-ONLY PIVOT",
     "ROUTING NOT ECONOMIC"
@@ -74,5 +74,19 @@
   "historical_memo": "memo/2026-09-05_ranked-options-memo.md",
   "historical_adversarial_review": "evidence/adversarial-review.md",
   "website": "site/index.html",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "final_outcome": {
+    "decision": "ROUTING NOT ECONOMIC",
+    "decision_date": "2026-09-06",
+    "spend_usd": 0.0,
+    "sealed_test_rows_loaded": 0,
+    "final_artifact": "router-v1-frozen (holdout acc 0.6475 @ $0.0025943/row)",
+    "oracle_headroom": "+6.7pp acc / -39% cost, holdout-confirmed, requires perfect arbiter",
+    "revival_conditions": [
+      "logprob/hidden-state corpus",
+      "machine-checkable answer contracts",
+      "paid trained arbiter"
+    ],
+    "recommendation_doc": "PIVOT_FINAL_RECOMMENDATION.md"
+  }
 }
