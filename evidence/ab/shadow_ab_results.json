@@ -1,0 +1,47 @@
+{
+  "n": 3626,
+  "router_v1_030": {
+    "acc": 0.6395477109762824,
+    "frac_strong": 0.7686155543298401,
+    "cost_mean": 0.0014418713734142305,
+    "n": 3626
+  },
+  "always_strong": {
+    "acc": 0.6447876447876448,
+    "frac_strong": 1.0,
+    "cost_mean": 0.0032632570325427466,
+    "n": 3626
+  },
+  "always_weak": {
+    "acc": 0.2289023717595146,
+    "frac_strong": 0.0,
+    "cost_mean": 4.517854384997242e-05,
+    "n": 3626
+  },
+  "random_at_cost_parity": {
+    "frac_strong_target": 0.434,
+    "acc": 0.4040264754550469,
+    "frac_strong": 0.43408714837286266,
+    "cost_mean": 0.0014106532818532822,
+    "n": 3626
+  },
+  "oracle_acc": 0.6773303916161059,
+  "bootstrap_ci_router_vs_always_weak": [
+    0.3927,
+    0.4286
+  ],
+  "bootstrap_ci_router_vs_random_parity": [
+    0.2201,
+    0.2507
+  ],
+  "bootstrap_ci_router_vs_always_strong": [
+    -0.008,
+    -0.0025
+  ],
+  "acceptance": {
+    "A1_replay_matches_frozen": true,
+    "A2_ci_low_vs_always_weak_gt0": true,
+    "A3_ci_low_vs_random_parity_gt0": true,
+    "A4_headroom_oracle_minus_router": 0.0378
+  }
+}
