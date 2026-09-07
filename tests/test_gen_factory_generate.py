@@ -254,3 +254,17 @@ def test_strict_parse_recovers_json_fenced_block():
     assert isinstance(obj2, dict) and obj2["verifier"]["type"] == "numeric_tol"
     # true garbage still rejects
     assert _strict_parse("no json here at all") is None
+
+
+# ---------------- R2: build_prompt must fill GEN_PROMPT placeholders --------
+
+def test_build_prompt_fills_all_placeholders():
+    for seed in range(20):
+        p = gi.build_prompt(seed)
+        assert "{domain}" not in p and "{difficulty}" not in p and "{style}" not in p
+        assert p != gi.GEN_PROMPT
+
+
+def test_build_prompt_rotation_covers_taxonomy():
+    prefixes = {gi.build_prompt(s).split(" question ")[0] for s in range(40)}
+    assert len(prefixes) >= 6  # >=6 distinct (domain, difficulty, style) heads

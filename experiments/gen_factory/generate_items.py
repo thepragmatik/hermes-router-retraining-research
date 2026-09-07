@@ -48,6 +48,27 @@ No meta commentary."""
 _FINAL_MARKER = re.compile(
     r"(?:the\s+)?final\s+answer\b(?:\s+is)?\s*[:\-]?\s*|answer\s*[:\-]\s*", re.I)
 
+# Taxonomy-grounded rotation (evidence/gen_factory/seed_taxonomy.json:
+# run/plan/fix dominate; styles other/planning/debugging/writing).
+DOMAINS = ["tool_use", "code_editing", "file_ops", "planning",
+           "debugging", "writing", "data_numeric"]
+DIFFICULTIES = ["easy", "medium", "hard"]
+STYLES = ["procedural", "diagnostic", "composition", "analysis"]
+
+
+def build_prompt(seed):
+    """Fill the GEN_PROMPT template from a deterministic seed rotation.
+
+    R1b postmortem root cause 1: the template was passed raw to the model
+    (placeholders never substituted), so the generator never saw the intended
+    domain/difficulty/style conditioning. Co-prime strides (1, 7, 13) keep
+    (domain, difficulty, style) tuples diverse across a batch.
+    """
+    domain = DOMAINS[seed % len(DOMAINS)]
+    difficulty = DIFFICULTIES[(seed // 7) % len(DIFFICULTIES)]
+    style = STYLES[(seed // 13) % len(STYLES)]
+    return GEN_PROMPT.format(domain=domain, difficulty=difficulty, style=style)
+
 # ---------------------------------------------------------------- corpus I/O
 
 _PROMPT_CACHE = None  # {"winrate_table": [...], ...}, loaded once
@@ -239,7 +260,7 @@ def generate_batch(rung, n_items, model, api_key, seed_base, call_fn=None,
     for i in range(n_items):
         seed = batch_seed + i
         try:
-            text = call_fn(model, GEN_PROMPT, api_key, seed)
+            text = call_fn(model, build_prompt(seed), api_key, seed)
         except Exception:
             reject("exception")
             continue
