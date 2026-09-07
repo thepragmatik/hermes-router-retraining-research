@@ -278,3 +278,37 @@ Pre-registered interpretation: if yield gate passes but both_fail still trips,
 R4 attacks exact_match brittleness via a NEW verifier type (normalized
 token-set overlap) in a fresh prereg. If yield still fails, R4 switches
 generator model (deepinfra catalog scan, same allowlist constraint).
+
+## R3 outcome (2026-09-07, post-run) — 4/6 gates PASS; verdict: PARTIAL PASS
+
+Executed exactly per the R3 prereg (system message on, response_format OFF,
+no verifier retuning). Batch `r3_` rows, clean salted split. Realized:
+
+| gate | realized | frozen | verdict |
+|---|---|---|---|
+| item yield | 54/96 = 56% | >=60% | FAIL (-4pp; R2 49%) |
+| not_json share | 18/96 = 19% | <=20% | PASS (R2: 37%) |
+| usable | 30/54 = 56% | >=50% | PASS |
+| both_fail | 24/54 = 44% | <=35% | FAIL (R2: 35.4%) |
+| $/usable-label | $0.00019 | <=$0.00025 | PASS |
+| spend | $0.00580 | <=$0.10 | PASS |
+
+Attribution is clean because only one variable changed (strict system
+message):
+- JSON compliance fix CONFIRMED: not_json 37%->19% (halved), yield 49%->56%.
+  The system message is the mechanism; response_format stays OFF (untested).
+- The yield residual moved from not_json to verifier_shape (14) and
+  self_verifier (10) — the generator now emits parseable JSON whose
+  verifiers are malformed or don't reproduce the answer.
+- both_fail regressed 35.4%->44% with strong_ok 0/24: strict tier rescued
+  nothing this run. Reading: harder/more idiosyncratic questions survived the
+  cleaner JSON filter (selection effect), and/or v4-flash's free-form answers
+  fail exact_match on these verifier values. Escalation rate 44% (R2: 40%),
+  so escalation volume is similar — the strong tier's rescue RATE dropped.
+
+Per pre-registered interpretation: yield gate still fails AND both_fail
+regressed -> R4 per prereg = two preregistered levers, now with evidence:
+(a) NEW verifier type (normalized token-set overlap) to de-brittle
+exact_match — primary, attacks both verifier_shape rejects and both_fail;
+(b) generator-model switch (deepinfra scan) only if (a) is insufficient.
+Pair stays glm/v4-flash.
