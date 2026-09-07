@@ -1,0 +1,13 @@
+{
+  "n": 3626,
+  "decision_agreement_with_cached_replay": 1.0,
+  "confidence_mae": 0.0,
+  "live_routed_acc": 0.6395477109762824,
+  "live_frac_strong": 0.7686155543298401,
+  "frozen_acc": 0.6395,
+  "frozen_frac_strong": 0.7686,
+  "acc_delta_vs_frozen": 4.771097628242238e-05,
+  "frac_delta_vs_frozen": 1.555432984012839e-05,
+  "unavailable": 0,
+  "elapsed_s": 49.6
+}
