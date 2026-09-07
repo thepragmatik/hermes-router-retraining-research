@@ -7,7 +7,7 @@ ERR = os.path.join(REPO, "evidence", "gen_factory", "pricing_fetch_error.md")
 # Candidate keys (cache is keyed by role label, not by provider id string,
 # so id drift does not break freshness checks).
 CANDIDATE_KEYS = ["llama33_70b", "mixtral_or_mistral_small", "glm_flash",
-                  "deepseek_flash", "gpt4_1106", "mistral_7b"]
+                  "deepseek_flash", "gpt4_1106", "mistral_7b", "qwen_flash"]
 
 def test_pricing_cache_exists_fresh_and_complete():
     if not os.path.exists(CACHE):

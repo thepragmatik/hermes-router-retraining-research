@@ -27,7 +27,12 @@ CANDIDATES = {
     "llama33_70b": [r"llama-3\.3-70b-instruct"],
     "mixtral_or_mistral_small": [r"mixtral-8x22b", r"mistral-small-3"],
     "glm_flash": [r"glm-[\d.]+-flash", r"glm-flash"],
-    "deepseek_flash": [r"deepseek-v4-flash", r"deepseek-v4"],
+    "deepseek_flash": [r"deepseek-v4-flash$", r"deepseek-v4-flash",
+                       r"deepseek-v4"],
+    # Frozen generator-pivot labeling pair (operator decision 2026-09-07):
+    # weak = qwen3.7-flash. deepseek-v4-flash-latest exists only as a tilde
+    # alias; the canonical id deepseek-v4-flash is matched first ($ anchor).
+    "qwen_flash": [r"qwen3\.7-flash", r"qwen[\d.]*-flash"],
     # gpt-4-1106-preview was retired from the catalog; gpt-4-turbo-preview
     # (same family) survives — drift tolerated per plan. Same for the weak
     # tier: mistral-7b-chat is gone; the surviving small-Mistral chat class
