@@ -139,10 +139,18 @@ def _run_openrouter(model, prompt, api_key, seed):
     Tests inject `call_fn` and NEVER execute this. Chat-completions POST with
     temperature 0.9, max_tokens 500, deterministic seed.
     """
-    body = json.dumps({
-        "model": model,
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.9, "max_tokens": 500, "seed": seed}).encode("utf-8")
+    # R3 JSON compliance (prereg b642534): strict system message always on;
+    # response_format opt-in via GEN_JSON_MODE=1 (glm support unknown — an
+    # unsupported field 400s, so default OFF).
+    messages = [{"role": "system",
+                 "content": ("You output ONLY one raw JSON object. No prose, "
+                             "no markdown fences, no extra keys.")},
+                {"role": "user", "content": prompt}]
+    body = {"model": model, "messages": messages,
+            "temperature": 0.9, "max_tokens": 500, "seed": seed}
+    if os.environ.get("GEN_JSON_MODE") == "1":
+        body["response_format"] = {"type": "json_object"}
+    body = json.dumps(body).encode("utf-8")
     req = urllib.request.Request(
         "https://openrouter.ai/api/v1/chat/completions", data=body,
         headers={"Authorization": "Bearer " + api_key,
