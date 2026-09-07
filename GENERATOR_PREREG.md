@@ -180,3 +180,33 @@ means the generator's questions are mostly unsolvable as-verifier-checked —
 generator quality, not pipeline plumbing, is now the bottleneck. Escalation rate
 81% made strong calls dominate cost. Pair-B economics ($0.12/1k) remain
 unreachable on this account until qwen3.7-flash is routeable (allowlist).
+
+## R2 prereg (2026-09-07, pre-registered before execution)
+
+Root causes (from R1b postmortem, file+line evidence in plan
+/Users/rath/src/.hermes/plans/2026-09-07_231651-r2-generator-quality-fix.md):
+1. generate_items.py:242 sent GEN_PROMPT raw — placeholders never substituted
+   (no .format call in module); taxonomy conditioning never reached the model.
+2. cascade_label.py ask() max_tokens=300 truncated 31/65 strong answers past
+   the final-answer region (verified: completion_tokens==300 exactly).
+3. No "Final answer:" instruction to labeler tiers; verifiers need that
+   region for exact_match/numeric_tol extraction.
+
+R2 changes: build_prompt(seed) rotation wiring (fix 1); max_tokens 700 +
+ANSWER_FORMAT_SUFFIX in cascade_label._payload (fixes 2+3); routeability smoke
+(smoke_tiers.py, 2 calls/tier, exit 3 abort) wired into run_rung.sh before
+generation; salted batch ids.
+
+Frozen gates for R2 (n=100, rung 2):
+- item yield >= 60% (unchanged)
+- dedup reject <= 30% (unchanged; threshold 0.85 unchanged)
+- both_fail <= 35% (new — root-cause fix target; R1b was 71%)
+- usable (weak_ok + strong_ok) >= 50% (new; R1b was 29%)
+- $/usable-label <= $0.00025
+- spend <= $0.10 cap (estimate ~$0.03 worst case at 700 strong tokens)
+
+Pair: weak=z-ai/glm-5.3-flash, strong=deepseek/deepseek-v4-flash (same as R1b;
+pair switch deferred to R3 — single-variable discipline). Routeability smoke
+runs before generation; any tier failure aborts at <$0.001.
+Operator approved execution + <$0.001 qwen probes (qwen3.5-flash-02-23,
+qwen3.8-flash) 2026-09-07 ("go ahead").
