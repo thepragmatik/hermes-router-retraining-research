@@ -123,3 +123,39 @@ is an explicit operator gate and is documented as OPEN, not pre-picked.
    question text but are LOCAL-ONLY (never committed; evidence/ is
    untracked). Generated question text is synthetic (no session content),
    but the no-user-text discipline still applies to every log.
+
+## R1 verdict (2026-09-07, post-run) — FAIL; R1b amendment
+
+R1 executed under this prereg (n=100, cap $0.10, actual ledgered spend
+$0.00092). Result: **GATES FAILED** — verifiable yield 19% (gate >=60%),
+weak_ok 0, both_fail 17/19. Postmortem (all from evidence artifacts):
+
+1. **FATAL, run-invalidating: the weak tier was unreachable.** Every weak
+   call to `qwen/qwen3.7-flash` failed with HTTP 404 under the operator's
+   OpenRouter key (provider allowlist: z-ai / alibaba / deepseek /
+   deepinfra, per the 2026-09-04 judge-calibration finding). The catalog
+   lists the id; this account cannot route it. All 19 strong calls were
+   fallback work against a dead weak tier; **no R1 label is valid** and no
+   R1 metric is interpretable as model quality. Ledgered strong spend
+   $0.00092 is written off as calibration.
+2. Generator strict-parse rejected 72/100 as not_json; inspection showed
+   fenced/markdown-wrapped JSON. Fixed in 58153eb (one bounded retry on
+   fenced blocks + brace-span), test added; re-measured in R1b.
+3. Ledger recorded 19/19 weak rows as `unpriced` (0 tokens billed) —
+   consistent with the 404s; the pricing cache resolves the id but the
+   account cannot route it. Cache correctness vs routeability are
+   different gates; R1b adds a 2-call smoke before any batch.
+
+### R1b amendment (pre-registered before execution, this row)
+
+- Weak tier fallback: `z-ai/glm-5.3-flash` ($0.075/$0.25 per M,
+  allowlisted and live-verified on this account). Strong tier unchanged:
+  `deepseek/deepseek-v4-flash`.
+- Added pre-flight gate: 2-call smoke per tier before each batch; any
+  404/error aborts the rung at $0 (< 20 calls).
+- Gates for R1b unchanged from R1: yield >= 60%, dedup reject <= 30%,
+  cap $0.10. n=100.
+- Note: with glm-5.3-flash weak and v4-flash strong, expected spread is
+  1.19x/0.71x — labeling economics degrade vs pair B (est. $0.18/1k) but
+  label semantics are unchanged; deployment-pair decision stays the
+  post-R2 open operator gate.
