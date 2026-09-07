@@ -248,3 +248,33 @@ response_format=json_object if glm supports it), (b) exact_match brittleness
 (consider normalized-token-set overlap as a verifier type in a NEW prereg —
 never silently retune). Pair stays glm/v4-flash: qwen family confirmed blocked
 (404 on qwen3.5-flash-02-23 AND qwen3.8-flash, 2026-09-07 smoke).
+
+## R3 prereg (2026-09-07, pre-registered before execution)
+
+Operator approved R3 ("yes, go ahead", 2026-09-07). Target: the two R2-failing
+gates, both generator-side per the R2 outcome row.
+
+Changes (and what is NOT changed):
+1. Generator call gains a system message: "You output ONLY one raw JSON object.
+   No prose, no markdown fences, no keys." (always on — additive instruction,
+   no API-compat risk).
+2. `response_format: {"type": "json_object"}` gated behind env `GEN_JSON_MODE=1`
+   (glm-5.3-flash support unknown; an unsupported field would 400 and waste
+   spend, so default OFF). If a R3 micro-probe shows it routes clean, a later
+   rung may flip it; R3 runs with the system message only.
+3. NO verifier retuning. exact_match brittleness is noted as a future lever but
+   R3 attacks JSON compliance only — changing two variables would unattribute
+   the outcome.
+
+Frozen R3 gates (rung 3, n=100, cap $0.10, weak=glm-5.3-flash, strong=v4-flash,
+same smoke gate, salted batch ids):
+- item yield >= 60% (R2: 49%; not_json <= 20% of generated, R2: 37%)
+- usable >= 50% (hold R2 level)
+- both_fail <= 35% (hold)
+- $/usable-label <= $0.00025 (hold)
+- spend <= $0.10
+
+Pre-registered interpretation: if yield gate passes but both_fail still trips,
+R4 attacks exact_match brittleness via a NEW verifier type (normalized
+token-set overlap) in a fresh prereg. If yield still fails, R4 switches
+generator model (deepinfra catalog scan, same allowlist constraint).
