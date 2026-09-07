@@ -216,3 +216,4 @@ $0.00 (cap $5.00). All experiments so far use stored labels only.
   (ledger rows only; both-fail recorded separately, never counted weak_ok).
   Pricing-cache refresh (fetch_pricing.py now carries the qwen_flash role)
   is an operator-run step before R1. Next: operator approves R1 (~$0.10).
+| 2026-09-07 | R2 generator-quality rung executed (plan 2026-09-07_231651-r2-generator-quality-fix.md): fixed GEN_PROMPT-never-formatted bug (root cause 1), labeler 300->700 tok + Final-answer format (causes 2+3), routeability smoke wired pre-spend, salted batch ids. Live rung 2: 4/6 gates PASS (usable 64.6% vs >=50%, $0.00018/usable-label vs <=$0.00025, dedup 3%, spend $0.00543/$0.10); item yield 49% and both_fail 35.4% FAIL (generator-side). weak_ok 20%->60%, escalations 81%->40%. Qwen family blocked on account (404 x2 probes). Verdict PARTIAL PASS; R3 levers prereg'd in GENERATOR_PREREG.md. Commits 5117e23..15541dd. $0.00543 total spend. |
