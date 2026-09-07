@@ -196,3 +196,23 @@ $0.00 (cap $5.00). All experiments so far use stored labels only.
   was frozen on val, deltas are upper bounds on out-of-sample impact. Memo:
   evidence/ab/shadow-ab-memo-2026-09-06.md. Next: gated live leg drafted
   (c9a6d88), SPEND_GO-gated, deliberately not run; pushes deferred to operator review.
+- 2026-09-07 (gen-factory rung R0): generator-pivot $0 rung COMPLETE on
+  `feat/generator-pivot-r0` (pricing probe 72c5ab5, verifiers 33f4294,
+  generator+dedup fba98e9, ledger 77012ee, cascade labeler 4a63f66, ledger
+  report 6b54578, prereg 462a9ae, rung runner 6c60417). Suite 61 pre-existing
+  + 11 new ledger-report tests = 72 passed under /usr/bin/python3 (3.9),
+  $0.00 spend, zero real network calls in tests. FROZEN labeling pair
+  (operator decision, catalog-verified 2026-09-07): weak
+  `qwen/qwen3.7-flash` $0.03/$0.13 per M -> strong
+  `deepseek/deepseek-v4-flash` $0.089/$0.177 per M (canonical id frozen;
+  `-latest` exists only as tilde alias; the historical V1 pair is retired
+  from the catalog). Prereg: `GENERATOR_PREREG.md` at repo root (R1 gates:
+  verifiable yield >=60%, dedup rejects <=30%, spend <=$0.10 on n=100,
+  requires GEN_GO=1 + OPENROUTER_API_KEY + SPEND_CAP_USD>0, abort on cap;
+  R2: 20-item hand-check >=90% + need_strong rate 40-80% band; R3: 1,000
+  labels <=$1.50; deployment strong tier left OPEN post-R2 — alternates
+  documented with prices). Decision metric:
+  `cost_per_usable_label_usd` via experiments/gen_factory/ledger_report.py
+  (ledger rows only; both-fail recorded separately, never counted weak_ok).
+  Pricing-cache refresh (fetch_pricing.py now carries the qwen_flash role)
+  is an operator-run step before R1. Next: operator approves R1 (~$0.10).
