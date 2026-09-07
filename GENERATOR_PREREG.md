@@ -159,3 +159,24 @@ weak_ok 0, both_fail 17/19. Postmortem (all from evidence artifacts):
   1.19x/0.71x — labeling economics degrade vs pair B (est. $0.18/1k) but
   label semantics are unchanged; deployment-pair decision stays the
   post-R2 open operator gate.
+
+## R1b outcome (2026-09-07, post-run) — frozen gates PASS; economics caveat logged
+
+Executed per amendment: n=100, weak=`z-ai/glm-5.3-flash`, strong=`deepseek/deepseek-v4-flash`,
+cap $0.10. Realized spend $0.00937 (9.4% of cap). Separated from R1 by ts-filter
+(R1's last dead-row ts 11:31:54Z); NOTE: batch_id was reused (`r1_b8919`), so the
+aggregate ledger_report mixes both runs — the honest split is ts-filtered (below).
+
+R1b-only (ts-filtered from ledger.jsonl):
+- generated ~98 -> items accepted 79 (item yield 81%; gate >=60% PASS)
+- parse rejects 9 (was 72 in R1; fenced-JSON recovery fix effective)
+- self-verifier rejects 10; dedup rejects 21 (~21%; gate <=30% PASS)
+- labeled 79: weak_ok 16 (20%), escalated 64, strong_ok 7, both_fail ~56 (71%)
+- usable labels 23/79 (29%); $/usable-label $0.00037 (~$0.37/1k vs $0.12-0.18/1k estimate)
+- weak tier billed real tokens on every call (R1's zero-token signature gone)
+
+Verdict: frozen R1 gates (yield, dedup) PASS. Caveat for R2 design: 71% both_fail
+means the generator's questions are mostly unsolvable as-verifier-checked —
+generator quality, not pipeline plumbing, is now the bottleneck. Escalation rate
+81% made strong calls dominate cost. Pair-B economics ($0.12/1k) remain
+unreachable on this account until qwen3.7-flash is routeable (allowlist).
