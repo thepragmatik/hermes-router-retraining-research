@@ -34,6 +34,13 @@ esac
 export WEAK_MODEL="${WEAK_MODEL:-qwen/qwen3.7-flash}"
 export STRONG_MODEL="${STRONG_MODEL:-deepseek/deepseek-v4-flash}"
 
+# Pre-flight routeability smoke (R1b amendment): 2 calls/tier, aborts exit 3
+# before any generation spend if a tier 404s (e.g. the qwen3.7-flash class).
+if [ "${SMOKE_SKIP:-0}" != "1" ]; then
+  /usr/bin/python3 experiments/gen_factory/smoke_tiers.py \
+    || REFUSED "tier smoke failed — aborting before generation spend"
+fi
+
 echo "rung runner: weak=$WEAK_MODEL strong=$STRONG_MODEL cap=\$${SPEND_CAP_USD}"
 
 /usr/bin/python3 experiments/gen_factory/generate_items.py "$@"
