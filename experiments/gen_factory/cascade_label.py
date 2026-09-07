@@ -44,15 +44,31 @@ def _utcnow_iso():
     return _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+ANSWER_FORMAT_SUFFIX = (
+    "\n\nEnd your reply with a final line of the form "
+    "'Final answer: <answer>' where <answer> is only the answer itself."
+)
+
+
+def _payload(model, question):
+    """Request body for one labeling call (max_tokens 700 + answer format).
+
+    R1b postmortem root causes 2+3: 300-token cap truncated 31/65 strong
+    answers past the final-answer region, and tiers were never asked for a
+    machine-checkable final line, so verifiers graded solvable items False.
+    """
+    return {
+        "model": model,
+        "messages": [{"role": "user", "content": question + ANSWER_FORMAT_SUFFIX}],
+        "max_tokens": 700, "temperature": 0}
+
+
 def ask(model, question, key, base="https://openrouter.ai/api/v1"):
     """THIN real OpenRouter caller — the only network code here.
 
     Tests monkeypatch this symbol and never execute it.
     """
-    body = json.dumps({
-        "model": model,
-        "messages": [{"role": "user", "content": question}],
-        "max_tokens": 300, "temperature": 0}).encode("utf-8")
+    body = json.dumps(_payload(model, question)).encode("utf-8")
     req = urllib.request.Request(
         base + "/chat/completions", data=body,
         headers={"Authorization": "Bearer " + key,

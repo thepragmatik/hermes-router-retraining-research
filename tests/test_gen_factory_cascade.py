@@ -235,3 +235,13 @@ def test_env_override_changes_model_pair(monkeypatch):
     importlib.reload(cl)
     assert cl.WEAK == "mistralai/mistral-7b-chat"
     assert cl.STRONG == "openai/gpt-4-1106-preview"
+
+
+# ---------------- R2: payload must request 700 tokens + Final answer line ---
+
+def test_payload_has_answer_format_and_700_tokens():
+    import cascade_label
+    body = cascade_label._payload("weak-model", "What is 2+2?")
+    assert body["max_tokens"] == 700
+    assert "Final answer:" in body["messages"][0]["content"]
+    assert body["messages"][0]["content"].startswith("What is 2+2?")
