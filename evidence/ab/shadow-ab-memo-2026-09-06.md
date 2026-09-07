@@ -89,7 +89,7 @@ SEALED_OK
 ```
 
 Hash line (Task 0 == Task 8, byte-for-byte):
-`e938142c835b27bc13c7633745c4631fa4336dbe067d8d3b5a41dafa9f389bd1  /Users/rath/transfer-bundle/analysis/mf_test_frame.parquet`
+`e938142c835b27bc13c7633745c4631fa4336dbe067d8d3b5a41dafa9f389bd1  ~/transfer-bundle/analysis/mf_test_frame.parquet`
 The sealed test split was never read; only hashed.
 
 ## 6. In-sample caveat (from the prereg, verbatim)
