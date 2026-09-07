@@ -240,3 +240,17 @@ def test_cli_real_path_refuses_without_key():
     assert "OPENROUTER_API_KEY" in (r.stderr + r.stdout)
     # --n 0 means zero calls were due anyway; refusal happened before any
     # network path could exist.
+
+
+def test_strict_parse_recovers_json_fenced_block():
+    """R1 postmortem fix: 72/100 raw generations were fenced/markdown-wrapped
+    JSON; strict parse must recover fenced blocks before rejecting."""
+    from generate_items import _strict_parse
+    fenced = '```json\n{"question": "Q?", "answer": "42", "verifier": {"type": "exact_match", "value": "42"}}\n```'
+    obj = _strict_parse(fenced)
+    assert isinstance(obj, dict) and obj["answer"] == "42"
+    # prose-wrapped bare JSON also recovers
+    obj2 = _strict_parse('Here is the item:\n{"question": "Q2?", "answer": "7", "verifier": {"type": "numeric_tol", "value": 7}}')
+    assert isinstance(obj2, dict) and obj2["verifier"]["type"] == "numeric_tol"
+    # true garbage still rejects
+    assert _strict_parse("no json here at all") is None

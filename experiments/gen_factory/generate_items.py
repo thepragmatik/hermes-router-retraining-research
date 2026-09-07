@@ -142,14 +142,33 @@ def _sha16(text):
 
 
 def _strict_parse(text):
-    """json.loads on stripped text; None on any failure. Never raises."""
+    """Strict parse with one retry: on failure, retry once on the largest
+    ```json-fenced block (generators routinely wrap JSON in fences despite
+    the no-meta instruction). None on any failure. Never raises."""
+    if not isinstance(text, str):
+        return None
     try:
-        if not isinstance(text, str):
-            return None
         obj = json.loads(text.strip())
         return obj if isinstance(obj, dict) else None
     except Exception:
-        return None
+        pass
+    # retry: prefer the LAST fenced block (final answer), else first/last
+    # brace pair (nested-brace safe: greedy match from first { to last })
+    for candidate in re.findall(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.S):
+        try:
+            obj = json.loads(candidate.strip())
+            if isinstance(obj, dict):
+                return obj
+        except Exception:
+            continue
+    s, e = text.find("{"), text.rfind("}")
+    if s != -1 and e > s:
+        try:
+            obj = json.loads(text[s:e + 1])
+            return obj if isinstance(obj, dict) else None
+        except Exception:
+            return None
+    return None
 
 
 def _verifier_shape_ok(verifier):
