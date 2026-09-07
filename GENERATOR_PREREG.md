@@ -183,8 +183,8 @@ unreachable on this account until qwen3.7-flash is routeable (allowlist).
 
 ## R2 prereg (2026-09-07, pre-registered before execution)
 
-Root causes (from R1b postmortem, file+line evidence in plan
-/Users/rath/src/.hermes/plans/2026-09-07_231651-r2-generator-quality-fix.md):
+Root causes (from the R1b postmortem; plan reference: `.hermes/plans/
+2026-09-07_231651-r2-generator-quality-fix.md`, workspace-relative path):
 1. generate_items.py:242 sent GEN_PROMPT raw — placeholders never substituted
    (no .format call in module); taxonomy conditioning never reached the model.
 2. cascade_label.py ask() max_tokens=300 truncated 31/65 strong answers past
@@ -210,3 +210,41 @@ pair switch deferred to R3 — single-variable discipline). Routeability smoke
 runs before generation; any tier failure aborts at <$0.001.
 Operator approved execution + <$0.001 qwen probes (qwen3.5-flash-02-23,
 qwen3.8-flash) 2026-09-07 ("go ahead").
+
+## R2 outcome (2026-09-07, post-run) — 4/6 gates PASS; verdict: PARTIAL PASS
+
+Executed exactly per this prereg: rung 2, n=100, weak=`z-ai/glm-5.3-flash`,
+strong=`deepseek/deepseek-v4-flash`, cap $0.10, smoke-gated. Salted batch id
+`r2_b1788835509_18671` (clean split from R1/R1b — no ts-filter needed; the
+Task-4 fix worked as designed). Realized (from `r2_` ledger rows):
+
+| gate | realized | frozen | verdict |
+|---|---|---|---|
+| usable (weak_ok + strong_ok) | 31/48 = 64.6% | >=50% | PASS |
+| $/usable-label | $0.00018 | <=$0.00025 | PASS |
+| dedup rejects | 3% | <=30% | PASS |
+| spend | $0.00543 | <=$0.10 | PASS |
+| item yield | 48/97 = 49% | >=60% | FAIL |
+| both_fail | 17/48 = 35.4% | <=35% | FAIL (0.42pp) |
+
+Root-cause fixes verified working: weak_ok 20%->60% (the dominant win: labeler
+no longer truncates + asks for "Final answer:" lines); escalation rate 81%->40%
+(strong calls 19 vs 82); $/usable-label $0.00037->$0.00018; unpriced calls 0.
+
+Residual failures, honestly:
+- Item yield fell 81%->49%: not_json rejects tripled (36/97). The formatted
+  taxonomy-conditioned prompts push glm-5.3-flash off strict-JSON output more
+  often (new domain/style heads change the output distribution). The strict
+  parser's fenced-block recovery helps but does not fully cover it.
+- both_fail 35.4% vs 35% gate: essentially at the line; the labeler-side fixes
+  worked, the remaining both_fail is generator capability (questions whose
+  single answer neither tier produces verbatim under exact_match).
+
+Verdict per prereg discipline: PARTIAL PASS. Primary economics gates (usable,
+$/label) PASS decisively; the two failing gates are generator-side, not
+pipeline-side. R3 prereg must attack: (a) generator JSON compliance under
+taxonomy conditioning (one-line system-message "STRICT JSON only" or
+response_format=json_object if glm supports it), (b) exact_match brittleness
+(consider normalized-token-set overlap as a verifier type in a NEW prereg —
+never silently retune). Pair stays glm/v4-flash: qwen family confirmed blocked
+(404 on qwen3.5-flash-02-23 AND qwen3.8-flash, 2026-09-07 smoke).
