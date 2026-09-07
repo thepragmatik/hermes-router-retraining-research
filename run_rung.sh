@@ -43,9 +43,14 @@ fi
 
 echo "rung runner: weak=$WEAK_MODEL strong=$STRONG_MODEL cap=\$${SPEND_CAP_USD}"
 
-/usr/bin/python3 experiments/gen_factory/generate_items.py "$@"
+# Derive RUNG from the --rung CLI arg (R1b lesson: env RUNG drifted from the
+# arg actually passed to generate_items.py); fall back to env, then 1.
+RUNG="$(/usr/bin/python3 -c "import sys; a=sys.argv[1:]; print(a[a.index('--rung')+1] if '--rung' in a else '1')" "$@" 2>/dev/null || echo 1)"
+BATCH_SALT="$(date +%s)"
+
+/usr/bin/python3 experiments/gen_factory/generate_items.py "$@" --batch-salt "$BATCH_SALT"
 /usr/bin/python3 experiments/gen_factory/cascade_label.py \
-  "evidence/gen_factory/items_batch${RUNG:-1}.jsonl"
+  "evidence/gen_factory/items_batch${RUNG}.jsonl"
 /usr/bin/python3 experiments/gen_factory/ledger_report.py
 
 echo "RUNG COMPLETE — see evidence/gen_factory/ledger_report.md"

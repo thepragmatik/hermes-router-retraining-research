@@ -158,6 +158,13 @@ def _utcnow_iso():
     return _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def _batch_id(rung, seed_base):
+    """Rung- and rerun-unique batch id (R1b lesson: bare seed collided across
+    reruns, forcing a ts-filter split in the ledger report)."""
+    return "r%d_b%d_%d" % (rung, 1000 + 7919 * rung + seed_base,
+                           seed_base % 100000)
+
+
 def _sha16(text):
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
 
@@ -232,7 +239,7 @@ def generate_batch(rung, n_items, model, api_key, seed_base, call_fn=None,
         corpus_encode_fn = encode_fn
 
     batch_seed = 1000 + 7919 * rung + seed_base
-    batch_id = "r%d_b%d" % (rung, batch_seed)
+    batch_id = _batch_id(rung, seed_base)
     os.makedirs(ITEMS_DIR, exist_ok=True)
     items_path = os.path.join(ITEMS_DIR, "items_batch%d.jsonl" % rung)
     dedup_path = os.path.join(ITEMS_DIR, "dedup_log.jsonl")
@@ -327,6 +334,7 @@ def main(argv=None):
         ap.add_argument("--rung", type=int, required=True)
         ap.add_argument("--n", type=int, required=True)
         ap.add_argument("--model", required=True)
+        ap.add_argument("--batch-salt", type=int, default=0)
         args = ap.parse_args(argv)
     except SystemExit:
         return 2
@@ -338,7 +346,7 @@ def main(argv=None):
         return 2
     accepted = generate_batch(rung=args.rung, n_items=args.n,
                               model=args.model, api_key=api_key,
-                              seed_base=0)
+                              seed_base=args.batch_salt)
     print("accepted=%d rejected-see=gen_rejects_batch%d.jsonl"
           % (len(accepted), args.rung))
     return 0

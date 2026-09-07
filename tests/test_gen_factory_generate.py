@@ -74,7 +74,9 @@ def test_happy_path_verifier_item_accepted_sha16(env):
     assert item["gen_model"] == "test/gen"
     # deterministic seed derivation: batch_seed = 1000 + 7919*rung + seed_base
     batch_seed = 1000 + 7919 * 0 + 17
-    assert item["seed"] == batch_seed and item["batch_id"] == "r0_b%d" % batch_seed
+    assert item["seed"] == batch_seed
+    # R2 salted batch id: r<rung>_b<batch_seed>_<seed_base%100000>
+    assert item["batch_id"] == "r0_b%d_%d" % (batch_seed, 17)
     assert item["ts"].endswith("Z") and "T" in item["ts"]
 
 
