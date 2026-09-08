@@ -405,3 +405,46 @@ than a hard stop. Options for R5 (each needs a fresh prereg, none pre-authorized
 its own item before acceptance), (b) raise strong-tier max_tokens beyond 700 for
 escalations only, (c) enforce token_set via post-hoc re-verification rather than
 prompt preference. Spend this rung: $0.00776. Cumulative arc spend: ~$0.037.
+
+## R5 prereg — answer-key self-consistency validation (frozen before the run)
+
+Rung 5, n=100, spend cap $0.10, pair unchanged (glm weak / v4-flash strong).
+
+Primary gate:
+1. **wrong-key rate <= 10%**: hand-audit a random sample of >= 15 accepted
+   numeric_tol items by independent recomputation; fraction with wrong keys
+   must be <= 10% (R4 baseline unmeasured but >= 1 in ~29 sampled; treat R4
+   as broken — this is the primary R5 gate).
+
+Mechanism: after an item passes shape + self_verifier gates, the same
+generator model (z-ai/glm-5.3-flash) re-solves its own question K=3 times
+independently (fresh seeds). The item's key is accepted ONLY if >= 2 of 3
+solves pass the item's own verifier on the solve's final-answer region
+(majority agreement, strict >= 2). Otherwise reject with reason
+`key_inconsistent` (raw item captured, 400-char cap, via the R4 reject
+capture).
+
+Supporting gates (frozen):
+2. item yield >= 50% (RELAXED from 60%, pre-registered: key validation
+   rejects valid-but-hard items; yield is the price of key trust, not the
+   goal).
+3. usable >= 50% (hold).
+4. both_fail <= 35% (hold; unchanged variable set — NOT fixed this rung).
+5. $/usable-label <= $0.00050 (RELAXED from $0.00025, pre-registered: K=3
+   extra weak calls per surviving candidate roughly triples generation cost,
+   est ~$0.02/run; relaxation is honest and frozen before the run).
+6. spend <= $0.10.
+
+Kill criterion: if the wrong-key rate > 10% (self-consistency does not fix
+the key problem), the self-consistency lever is declared INSUFFICIENT and
+the operator chooses between (i) cross-model key validation (strong tier
+re-solves keys, ~3x cost again), (ii) abandoning generator-generated keys
+entirely (labels come only from real outcomes, per plan 010's shadow-tap
+design), or (iii) stopping the pivot.
+
+Honest limitation: self-consistency filters *noise*, not *systematic* errors.
+If the model reliably computes the same wrong value, the wrong key passes the
+majority vote. That is why R5 also measures the wrong-key rate directly
+(gate 1) instead of assuming the fix works. The R4 PPV item (key 25.8% vs
+true 78.3%) is the reference probe: re-check whether it (or items like it)
+survive K=3 validation.
