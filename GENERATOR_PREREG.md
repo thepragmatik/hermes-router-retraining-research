@@ -568,3 +568,69 @@ remain available; recommend scaled batches use the R5 strict gate
 caps are not binding at current costs.
 
 NEXT DECISION (operator): scaled batch (R7) vs stop.
+
+## R7 prereg (frozen 2026-09-08, BEFORE the run)
+
+Rung label: **R7a — strict-gate-only**. SOLVE_PROMPT lever NOT included
+(R7-1 forensics did not meet the >=60% bucket-(a) threshold; see tally).
+
+### R7-1 forensics (evidence/gen_factory/gen_rejects_batch6.jsonl, 33 key_inconsistent rows)
+
+Hand-classification with independent arithmetic recomputation of every
+numeric key:
+
+- (a) weak-model recompute failure (generator key verifiably CORRECT, K=3
+  solves disagreed): 7/33 = 21%
+  Examples: #15 bracelet cost (key 7296 = 120x60 + 72x1 + 48x0.5, correct);
+  #20 revenue 40000x1.1x0.9 = 39600 (key correct); #22 awk sum 4096+5120 =
+  9216 (key correct); #24 file count = 3 (key correct); #26 procedure
+  ((10+5)x2-6)/2 = 12 (key correct); #28 RMS sqrt(4.2^2+1.8^2+0.6^2) =
+  4.609 (key 4.61 correct).
+- (b) key genuinely WRONG (independent recompute contradicts the declared
+  key): 10/33 = 30%
+  Examples: #17 composition — true answer 2^63 - 11 = 9223372036854775797,
+  declared key 145 (garbage); #19 h(2) = f(g(2)) + g(f(2)) = 2 + 7 = 9,
+  declared key 22; #30 bakery 42 - 24 = 18, declared key 15; #33 salt
+  (8 + 3)/(100 - 10) x 100 = 12.2%, declared key 14; #13 find -delete
+  deletes 500 + 1500 = 2000 bytes, declared key 2500; #1 solar array
+  0.4x39 - 9 = 6.6, declared key 14.2; #7 iterate (2x+3)/2 thrice from 4 =
+  8.5, declared key 17.375; #11 collatz step count 1001 implausible;
+  #12 volume cascade ~194.7, declared key 381.15; #18 theme count order
+  10^8, declared key 14280.
+- (c) wording/ambiguity (question underdetermined, multi-part string form,
+  or _norm brittleness): 16/33 = 48%
+  Examples: #27 code already correct (returns 12) — question
+  self-contradictory; #25/#21 buggy-code questions whose "fix" answers are
+  ill-posed; #16 tar-flags answer to a size question; #5 symlink count
+  ambiguity; #3/#14/#23/#32 phrase-form answers under _norm; #8/#4/#10
+  underdetermined numerics.
+
+Decision rule (from the R7 plan): >=60% (a) -> include SOLVE_PROMPT lever;
+>=60% (b) -> strict-gate-only, label R7a. Actual: NO bucket >= 60% (max 48%)
+-> mixed case -> conservative default R7a (strict gate, no prompt change).
+
+### R7a config (frozen)
+
+- n=100, spend cap $0.10, GEN_JSON_MODE=1, weak model z-ai/glm-5.3-flash,
+  strong deepseek/deepseek-v4-flash (unchanged).
+- Key gate: R5-strict verifier-only pass in _key_consistent (R6 Variant A
+  string-agreement arm REMOVED); majority >=2 of K=3 unchanged.
+- SOLVE_PROMPT: UNCHANGED from R6 (single-shot lever skipped per R7-1).
+- Everything else (json mode, max_tokens 700, salted batch ids, dedup 0.85,
+  spend gate) unchanged from the accepted R6 pipeline.
+
+### Gates (frozen)
+
+1. item yield >= 50%
+2. wrong-key <= 5% (hand-audit of ALL numeric_tol accepted items,
+   independently recomputed)
+3. usable >= 50%
+4. both_fail <= 35%
+5. $/usable <= $0.00050
+6. spend <= $0.10
+
+### Pre-registered FAIL handling
+
+- yield FAIL with integrity gates holding -> informational only; stop rule
+  already accepted at R6; ladder closed either way.
+- wrong-key FAIL -> revert to R6 config and STOP. NO R8.
