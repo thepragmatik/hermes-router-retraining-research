@@ -483,3 +483,47 @@ Next-rung decision (R6) per operator standing instruction, options:
 (a) accept 18% yield, run scaled batch (yield is a cost problem: at
 18% yield and $0.000062/usable, 2,000 usable labels ~ $0.12, viable);
 (b) one more rung attacking not_json (json_mode probe); (c) stop.
+
+## R6 prereg (2026-09-08, rung 6 — gates frozen BEFORE any code change)
+
+Targets the single R5 FAIL gate: item yield 18% -> >=50%, without weakening
+the wrong-key integrity guarantee. Reject forensics on
+`gen_rejects_batch5.jsonl` (81 rejects): key_inconsistent 38, not_json 34
+(all with empty detail), verifier_shape 6, self_verifier 3. Two levers, one
+run: (1) not_json observability + generation budget (raw output captured on
+parse failure, max_tokens 500 -> 900, GEN_JSON_MODE=1 probe), (2) key-gate
+consistency signal (Variant A below, frozen here).
+
+**Frozen lever 2 — Variant A:** `_key_consistent` (K=3) counts a solve as
+passing if EITHER (a) the item's verifier passes on the solve's
+final-answer region (R5 behavior, unchanged), OR (b) the solve's
+final-answer string is `_norm`-equal (verifiers._norm) to the item's
+declared `answer`. Majority requirement unchanged: >=2 of K=3. Rationale:
+the sampled key_inconsistent rejects are mostly correct keys whose same-
+model solves fail only on verifier type/phrasing; string agreement with the
+DECLARED key still requires 2-of-3 independent solves, which is exactly the
+wrong-key check. Variant B (K=5) is NOT chosen. Residual risk: a modal
+wrong solve agreeing with a wrong declared key passes; mitigation is gate 1
+(hand audit, primary) with pre-registered revert of the agreement lever if
+wrong-key >10%.
+
+Gates (frozen, continuity with R5):
+
+1. wrong-key hand-audit rate <=10% on ALL accepted items (audit procedure
+   identical to R5: recompute every key) — PRIMARY
+2. item yield >=50%
+3. usable >=50%
+4. both_fail <=35%
+5. $/usable <= $0.00050
+6. spend <= $0.10
+
+Pre-registered stop rule (no third yield rung): if R6 yield is still <50%
+BUT wrong-key stays <=10% and $/usable <= $0.00050, recommend accepting the
+pipeline as-is (R5 option (a): scaled batches viable at ~$0.000062/usable
+even at 18% yield) and STOP the yield ladder. If wrong-key >10%, the
+agreement signal weakened integrity: `git revert` the Variant A commit and
+re-run gates on the reverted code before any further decision.
+
+GEN_JSON_MODE probe deferred to orchestrator (no live API calls from this
+task); both outcomes pre-registered: probe OK -> run R6 with GEN_JSON_MODE=1
+in run_rung.sh; HTTPError 400 -> leave unset, record in R6 outcome.
