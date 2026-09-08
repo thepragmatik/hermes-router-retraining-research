@@ -1,0 +1,54 @@
+{
+ "G1": {
+  "per_regime": {
+   "L1": {
+    "mean_abs_err_drl0": 0.002037561605886884,
+    "mean_abs_err_v1": 0.0023400359754267796,
+    "passes": true
+   },
+   "L2": {
+    "mean_abs_err_drl0": 0.0013775726472912476,
+    "mean_abs_err_v1": 0.00114262417751817,
+    "passes": true
+   },
+   "L3": {
+    "mean_abs_err_drl0": 0.0010342299236802965,
+    "mean_abs_err_v1": 0.0006583653229355168,
+    "passes": true
+   }
+  },
+  "regimes_pass": 3,
+  "required": 2,
+  "tripwire_ok": true,
+  "passed": true
+ },
+ "G2": {
+  "econ_wins": 10,
+  "rank_wins": 8,
+  "required": 8,
+  "passed": true
+ },
+ "G3": {
+  "mean_Q_best": 0.6364130434782609,
+  "mean_C_best": 0.0013794666542119565,
+  "oracle_Q": 0.670516304347826,
+  "oracle_Cmin": 0.00035092697010869573,
+  "bars": {
+   "Q_needed": 0.6503141983695652,
+   "C_needed": 0.0008866668308423913
+  },
+  "numeric_pass": false,
+  "materiality_pass": false,
+  "passed": false,
+  "branch": "none"
+ },
+ "G4": {
+  "passed": true,
+  "note": "carried from first run: zero-overlap flagged 10/10, fallback==V1 (see stage0_results.json adversarial); support/fallback identical in corrected run (same thresholds, same code path)"
+ },
+ "G5": {
+  "passed": true
+ },
+ "correction_consumed": true,
+ "all_passed": false
+}
