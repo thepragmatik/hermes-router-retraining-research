@@ -41,7 +41,9 @@ GEN_MODEL_TAG = "BAAI/bge-small-en-v1.5"
 GEN_PROMPT = """You generate ONE {domain} question for a model-routing benchmark. \
 Difficulty: {difficulty}. Style seed: {style}. \
 Emit STRICT JSON: {{"question": "...", "answer": "...", "verifier": {{"type": \
-"exact_match"|"numeric_tol", "value": ...}}}}. The question must be \
+"exact_match"|"numeric_tol", "value": ...}}}}. Prefer verifiers of type token_set when \
+the expected answer is a phrase or sentence; use numeric_tol for numbers; \
+exact_match only for short single tokens. The question must be \
 self-contained, have ONE defensible answer, and be answerable in <= 200 words. \
 No meta commentary."""
 
