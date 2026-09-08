@@ -29,7 +29,15 @@ The previous experiment family did not pass. Do not rerun those failed approache
 
 You are explicitly expected to **write and run research/experiment code**, commit results, and make decisions. Production integration into the parent Hermes runtime is out of scope; a successful research result may be recommended for shadow evaluation.
 
-Execute `STACKABLE_ROUTING_MISSION.md` as the source of truth. In particular:
+Execute `STACKABLE_ROUTING_MISSION.md` as the source of truth.
+
+### Current frontier reference
+
+As of **2026-09-08**, OpenAI's latest released frontier model is **GPT-6 Astra**. Treat Astra as the current OpenAI frontier comparator/escalation target **if it is actually available through your provider/API and compatible with the mission's ZDR, access, and spend constraints**.
+
+Before any live use, verify and record the current Astra model ID, provider, availability, pricing, and latency. Do not assume historical `gpt-4-1106-preview` labels are Astra labels; the old pair remains historical benchmark evidence only. If Astra is unavailable or non-compliant, substitute the strongest compliant frontier model and document the substitution. Refresh this frontier reference at execution time rather than assuming Astra will remain the latest forever.
+
+In particular:
 
 - create the mission/data/cost ledgers first;
 - preserve the sealed RouterBench test boundary;
@@ -64,4 +72,4 @@ At completion, produce `PIVOT_FINAL_RECOMMENDATION.md` and choose exactly one pr
 
 A negative answer is a valid successful mission if the evidence shows that a simpler fixed-model/workflow strategy is economically superior.
 
-Begin now with the mission ledger, artifact inventory, development/qualification freeze, current model-cost snapshot, baseline reproduction, and P0 model-pool audit.
+Begin now with the mission ledger, artifact inventory, development/qualification freeze, current model-cost snapshot, current frontier verification (Astra if accessible), baseline reproduction, and P0 model-pool audit.
