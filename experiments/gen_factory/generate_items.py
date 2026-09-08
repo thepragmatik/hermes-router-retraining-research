@@ -293,10 +293,12 @@ def generate_batch(rung, n_items, model, api_key, seed_base, call_fn=None,
             reject("empty_question")
             continue
         if not _verifier_shape_ok(item["verifier"]):
-            reject("verifier_shape")
+            reject("verifier_shape",
+                   json.dumps(item, sort_keys=True)[:400])
             continue
         if not _self_verifier_ok(item):
-            reject("self_verifier")
+            reject("self_verifier",
+                   json.dumps(item, sort_keys=True)[:400])
             continue
         item_id = _sha16(question)
 
