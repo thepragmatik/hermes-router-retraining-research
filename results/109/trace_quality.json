@@ -1,0 +1,85 @@
+{
+  "all_gates_pass": false,
+  "audit_timestamp_utc": "2026-09-08T19:23:46.047447Z",
+  "gates": {
+    "G-A": {
+      "detail": "missions=1 (sentinel; no mission_id field), stage decisions producible=0 (<500), mission/task types=0 (<3) \u2014 log has no mission/step identity",
+      "pass": false
+    },
+    "G-B": {
+      "detail": "0/69 rows (0%, need >=95%) carry step order/usable stage features; only 7 flat keys ['confidence', 'decision', 'engine', 'mode', 'prompt_id', 'threshold', 'ts']",
+      "pass": false
+    },
+    "G-C": {
+      "detail": "0/69 rows carry any outcome field (0%, need >=80% missions); no proxy with provenance",
+      "pass": false
+    },
+    "G-D": {
+      "detail": "0/69 rows carry tool/test/retry fields",
+      "pass": false
+    },
+    "join-key-floor": {
+      "detail": "0/69 rows carry content hash/session id; prompt_id hardcoded 0 (1 distinct value) \u2014 constitution IV floor fails",
+      "pass": false
+    }
+  },
+  "idea_id": "109-hermes-stage-router",
+  "other_sources_checked": [
+    {
+      "source": "launchd com.rath.router-shadow-v1 service logs",
+      "verdict": "operational logs only; no decision records (memo G2 confirmed)"
+    },
+    {
+      "source": "find /Users/rath/src *.jsonl + mission/trace/agentic log names",
+      "verdict": "no other Hermes mission/step trace source; gen_factory ledgers are single-turn synthetic, out of estimand"
+    },
+    {
+      "source": "RouterBench",
+      "verdict": "sealed; not loaded (FR-012)"
+    }
+  ],
+  "outcome_fidelity_class": "none \u2014 0 rows with any outcome join (constitution VI: no fidelity class applies; constitution IV: observability, not training data)",
+  "prereg": "results/109/PREREG.md",
+  "prereg_commit": "66b6f26ea3da0c67cef7ae2574190c2dbfb71d26",
+  "prior_evidence_consistency": {
+    "memo": "git show feat/generator-pivot-r0:results/V1_BASELINE_GAPS.md",
+    "memo_rows": "67 at memo, 68 by baseline commit",
+    "note": "one additional health/probe row since baseline; gaps unchanged and confirmed: G1 hardcoded prompt_id=0, G2 service never logs, G3 no content hash, G4 no outcome capture, G5 volume unrepresentative (one distinct prompt, health traffic)",
+    "rows_now": 69
+  },
+  "stage": "0A-trace-viability",
+  "trace_source": {
+    "confidence_histogram": {
+      "strong": 63,
+      "weak": 6
+    },
+    "distinct_values": {
+      "confidence_range": [
+        0.1018,
+        0.6014
+      ],
+      "decision": 2,
+      "engine": "v1_mf_router/router-v1-frozen/learned",
+      "mode": 1,
+      "prompt_id": 1,
+      "threshold": 1
+    },
+    "key_schema": [
+      "confidence",
+      "decision",
+      "engine",
+      "mode",
+      "prompt_id",
+      "threshold",
+      "ts"
+    ],
+    "path": "~/src/hermes-router-retraining-research/evidence/shadow/shadow_log.jsonl",
+    "rows": 69,
+    "sha256": "56c7060c4998f4be0c9905145944959e0548bad52e1e074ef177b08e0d97c7a8",
+    "ts_span_utc": [
+      "2026-09-06T09:25:39.860315+00:00",
+      "2026-09-08T10:30:31.878415+00:00"
+    ]
+  },
+  "verdict": "TRACE_DATA_INSUFFICIENT"
+}
