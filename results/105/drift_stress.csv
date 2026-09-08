@@ -1,0 +1,7 @@
+fixture,eval_n,cov,emp_risk,ks_p,alarm,action
+in-distribution control,11677,0.22385886785989553,0.004973221117061974,0.09591415409619553,False,keep
+task-mix reweight (3 families only),219,0.0,,3.2612432836220323e-10,True,reduce/disable envelope
+score-distribution shift (+0.05),11677,0.22951100453883702,0.009701492537313432,3.519460444688562e-231,True,reduce/disable envelope
+rare/OOD-like task families,30,0.4666666666666667,0.14285714285714285,3.638585200562667e-12,True,reduce/disable envelope
+score revision noise (sd=0.05),11677,0.22548599811595443,0.006836308393467528,5.003361850059937e-60,True,reduce/disable envelope
+manipulation: adversarial score push (+0.2),11677,0.208957780251777,0.0,0.0,True,reduce/disable envelope
