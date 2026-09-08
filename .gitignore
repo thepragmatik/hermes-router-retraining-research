@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+artifacts/104/*.npy
+artifacts/104/*.npz
+artifacts/104/*.parquet

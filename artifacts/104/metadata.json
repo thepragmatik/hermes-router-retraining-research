@@ -1,0 +1,15 @@
+{
+ "model": "HuggingFaceTB/SmolLM2-360M-Instruct",
+ "snapshot": "a10cc1512eabd3dde888204e902eca88bddb4951",
+ "layers_frozen": [
+  8,
+  24,
+  31
+ ],
+ "gen": {
+  "max_new_tokens": 16,
+  "greedy": true
+ },
+ "dtype": "float32",
+ "device": "cpu"
+}
