@@ -4,3 +4,4 @@ __pycache__/
 artifacts/104/*.npy
 artifacts/104/*.npz
 artifacts/104/*.parquet
+experiments/102/*.log
