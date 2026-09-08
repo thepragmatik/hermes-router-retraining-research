@@ -1,0 +1,208 @@
+/Users/rath/src/idea-worktrees/107-diversity-model-portfolio/experiments/107/stage0_portfolio.py:37: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B = {m: tr[m].fillna(0).astype(int).to_numpy() for m in models}
+/Users/rath/src/idea-worktrees/107-diversity-model-portfolio/experiments/107/stage0_portfolio.py:37: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B = {m: tr[m].fillna(0).astype(int).to_numpy() for m in models}
+/Users/rath/src/idea-worktrees/107-diversity-model-portfolio/experiments/107/stage0_portfolio.py:37: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B = {m: tr[m].fillna(0).astype(int).to_numpy() for m in models}
+/Users/rath/src/idea-worktrees/107-diversity-model-portfolio/experiments/107/stage0_portfolio.py:37: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B = {m: tr[m].fillna(0).astype(int).to_numpy() for m in models}
+/Users/rath/src/idea-worktrees/107-diversity-model-portfolio/experiments/107/stage0_portfolio.py:37: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B = {m: tr[m].fillna(0).astype(int).to_numpy() for m in models}
+/Users/rath/src/idea-worktrees/107-diversity-model-portfolio/experiments/107/stage0_portfolio.py:37: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B = {m: tr[m].fillna(0).astype(int).to_numpy() for m in models}
+/Users/rath/src/idea-worktrees/107-diversity-model-portfolio/experiments/107/stage0_portfolio.py:37: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B = {m: tr[m].fillna(0).astype(int).to_numpy() for m in models}
+/Users/rath/src/idea-worktrees/107-diversity-model-portfolio/experiments/107/stage0_portfolio.py:37: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B = {m: tr[m].fillna(0).astype(int).to_numpy() for m in models}
+/Users/rath/src/idea-worktrees/107-diversity-model-portfolio/experiments/107/stage0_portfolio.py:37: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B = {m: tr[m].fillna(0).astype(int).to_numpy() for m in models}
+/Users/rath/src/idea-worktrees/107-diversity-model-portfolio/experiments/107/stage0_portfolio.py:37: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B = {m: tr[m].fillna(0).astype(int).to_numpy() for m in models}
+/Users/rath/src/idea-worktrees/107-diversity-model-portfolio/experiments/107/stage0_portfolio.py:37: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  B = {m: tr[m].fillna(0).astype(int).to_numpy() for m in models}
+{
+ "n_train": 29193,
+ "n_models": 11,
+ "models": [
+  "mistralai/mistral-7b-chat",
+  "gpt-4-1106-preview",
+  "WizardLM/WizardLM-13B-V1.2",
+  "claude-instant-v1",
+  "claude-v1",
+  "claude-v2",
+  "gpt-3.5-turbo-1106",
+  "meta/code-llama-instruct-34b-chat",
+  "meta/llama-2-70b-chat",
+  "mistralai/mixtral-8x7b-chat",
+  "zero-one-ai/Yi-34B-Chat"
+ ],
+ "costs_per_call": {
+  "mistralai/mistral-7b-chat": 4.58e-05,
+  "gpt-4-1106-preview": 0.0032889,
+  "WizardLM/WizardLM-13B-V1.2": 7.3e-05,
+  "claude-instant-v1": 0.0002329,
+  "claude-v1": 0.0021428,
+  "claude-v2": 0.0024172,
+  "gpt-3.5-turbo-1106": 0.0002434,
+  "meta/code-llama-instruct-34b-chat": 0.0001722,
+  "meta/llama-2-70b-chat": 0.0002027,
+  "mistralai/mixtral-8x7b-chat": 0.0001347,
+  "zero-one-ai/Yi-34B-Chat": 0.0001855
+ },
+ "best_single_quality": {
+  "model": "gpt-4-1106-preview",
+  "acc": 0.6429,
+  "cost": 0.0032889
+ },
+ "cheapest_model": {
+  "model": "mistralai/mistral-7b-chat",
+  "acc": 0.2167,
+  "cost": 4.58e-05
+ },
+ "full_pool_oracle_quality": 0.7648,
+ "ref_pair": {
+  "models": [
+   "mistralai/mistral-7b-chat",
+   "zero-one-ai/Yi-34B-Chat"
+  ],
+  "oracle_quality": 0.585,
+  "oracle_cost": 9.73e-05
+ },
+ "selected_portfolio": [
+  "gpt-3.5-turbo-1106",
+  "gpt-4-1106-preview",
+  "zero-one-ai/Yi-34B-Chat"
+ ],
+ "portfolio_oracle_quality": 0.7126,
+ "portfolio_oracle_cost": 0.0004306,
+ "portfolio_all_called_cost": 0.0037178,
+ "G1": {
+  "q_gain_pp_vs_best_single": 6.967,
+  "cost_ratio_vs_best_single_allcalled": 1.13,
+  "cost_reduction_vs_ref_pair_at_matched_q": -342.79,
+  "pass": true
+ },
+ "G2": {
+  "marginals": [
+   {
+    "model": "gpt-3.5-turbo-1106",
+    "uniq_rescue_pp_after_prev": 49.217,
+    "cost_improvement_pct_after_prev": 0.0
+   },
+   {
+    "model": "gpt-4-1106-preview",
+    "uniq_rescue_pp_after_prev": 19.453,
+    "cost_improvement_pct_after_prev": -243.4
+   },
+   {
+    "model": "zero-one-ai/Yi-34B-Chat",
+    "uniq_rescue_pp_after_prev": 2.586,
+    "cost_improvement_pct_after_prev": 48.48
+   }
+  ],
+  "pass": true
+ },
+ "G3": {
+  "holdout_portfolio_oracle": 0.7135,
+  "holdout_best_single": 0.6482,
+  "captured_fraction": -5.5007,
+  "holdout_routed_cost": 0.0025766,
+  "cost_advantage_kept": true,
+  "pass": false
+ },
+ "G4": {
+  "bootstrap_top3_sets": [
+   [
+    "gpt-3.5-turbo-1106|gpt-4-1106-preview|zero-one-ai/Yi-34B-Chat",
+    200
+   ]
+  ],
+  "selected_in_bootstrap_pct": 100.0,
+  "leave_one_task_family_out_top": [
+   [
+    "gpt-3.5-turbo-1106|gpt-4-1106-preview|zero-one-ai/Yi-34B-Chat",
+    85
+   ],
+   [
+    "claude-instant-v1|gpt-4-1106-preview|mistralai/mistral-7b-chat",
+    1
+   ]
+  ],
+  "selected_in_tfo_of": "85/86",
+  "price_stress_selections": {
+   "price_x0.7": "gpt-4-1106-preview|mistralai/mistral-7b-chat|zero-one-ai/Yi-34B-Chat",
+   "price_x1.3": "gpt-4-1106-preview|mistralai/mistral-7b-chat|zero-one-ai/Yi-34B-Chat"
+  },
+  "leave_one_model_out_best3": {
+   "mistralai/mistral-7b-chat": "gpt-3.5-turbo-1106|gpt-4-1106-preview|zero-one-ai/Yi-34B-Chat",
+   "gpt-4-1106-preview": "claude-v2|gpt-3.5-turbo-1106|zero-one-ai/Yi-34B-Chat",
+   "WizardLM/WizardLM-13B-V1.2": "gpt-3.5-turbo-1106|gpt-4-1106-preview|zero-one-ai/Yi-34B-Chat",
+   "claude-instant-v1": "gpt-3.5-turbo-1106|gpt-4-1106-preview|zero-one-ai/Yi-34B-Chat",
+   "claude-v1": "gpt-3.5-turbo-1106|gpt-4-1106-preview|zero-one-ai/Yi-34B-Chat",
+   "claude-v2": "gpt-3.5-turbo-1106|gpt-4-1106-preview|zero-one-ai/Yi-34B-Chat",
+   "gpt-3.5-turbo-1106": "gpt-4-1106-preview|mistralai/mixtral-8x7b-chat|zero-one-ai/Yi-34B-Chat",
+   "meta/code-llama-instruct-34b-chat": "gpt-3.5-turbo-1106|gpt-4-1106-preview|zero-one-ai/Yi-34B-Chat",
+   "meta/llama-2-70b-chat": "gpt-3.5-turbo-1106|gpt-4-1106-preview|zero-one-ai/Yi-34B-Chat",
+   "mistralai/mixtral-8x7b-chat": "gpt-3.5-turbo-1106|gpt-4-1106-preview|zero-one-ai/Yi-34B-Chat",
+   "zero-one-ai/Yi-34B-Chat": "claude-instant-v1|gpt-3.5-turbo-1106|gpt-4-1106-preview"
+  }
+ },
+ "greedy_vs_bruteforce": {
+  "greedy_top3": [
+   "gpt-4-1106-preview",
+   "mistralai/mistral-7b-chat",
+   "zero-one-ai/Yi-34B-Chat"
+  ],
+  "bf_best3_by_objc": [
+   "gpt-4-1106-preview",
+   "mistralai/mistral-7b-chat",
+   "zero-one-ai/Yi-34B-Chat"
+  ],
+  "greedy_steps": [
+   {
+    "step": 1,
+    "added": "zero-one-ai/Yi-34B-Chat",
+    "obj_c": 0.50708
+   },
+   {
+    "step": 2,
+    "added": "gpt-4-1106-preview",
+    "obj_c": 0.66496
+   },
+   {
+    "step": 3,
+    "added": "mistralai/mistral-7b-chat",
+    "obj_c": 0.70302
+   }
+  ],
+  "match": true
+ },
+ "realizability_task_policy": {
+  "quality": 0.5972,
+  "cost": 0.0025926
+ },
+ "realizability_router": {
+  "router": "regularized-linear per-model correctness argmax (80/20)",
+  "models": [
+   "gpt-3.5-turbo-1106",
+   "gpt-4-1106-preview",
+   "zero-one-ai/Yi-34B-Chat"
+  ],
+  "holdout_quality": 0.2893,
+  "holdout_cost_per_row": 0.0025766
+ },
+ "fallback_if_one_model_down": {
+  "gpt-3.5-turbo-1106": {
+   "quality": 0.6893,
+   "cost": 0.0006755
+  },
+  "gpt-4-1106-preview": {
+   "quality": 0.6355,
+   "cost": 0.0001916
+  },
+  "zero-one-ai/Yi-34B-Chat": {
+   "quality": 0.6867,
+   "cost": 0.0008358
+  }
+ }
+}
