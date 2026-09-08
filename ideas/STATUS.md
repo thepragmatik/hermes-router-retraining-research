@@ -1,7 +1,7 @@
 # Router Innovation Program Status
 
 **Program branch:** `research/router-innovation-2026-09-08`  
-**Last updated:** initialize when orchestration begins.
+**Last updated:** 2026-09-08 23:33 AEST — orchestration started, Wave A worktrees bootstrapped (5 worktrees on branches 101/103/104/105/107).
 
 The orchestrator MUST update this table before/after launching child idea agents. Do not infer completion from commit count alone.
 
