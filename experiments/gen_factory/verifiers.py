@@ -113,6 +113,33 @@ def _verify_numeric_tol(verifier, answer_text):
     return abs(num - target) <= tol
 
 
+def _tokens(s):
+    """Lowercase [a-z0-9] tokens minus prereg stopwords (R4 token_set)."""
+    stop = {"the", "a", "an", "is", "are", "of", "to", "in", "and",
+            "or", "that", "it"}
+    return {w for w in re.findall(r"[a-z0-9]+", s.lower()) if w not in stop}
+
+
+def _verify_token_set(verifier, answer_text):
+    """Normalized token-set overlap >= threshold (default 0.8). Overlap is
+    measured on the verifier VALUE's tokens found in the answer's
+    final-answer region (set intersection / |value tokens|)."""
+    want = _tokens(str(verifier.get("value", "")))
+    if not want:
+        return False
+    if not isinstance(answer_text, str):
+        return False
+    got = _tokens(_final_region(answer_text))
+    overlap = len(want & got) / len(want)
+    thr = verifier.get("threshold", 0.8)
+    if isinstance(thr, bool) or not isinstance(thr, (int, float)):
+        return False
+    thr = float(thr)
+    if thr != thr:
+        return False
+    return overlap >= thr
+
+
 def run_verifier(verifier, answer_text):
     """Execute a verifier dict against an answer. Returns bool, never raises."""
     try:
@@ -123,6 +150,8 @@ def run_verifier(verifier, answer_text):
             return _verify_exact_match(verifier.get("value"), answer_text)
         if vtype == "numeric_tol":
             return _verify_numeric_tol(verifier, answer_text)
+        if vtype == "token_set":
+            return _verify_token_set(verifier, answer_text)
         return False
     except Exception:
         return False

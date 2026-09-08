@@ -210,11 +210,19 @@ def _strict_parse(text):
 def _verifier_shape_ok(verifier):
     if not isinstance(verifier, dict):
         return False
-    if verifier.get("type") not in ("exact_match", "numeric_tol"):
+    if verifier.get("type") not in ("exact_match", "numeric_tol", "token_set"):
         return False
     value = verifier.get("value")
-    if verifier["type"] == "exact_match":
+    vtype = verifier["type"]
+    if vtype == "exact_match":
         if not isinstance(value, str) or not value.strip():
+            return False
+    elif vtype == "token_set":
+        # string value; float threshold optional (R4 prereg: default 0.8)
+        if not isinstance(value, str) or not value.strip():
+            return False
+        thr = verifier.get("threshold", 0.8)
+        if isinstance(thr, bool) or not isinstance(thr, (int, float)):
             return False
     else:
         if isinstance(value, bool) or not isinstance(value, (int, float, str)):
