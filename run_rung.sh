@@ -34,6 +34,11 @@ esac
 export WEAK_MODEL="${WEAK_MODEL:-qwen/qwen3.7-flash}"
 export STRONG_MODEL="${STRONG_MODEL:-deepseek/deepseek-v4-flash}"
 
+# R6: GEN_JSON_MODE pass-through (default OFF — glm json_object support is
+# probe-gated; both outcomes pre-registered in GENERATOR_PREREG.md R6).
+# Set GEN_JSON_MODE=1 in the invoking environment to enable response_format.
+export GEN_JSON_MODE="${GEN_JSON_MODE:-}"
+
 # Pre-flight routeability smoke (R1b amendment): 2 calls/tier, aborts exit 3
 # before any generation spend if a tier 404s (e.g. the qwen3.7-flash class).
 if [ "${SMOKE_SKIP:-0}" != "1" ]; then
