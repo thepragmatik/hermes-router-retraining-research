@@ -1,81 +1,117 @@
-# AGENTS.md — execution entrypoint
+# AGENTS.md — Router Innovation Program entrypoint
 
-## Active mission
+## Active mission on this branch
 
-This repository is in the **stackable trust-and-escalation pivot** phase.
+This branch is the **2026-09-08 Router Innovation Program**. The previous stackable-uplift mission is historical evidence: its uplift experiments mostly failed, V1 remains the useful frozen control, and later operational/shadow/generator work exposed additional data-quality gaps.
 
-The previous router experiment family did not pass its gates. Do not rerun failed weak-correctness/FEV, symmetric-judge, semantic-cluster, or related approaches unchanged.
+Do **not** execute the old `STACKABLE_ROUTING_MISSION.md` as the active mission on this branch.
 
-### Canonical source of truth
+## Canonical entrypoints
 
-**Execute [`STACKABLE_ROUTING_MISSION.md`](STACKABLE_ROUTING_MISSION.md) to completion.**
+For an orchestrator over the whole research program, execute:
 
-That file defines the objective, data controls, experiment sequence, cost/quality gates, stackability rules, stop rules, deliverables, and final promotion decisions. If this file and another historical document disagree, the canonical mission wins unless the project operator explicitly changes it.
+**[`ideas/META_PROMPT.md`](ideas/META_PROMPT.md)**
 
-For a ready-to-paste launch instruction, see [`LAUNCH_AGENT_PROMPT.md`](LAUNCH_AGENT_PROMPT.md).
+For a human-readable idea/dependency index, read:
 
-## Read order
+**[`ideas/README.md`](ideas/README.md)**
 
-1. [`STACKABLE_ROUTING_MISSION.md`](STACKABLE_ROUTING_MISSION.md)
-2. [`memo/2026-09-06_pivot-stackable-gains.md`](memo/2026-09-06_pivot-stackable-gains.md)
-3. [`evidence/pivot-source-ledger.md`](evidence/pivot-source-ledger.md)
-4. [`DATASETS.md`](DATASETS.md)
-5. historical memos/experiments only as needed to avoid repeating failed work
+For program status during execution, maintain:
 
-## Mission premise
+**[`ideas/STATUS.md`](ideas/STATUS.md)**
 
-Do **not** ask one prompt-only classifier to predict the whole routing decision before useful evidence exists.
+The Spec Kit roadmap is:
 
-Instead:
+**[`specs/router-innovation-2026-09-08/roadmap.md`](specs/router-innovation-2026-09-08/roadmap.md)**
 
-1. use the best economical cheap tier;
-2. let it produce an answer;
-3. gather cheap answer-aware evidence;
-4. stack only evidence/interventions that add independent value;
-5. use a mid-tier/specialist when it pays;
-6. escalate to frontier only for unresolved cases;
-7. convert recurring frontier rescues into cheap-tier capability where possible;
-8. for Hermes agents, test whether strong intelligence is needed only at particular workflow stages.
+The governing constitution is:
 
-The unit of progress is **marginal end-to-end quality/cost improvement**, not router classifier accuracy.
+**[`.specify/memory/constitution.md`](.specify/memory/constitution.md)**
 
-## Research code is required
+## Individual idea execution
 
-You are expected to implement and run research/experiment code: audits, generation/resampling, verifiers, hidden-state/logit probes, cascade simulations, cost models, targeted fine-tuning, agent-trace replay, tables, plots, and reproducibility checks.
+Each idea has its own independent GitHub Spec Kit package under `specs/<idea>/` containing:
 
-Production integration into `thepragmatik/hermes-pi-agentic-stack` is **not** part of this research mission. A winning design may be recommended for controlled shadow evaluation.
+- `spec.md`
+- `plan.md`
+- `tasks.md`
+- `PROMPT.md`
+
+Use the idea's `PROMPT.md` to launch a dedicated execution agent. Do not ask one child agent to implement the entire nine-idea program in a single context.
+
+Ideas:
+
+1. `101-counterfactual-shadow-telemetry`
+2. `102-doubly-robust-uplift-router`
+3. `103-bayesian-semantic-memory`
+4. `104-whitened-latent-gain-probe`
+5. `105-conformal-safety-envelope`
+6. `106-sequential-voi-controller`
+7. `107-diversity-model-portfolio`
+8. `108-multifidelity-synthetic-real`
+9. `109-hermes-stage-router`
+
+## Research premise
+
+The next gains should come from changing at least one of:
+
+- the **information/data-generating process** (identified shadow telemetry, real outcomes);
+- the **decision mathematics** (causal uplift, uncertainty/risk control, VOI);
+- the **representation/evidence source** (measured semantic memory, true hidden states);
+- the **candidate model pool** (complementarity rather than leaderboard quality);
+- the **fidelity mix** (synthetic as prior, real as authority);
+- the **unit of routing** (agent workflow stage instead of whole prompt).
+
+Do not merely build a larger prompt classifier.
 
 ## Non-negotiables
 
-- RouterBench **test remains SEALED**. Never access it.
-- Use train-only development / the pivot-holdout protocol for iterative experimentation; reserve historical validation for finalists as specified in the canonical mission.
-- Default paid spend is **$0**. Paid work is fail-closed behind the explicit spend gate and remains under the mission cap unless the operator changes it.
-- Preserve required ZDR/provider behavior with no silent fallback.
-- Do not treat external datasets/model pairs as local exact-pair truth; follow `DATASETS.md`.
-- Do not assume gains add. Measure composition and error overlap.
-- Do not keep a layer because it is elegant or literature-supported; keep it only if it moves the measured frontier or retires a material risk.
-- Prefer a simple paying stack over a complex redundant one.
-- Record model IDs, provider, current prices, seeds, data hashes/revisions, commands, environment, spend, latency, and validation exposures.
-- Do not stop at a new memo. The mission requires experiments, results, economics, repository artifacts, and a final decision.
+- RouterBench test remains **SEALED**.
+- V1 remains the mandatory control where applicable; do not modify its frozen weights/threshold to make a new idea pass.
+- Historical validation is finalists-only; use train-only development/holdout and record exposures.
+- Default paid spend is **$0**. No child prompt currently authorizes paid calls.
+- Paid work requires a fresh preregistration, current model/provider prices, explicit cap, fail-closed authorization and an explanation of why cheaper evidence is exhausted.
+- Synthetic labels are not real truth.
+- Deterministic historical shadow logs without known propensities do not become unbiased counterfactual data after the fact.
+- Semantic cluster→fixed model routing remains retired.
+- Generic symmetric LLM judge supervision, entropy-only acquisition, naive disagreement routing and larger embedding/classifier reruns remain retired unless a spec demonstrates materially new information/identification.
+- Every idea must pass its own cheap falsification gate before expensive implementation.
+- A failed gate is evidence. Do not relax it after seeing results.
+- Stack only independently qualified components and measure marginal contribution/error overlap.
+- Current model IDs/prices/provider/privacy constraints must be refreshed at execution time.
+- Any user-text-driven routing candidate must receive basic adversarial cost-manipulation testing before promotion.
 
-## First actions
+## Recommended orchestration order
 
-1. Create `MISSION_LOG.md` and the machine-readable cost/frontier/error-overlap ledgers required by the canonical mission.
-2. Inventory mounted artifacts and freeze the development/qualification protocol.
-3. Refresh current model/provider prices and constraints.
-4. Reproduce available baselines.
-5. Run **P0 — model-pool audit**.
-6. Run **P1 — adaptive cheap inference** and **P2 — deterministic verification** before training another router/probe.
-7. Proceed through the mission gates until a final economic decision is reached.
+Wave A, mostly parallel and $0:
 
-## Final decision
+- 101 Stage 0 telemetry/OPE simulator;
+- 107 model-pool audit;
+- 103 semantic performance memory;
+- 104 latent feasibility/Stage 0;
+- 105 safety envelope on V1/current scores.
 
-At completion choose exactly one primary outcome from the canonical mission:
+Wave B:
 
-- **STACK WORKS — PROMOTE TO HERMES SHADOW**
-- **PARTIAL STACK — KEEP ONLY PAYING LAYERS**
-- **MODEL-POOL PIVOT**
-- **AGENTIC-ONLY PIVOT**
-- **ROUTING NOT ECONOMIC**
+- 102 retrospective Stage 0, then real phase only after 101 data exists;
+- 108 retrospective transfer test, then real phase only after 101;
+- 105 may wrap independently qualified finalists.
 
-A negative result is a successful mission if it is reproducible and shows that a simpler strategy is economically better.
+Wave C:
+
+- 106 only after at least two actions/signals independently pay;
+- 109 whenever Hermes trace viability permits; it is a separate estimand.
+
+## Definition of done
+
+The program is complete when all runnable ideas have converged to their exact spec-defined status and the orchestrator produces an integration recommendation identifying:
+
+- what qualified;
+- what was killed;
+- what is stackable vs mutually exclusive;
+- the current best single-turn routing architecture/model pool;
+- the current best agentic-stage strategy;
+- total evidence/spend;
+- and the exact next Hermes shadow action—or a recommendation to stop router work.
+
+A negative program conclusion is valid if the evidence shows a simpler model/workflow policy is superior.
