@@ -1,0 +1,12 @@
+holdout rows 5838
+{'kind': 'prefix', 'mean_jaccard': 0.6911436720892299, 'mean_post_delta': 0.0371742202341924, 'route_flip_pp': 7.005823912298732, 'route_flip6_pp': 0.34258307639602603, 'baseline_flip_pp': 9.07845152449469, 'mean_neff_base': 13.809264514147316, 'mean_neff_pert': 13.736174079501167, 'frac_flip_with_support_drop': 0.5794621026894865}
+{'kind': 'suffix', 'mean_jaccard': 0.8586114919364309, 'mean_post_delta': 0.018422607298123547, 'route_flip_pp': 5.0359712230215825, 'route_flip6_pp': 0.17129153819801302, 'baseline_flip_pp': 9.07845152449469, 'mean_neff_base': 13.809264514147316, 'mean_neff_pert': 13.869397964041378, 'frac_flip_with_support_drop': 0.2653061224489796}
+{'kind': 'format', 'mean_jaccard': 1.0, 'mean_post_delta': 2.1054031110164658e-09, 'route_flip_pp': 0.0, 'route_flip6_pp': 0.0, 'baseline_flip_pp': 9.07845152449469, 'mean_neff_base': 13.809264514147316, 'mean_neff_pert': 13.809264507449706, 'frac_flip_with_support_drop': nan}
+{'kind': 'meta', 'mean_jaccard': 0.6382659235235845, 'mean_post_delta': 0.03897417140222765, 'route_flip_pp': 11.288112367249058, 'route_flip6_pp': 0.2398081534772182, 'baseline_flip_pp': 9.07845152449469, 'mean_neff_base': 13.809264514147316, 'mean_neff_pert': 13.8254177821095, 'frac_flip_with_support_drop': 0.4385432473444613}
+     kind  mean_jaccard  ...  mean_neff_pert  frac_flip_with_support_drop
+0  prefix      0.691144  ...       13.736174                     0.579462
+1  suffix      0.858611  ...       13.869398                     0.265306
+2  format      1.000000  ...       13.809265                          NaN
+3    meta      0.638266  ...       13.825418                     0.438543
+
+[4 rows x 9 columns]
