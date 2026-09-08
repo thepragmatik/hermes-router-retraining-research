@@ -194,12 +194,15 @@ def _sha16(text):
 def _strict_parse(text):
     """Strict parse with one retry: on failure, retry once on the largest
     ```json-fenced block (generators routinely wrap JSON in fences despite
-    the no-meta instruction). None on any failure. Never raises."""
+    the no-meta instruction). Returns (item, raw_text): (dict, None) on
+    success, (None, text) on failure so the caller can capture the raw
+    output in the reject row. Never raises."""
     if not isinstance(text, str):
-        return None
+        return None, None
     try:
         obj = json.loads(text.strip())
-        return obj if isinstance(obj, dict) else None
+        return (obj if isinstance(obj, dict) else None,
+                None if isinstance(obj, dict) else text)
     except Exception:
         pass
     # retry: prefer the LAST fenced block (final answer), else first/last
@@ -208,17 +211,18 @@ def _strict_parse(text):
         try:
             obj = json.loads(candidate.strip())
             if isinstance(obj, dict):
-                return obj
+                return obj, None
         except Exception:
             continue
     s, e = text.find("{"), text.rfind("}")
     if s != -1 and e > s:
         try:
             obj = json.loads(text[s:e + 1])
-            return obj if isinstance(obj, dict) else None
+            return (obj if isinstance(obj, dict) else None,
+                    None if isinstance(obj, dict) else text)
         except Exception:
-            return None
-    return None
+            return None, text
+    return None, text
 
 
 def _verifier_shape_ok(verifier):
@@ -327,9 +331,10 @@ def generate_batch(rung, n_items, model, api_key, seed_base, call_fn=None,
         except Exception:
             reject("exception")
             continue
-        item = _strict_parse(text)
+        # R6: (item, raw_text) — raw text threaded out for not_json capture
+        item, raw_text = _strict_parse(text)
         if item is None:
-            reject("not_json")
+            reject("not_json", (raw_text or "")[:400])
             continue
         missing = [k for k in ("question", "answer", "verifier")
                    if k not in item]
