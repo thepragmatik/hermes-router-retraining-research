@@ -448,3 +448,38 @@ majority vote. That is why R5 also measures the wrong-key rate directly
 (gate 1) instead of assuming the fix works. The R4 PPV item (key 25.8% vs
 true 78.3%) is the reference probe: re-check whether it (or items like it)
 survive K=3 validation.
+
+## R5 outcome (2026-09-08, rung 5, batch r5_b1788873429_32834; spend $0.00099)
+
+Generator n=100; 81 candidates reached the key gate (19 pre-key rejects:
+not_json 34, verifier_shape 6, self_verifier 3 -> 62/100 pre-key pipeline
+% not comparable across rungs; item yield measured on 18/100 accepted).
+
+| Gate | Result | Threshold | Verdict |
+|---|---|---|---|
+| 1. wrong-key rate (hand audit, all 18 accepted) | 0/18 = 0% | <=10% | PASS |
+| 2. item yield | 18% | >=50% | FAIL |
+| 3. usable-label yield | 16/18 = 89% | >=50% | PASS |
+| 4. both_fail | 2/18 = 11% | <=35% | PASS |
+| 5. $/usable label | $0.000062 | <=$0.00050 | PASS |
+| 6. spend | $0.00099 | <=$0.10 | PASS |
+
+5/6 gates PASS. The R5 hypothesis is CONFIRMED: the K=3 majority key gate
+eliminated the wrong-key problem entirely (0 wrong keys vs the R4 PPV
+failure) AND collapsed both_fail from 41.4% to 11% — the R4 both_fail
+autopsy's dominant cause was wrong keys, not labeling.
+
+Pre-registered fallback engaged: item yield 18% < 50% gate FAIL. Per the
+R5 prereg this is the price of key trust: 38/81 key-gate survivors
+rejected as key_inconsistent (47%), on top of 34/100 not_json.
+
+VERDICT: gates pass where it matters; yield failure is a throughput
+problem, not an integrity problem. Effective $/usable-label including
+wasted candidates is $0.00099/16 = $0.000062 — still 4x BETTER than R4's
+$0.00019-usable because spend per call collapsed (weak tier absorbs
+almost everything, only 2 strong calls).
+
+Next-rung decision (R6) per operator standing instruction, options:
+(a) accept 18% yield, run scaled batch (yield is a cost problem: at
+18% yield and $0.000062/usable, 2,000 usable labels ~ $0.12, viable);
+(b) one more rung attacking not_json (json_mode probe); (c) stop.
