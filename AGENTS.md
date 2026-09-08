@@ -39,6 +39,22 @@ Instead:
 
 The unit of progress is **marginal end-to-end quality/cost improvement**, not router classifier accuracy.
 
+## Current frontier reference — Astra
+
+This research conversation itself is running on **GPT-5.6 Sol**, not GPT-6 Astra.
+
+As of **2026-09-08**, OpenAI's latest released frontier model is **GPT-6 Astra**. The execution agent must therefore treat Astra as the **current OpenAI frontier reference** when it is available through the connected provider/API and is compatible with the mission's privacy, spend, and access constraints.
+
+Important distinctions:
+
+- do **not** assume the historical `gpt-4-1106-preview` strong-model labels describe Astra; those remain historical exact-pair evidence only;
+- for P0/P5 and cost-frontier work, verify the current Astra model ID, availability, provider, latency, and price at execution time before using it;
+- Astra is primarily a **frontier comparator / escalation target**, not a cheap-tier candidate;
+- if Astra access is unavailable or incompatible with ZDR/spend constraints, use the strongest currently available compliant frontier model and record the substitution explicitly;
+- do not hard-code today's frontier forever: the mission must refresh the frontier reference at execution time because frontier models and prices change.
+
+The strategic question is not “can we route to Astra cheaply?” It is “how rarely can we need frontier-class intelligence, while preserving end-to-end quality?”
+
 ## Research code is required
 
 You are expected to implement and run research/experiment code: audits, generation/resampling, verifiers, hidden-state/logit probes, cascade simulations, cost models, targeted fine-tuning, agent-trace replay, tables, plots, and reproducibility checks.
@@ -62,7 +78,7 @@ Production integration into `thepragmatik/hermes-pi-agentic-stack` is **not** pa
 
 1. Create `MISSION_LOG.md` and the machine-readable cost/frontier/error-overlap ledgers required by the canonical mission.
 2. Inventory mounted artifacts and freeze the development/qualification protocol.
-3. Refresh current model/provider prices and constraints.
+3. Refresh current model/provider prices and constraints, including the current OpenAI frontier reference (GPT-6 Astra as of 2026-09-08 if accessible).
 4. Reproduce available baselines.
 5. Run **P0 — model-pool audit**.
 6. Run **P1 — adaptive cheap inference** and **P2 — deterministic verification** before training another router/probe.
