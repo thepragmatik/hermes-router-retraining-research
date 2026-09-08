@@ -1,0 +1,12 @@
+{
+ "snapshot_date": "2026-09-08",
+ "source": "existing repo docs/results ONLY (offline): costs/model_prices.json (empty), results/P0_MODEL_POOL.md, research/2026-09-08-innovation-deep-research.md. No network metadata fetch performed; matches the hard constraint that the current-model/pricing refresh means metadata lookup from existing repo docs/results only.",
+ "current_pool_note": "No current-model measured outcome matrix exists in-repo. The only measured outcome matrix is the historical RouterBench train pool. Stage 0 therefore runs on the historical stored pool as selection-method evidence, labeled historical/domain-specific; current deployment claims are out of scope without a real pilot (FR-010/FR-011).",
+ "repo_price_snapshot": {
+  "snapshot_date": "2026-09-06",
+  "purpose": "execution-time model price snapshot for screening only; prices move, verify before any paid run",
+  "spend_gate": "default $0; paid runs fail closed unless SPEND_GO=1; mission cap $5",
+  "sources_note": "fill source URL + per-model timestamp when populated (P0). Historical pair prices are embedded in stored RouterBench cost columns and take precedence for stored-label simulations.",
+  "models": {}
+ }
+}
