@@ -126,3 +126,67 @@ not produce a deployable frontier on this corpus/feature budget.
   evaluate/diagnostics modules, gate runners, ledger emitter, 12 tests)
 - Roadmap status: **KILLED** (ideas/STATUS.md updated by orchestrator per
   program rules; this agent does not edit ideas/STATUS.md).
+
+## Task coverage (tasks.md T-numbers; Stage-0 scope)
+
+- **T001** DONE — read constitution, 102 spec/plan/tasks/PROMPT, P1/P3/P5 (+P2/P4/P6,
+  binarization note, pivot protocol) negative results, 101 spec/contracts/prereg/results;
+  package validator PASS.
+- **T002** DONE — `results/102/PREREG.md` frozen at c5d9cc2 before any pipeline code;
+  pair, quality metric, split, regimes, seeds, λ grid, features, nuisances,
+  support/clipping rules all frozen (commit predates first gate run d7672ec).
+- **T003** DONE — sealed-test never loaded (only membership count 3678 via the split
+  table; pickle never opened); artifact hashes asserted and recorded (winrate
+  `4e58f024…963a6`, pstrong `cf1baa31…bea57`).
+- **T010** DONE — `simulate.py`: L1/L2/L3 propensity logs from train rows, exact
+  chosen propensities stored, unchosen outcomes hidden; invariants asserted.
+- **T011** DONE — V1 (frozen, control), always-action family (always-weak truth +
+  threshold/threshold-on-p controls), direct weak-correctness baseline, T-learner
+  controls implemented (`dr_learner.py`, `policy.py`, truth paths in runners).
+- **T012** DONE — `nuisance.py` cross-fitted ridge outcome models (5-fold OOF,
+  101-convention alpha); eval rows scored by fold-ensemble models never trained on
+  eval rows.
+- **T013** DONE — `dr_learner.py` DR pseudo-outcomes with exact simulated propensities
+  (never estimated); DRL-π second stage; corrupted/missing propensities refused (G5).
+- **T014** DONE — `policy.py`/`diagnostics.py` weight/ESS/overlap diagnostics and
+  explicit V1 fallback on unsupported rows; fallback asserted == V1 exactly.
+- **T015** DONE — frozen λ grid {0,10,25,50,100,150,200,300,500} swept per
+  (regime, seed, scorer); complete frontiers emitted (`results/102/frontier.csv`).
+- **T016** DONE — 10 seeds × 3 regimes × 2 runs (first + corrected) = 60 logged
+  regime-seed cells; seed-level results in `stage0_results.json` /
+  `stage0_corrected.json`.
+- **T017** DONE — oracle-capture arithmetic vs train-safe oracle truth, per-seed
+  decile diagnostics, ρ rank comparisons (`run_diagnostics.py`, `gates_final.py`);
+  paired-bootstrap CIs declared (reporting-only; A5 identity probe instead of a
+  separate bootstrap gate at n=5,888 eval rows).
+- **T018** DONE — adversarial support tests: skewed logging (L3 primary + A2 L1↔L3
+  stability ρ=0.936), zero-overlap stratum flagged 10/10 with exact V1 fallback,
+  corrupted propensity (×10) refused loudly.
+- **T020** DONE — exact spec gates evaluated: G3 FAIL after the single preregistered
+  diagnostic correction (isotonic recalibration, declared 22fd693 before the
+  corrected run); per spec/kill-logic, terminal `KILLED`.
+- **T021** N/A (considered, rejected) — `NEEDS_101_COVERAGE` requires a sound
+  estimator collapsed by inadequate support; here support is benign (max|w|≤10,
+  ESS/n≈0.9) and the frontier is dominated by a zero-cost threshold control, so no
+  coverage requirement is quantifiable — documented in the report.
+- **T050** DONE — `results/102/STAGE0_REPORT.md` (this file); `REAL_DATA_REPORT.md`
+  not produced (real phase LOCKED pending 101 — no fabricated real-data result).
+- **T051** DONE — `results/102/frontier.csv` (2,880 rows), support diagnostics CSV,
+  repo ledger `results/frontier.csv` +2 KILLED rows. `ideas/STATUS.md` NOT edited
+  (hard constraint: orchestrator-owned).
+- **T052** DONE — exact estimand (τ(x)=E[Q_strong−Q_weak|x]), assumptions, unsupported
+  strata, feature version (frozen V1 p_strong fixture `cf1baa31…bea57` + p/one-hot
+  budget), model revisions (historical stored matrix only), price snapshot (stored
+  historical `cost_w`/`cost_s`, $0 spend, no model calls) documented in this report.
+- **T053** DONE — outcome chosen: **KILLED** (exact frozen vocabulary; not
+  STAGE0_PASS, not NEEDS_101_COVERAGE, not QUALIFIED).
+- **T030–T035** NOT EXECUTED (correctly) — Phase 2 real telemetry adapter is gated on
+  101 producing suitable records; 101 has passed Stage-0 harness validation only and
+  its live/qualified data does not exist. No real/shadow data was collected or
+  fabricated.
+- **T040–T043** NOT EXECUTED (correctly) — 103 and 104 were KILLED in Wave A (no
+  qualifying features to ablate), no finalist exists for a 105 wrap, and no
+  ablation is meaningful for a KILLED idea.
+
+Outcome: **KILLED** — every in-scope Stage-0 T-number executed or explicitly gated
+out with its reason; $0 spend; specs/ and ideas/STATUS.md untouched (git-verified).
