@@ -1,0 +1,47 @@
+{
+ "D_label": {
+  "p_syn_need_strong": 0.07692307692307693,
+  "p_real_y1": 0.9408263057189427,
+  "abs_delta": 0.8639032287958657,
+  "flag": true
+ },
+ "D_embed": {
+  "syn_mean_nn_cos": 0.7402735948562622,
+  "syn_min_nn_cos": 0.674506425857544,
+  "syn_max_nn_cos": 0.8444267511367798,
+  "real_reference_mean_nn_cos": 0.8448975086212158,
+  "flag": true
+ },
+ "D_len": {
+  "median_syn_chars": 272.5,
+  "median_real_chars": 739.0,
+  "log_ratio": -0.9976593068449029,
+  "flag": true
+ },
+ "D_pair": {
+  "syn_weak_ok": 0.9230769230769231,
+  "syn_need_strong": 0.07692307692307693,
+  "real_weak_correct": 0.21673003802281368,
+  "real_strong_correct": 0.6428938444147569,
+  "real_y1_rate_untied": 0.9408263057189427,
+  "note": "report only (PREREG 6)"
+ },
+ "D_verifier": {
+  "syn_verifier_types": {
+   "exact_match": 13,
+   "numeric_tol": 11,
+   "token_set": 2
+  },
+  "real_verifier_column": null,
+  "note": "structural: real rows carry benchmark-graded outcomes, no verifier/key column; evidence tiers VI-4 vs VI-6 (PREREG 6)"
+ },
+ "D_task": {
+  "synthetic_eval_name": null,
+  "note": "task strata structurally missing for synthetic rows (mined seed taxonomy) (PREREG 6)"
+ },
+ "flags_for_correction": [
+  "D_label",
+  "D_embed",
+  "D_len"
+ ]
+}
