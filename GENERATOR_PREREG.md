@@ -634,3 +634,44 @@ Decision rule (from the R7 plan): >=60% (a) -> include SOLVE_PROMPT lever;
 - yield FAIL with integrity gates holding -> informational only; stop rule
   already accepted at R6; ladder closed either way.
 - wrong-key FAIL -> revert to R6 config and STOP. NO R8.
+
+## R7a outcome (2026-09-08, rung 7, batch r7_b1788903723_47290; spend $0.00167)
+
+Strict-gate-only run per R7 prereg (agreement arm removed; SOLVE_PROMPT
+unchanged — R7-1 forensics did not support the lever). n=100.
+
+Rejects (71): key_inconsistent 42, not_json 18, verifier_shape 5, self_verifier 6.
+Accepted 26.
+
+| Gate | Result | Threshold | Verdict |
+|---|---|---|---|
+| 1. wrong-key hand-audit (11 numeric_tol, all recomputed) | 0/11 = 0.0% | <=5% | PASS |
+| 2. item yield | 26/100 = 26% | >=50% | FAIL (informational) |
+| 3. usable-label yield | 24/26 = 92.3% | >=50% | PASS |
+| 4. both_fail | 2/26 = 7.7% | <=35% | PASS |
+| 5. $/usable label | $0.000069 | <=$0.00050 | PASS |
+| 6. spend | $0.00167 | <=$0.10 | PASS |
+
+5/6 gates PASS. Integrity gate IMPROVED to 0/11 wrong-key (R6 was 1/12 =
+8.3% via the agreement arm) — the strict-gate recommendation is validated.
+
+Hand-audit detail (all 11 numeric_tol keys independently recomputed):
+attendance 8000x1.15=9200 OK; weekly mean (12+15+9+20+18+30+24)/7=18.29
+-> 18.3 rounded-1dp OK; bake 12+2x5=22 OK; find -type f count 7 OK;
+savings (1.50-0.50)x200/1000=$0.20 OK; file count 4 OK; F=25x9/5+32=77 OK;
+weighted commute 0.6x30+0.25x45+0.15x20=32.25 OK; src files 1 OK;
+mutable-default len(third)=2 OK; B-first cascade expected cost
+0.01+0.20x0.03=$0.016 OK.
+
+Yield comparison: 26% vs R6's 32% — the strict gate cost ~6pp as
+predicted (~5-10pp), buying wrong-key 8.3% -> 0.0%. Reject mix shifted to
+key_inconsistent 42% (strict gate re-classifying agreement-only passes as
+rejects) while not_json held at 18% and usable-label rose to 92.3%.
+
+Pre-registered handling: yield FAIL with all integrity gates holding ->
+informational only; stop rule already engaged at R6. RUNG LADDER CLOSED.
+Pipeline verdict: R7a strict config is the winning generator config
+(wrong-key 0.0%, $/usable $0.000069, usable 92.3%).
+
+NEXT DECISION (operator): scaled batch (~2,000 usable labels under R7a
+strict config, ~$0.14-0.20) -> V2 corpus -> V2 router training prereg.
