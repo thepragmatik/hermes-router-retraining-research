@@ -527,3 +527,44 @@ re-run gates on the reverted code before any further decision.
 GEN_JSON_MODE probe deferred to orchestrator (no live API calls from this
 task); both outcomes pre-registered: probe OK -> run R6 with GEN_JSON_MODE=1
 in run_rung.sh; HTTPError 400 -> leave unset, record in R6 outcome.
+
+## R6 outcome (2026-09-08, rung 6, batch r6_b1788887455_38941; spend $0.00307)
+
+Generator n=100, GEN_JSON_MODE=1, max_tokens 900, Variant A key gate.
+Rejects (68): key_inconsistent 33, not_json 21, verifier_shape 8, self_verifier 3.
+
+| Gate | Result | Threshold | Verdict |
+|---|---|---|---|
+| 1. wrong-key hand-audit (12 numeric_tol, all recomputed) | 1/12 = 8.3% | <=10% | PASS (marginal) |
+| 2. item yield | 32% | >=50% | FAIL |
+| 3. usable-label yield | 30/32 = 94% | >=50% | PASS |
+| 4. both_fail | 2/32 = 6.3% | <=35% | PASS |
+| 5. $/usable label | $0.000102 | <=$0.00050 | PASS |
+| 6. spend | $0.00307 | <=$0.10 | PASS |
+
+5/6 gates PASS. Yield improved 18%->32% (not_json 34->21 via json_mode;
+key_inconsistent 38->33 via Variant A) but the >=50% gate still fails.
+
+Hand-audit detail: 11/12 numeric keys CORRECT (mean visits 150;
+f(g(3))=19; HR 68; pipeline 10; notes.txt 13; data-cleaning 1680;
+routing 40s; folder 3; PB&J 4; getTotal 25; acidosis acute rule 1).
+1 WRONG: warehouse-robot distance key=0 vs true 12.65 (sqrt(160)) —
+accepted because the robot's solve replies contained the literal digit
+"0" and Variant A's string agreement matched via _norm; the verifier
+(numeric_tol value=0) also passes on any reply whose first number is 0.
+
+Pre-registered stop rule ENGAGES: yield <50% while integrity holds
+(wrong-key 8.3% <= 10%, though at the margin and attributable to the
+agreement arm's string match) and $/usable $0.000102 <= $0.00050.
+Per the R6 prereg: ACCEPT the pipeline as-is and STOP the yield ladder.
+R5 stop-rule economics hold: at $0.000102/usable, 2,000 usable labels
+~ $0.20.
+
+Caveat recorded: Variant A's agreement arm admitted one wrong key
+(R5 had 0/18). The K=3 self-verifier-only gate is tighter on integrity;
+Variant A trades ~1-2% wrong-key rate for +14pp yield. Both configs
+remain available; recommend scaled batches use the R5 strict gate
+(GEN_JSON_MODE=1 + max_tokens 900 only, agreement arm off) given $0.10
+caps are not binding at current costs.
+
+NEXT DECISION (operator): scaled batch (R7) vs stop.
