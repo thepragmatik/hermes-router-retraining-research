@@ -37,7 +37,7 @@ REPO_DIR = os.path.dirname(os.path.dirname(MODULE_DIR))
 EVIDENCE_DIR = os.path.join(REPO_DIR, "evidence", "gen_factory")
 
 from ledger import append as LEDGER_APPEND, batch_spend as BATCH_SPEND
-from verifiers import run_verifier
+from verifiers import run_verifier, _final_region
 
 
 def _utcnow_iso():
@@ -122,6 +122,12 @@ def process_batch(items, labels_path, ask_fn=None, cap_usd=None, key=None):
             "item_id": it["item_id"], "question": it["question"],
             "weak_ok": weak_ok, "strong_ok": strong_ok,
             "label": "weak_ok" if weak_ok else "need_strong",
+            # R4 auditability (prereg): keep the strong tier's extracted
+            # final-answer region on escalation rows so a 0/N rescue rate
+            # can be split into "wrong" vs "right-but-formulation-mismatch".
+            # Synthetic question/answer text only; capped at 200 chars.
+            **({"strong_final": _final_region(ans_s)[:200]}
+               if (not weak_ok and ans_s is not None) else {}),
             "ts": _utcnow_iso()})
         with open(labels_path, "a") as f:
             f.write(json.dumps(labels[-1]) + "\n")
