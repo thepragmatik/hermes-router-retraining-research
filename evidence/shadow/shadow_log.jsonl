@@ -66,3 +66,4 @@
 {"prompt_id": 0, "decision": "strong", "confidence": 0.558, "threshold": 0.3, "mode": "shadow", "engine": {"name": "v1_mf_router", "version": "router-v1-frozen", "mode": "learned"}, "ts": "2026-09-08T05:58:21.328505+00:00"}
 {"prompt_id": 0, "decision": "strong", "confidence": 0.558, "threshold": 0.3, "mode": "shadow", "engine": {"name": "v1_mf_router", "version": "router-v1-frozen", "mode": "learned"}, "ts": "2026-09-08T06:00:59.554523+00:00"}
 {"prompt_id": 0, "decision": "strong", "confidence": 0.558, "threshold": 0.3, "mode": "shadow", "engine": {"name": "v1_mf_router", "version": "router-v1-frozen", "mode": "learned"}, "ts": "2026-09-08T10:19:37.605608+00:00"}
+{"prompt_id": 0, "decision": "strong", "confidence": 0.558, "threshold": 0.3, "mode": "shadow", "engine": {"name": "v1_mf_router", "version": "router-v1-frozen", "mode": "learned"}, "ts": "2026-09-08T10:30:31.878415+00:00"}
