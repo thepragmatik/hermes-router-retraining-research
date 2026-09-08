@@ -14,9 +14,10 @@ NEEDS_101_COVERAGE" below. `QUALIFIED` is not claimable at Stage 0 by design.)
 ## What was run (exact frozen contract)
 
 - Data: `winrate_table.parquet` train split only (29,193 rows; sha256
-  `4e58f024…963a6`). **Test split never loaded** (only its membership count
-  3678 via the split table); the 0-shot pickle was never opened. Validation
-  split untouched (finalists-only; no finalist declared).
+  `4e58f024…963a6`; absolute path as frozen in the prereg). **Test split never
+  loaded** (only its membership count 3678 via the split table); the 0-shot
+  pickle was never opened. Validation split untouched (finalists-only; no
+  finalist declared).
 - Router feature: frozen V1 `p_strong` fixture (`cf1baa31…bea57`), V1
   untouched at threshold 0.30. Train anchor reproduced exactly:
   V1 train Q 0.64111, frac_strong 0.7681 (101-prereg anchor match).
