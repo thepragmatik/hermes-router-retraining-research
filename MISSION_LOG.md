@@ -225,3 +225,9 @@ $0.00 (cap $5.00). All experiments so far use stored labels only.
 - CRITICAL: generator answer keys untrustworthy (audited item: key 25.8%, true 78.3% — strong graded wrong). Weak_ok labels inherit this risk.
 - token_set verifier built + tested but generator adopted it 1/70 despite prompt preference.
 - Ladder pauses per kill criterion; R5 options (key self-consistency validation, strong-tier token raise, enforced token_set re-verification) need operator decision + fresh prereg.
+
+## R7a (2026-09-08) — rung ladder CLOSED
+- R7a run complete (strict key gate, agreement arm removed; batch r7_b1788903723_47290): 5/6 gates PASS — wrong-key 0/11 (PASS, tightened gate), usable 92.3%, both_fail 7.7%, $/usable $0.000069, spend $0.00167. Yield 26% FAIL (informational per R6 stop rule).
+- R7-1 forensics (33 R6 key_inconsistent rejects, hand-recomputed): (a) recompute failure 21%, (b) key genuinely wrong 30%, (c) wording/ambiguity 48% — no bucket >=60%, so the SOLVE_PROMPT lever was skipped (R7a strict-gate-only per prereg).
+- Strict gate cost ~6pp yield vs R6 (32%->26%) and bought wrong-key 8.3%->0.0%. R7a strict config is the winning generator config.
+- Yield ladder closed. Next (operator gate): scaled batch ~2,000 usable labels under R7a (~$0.14-0.20) -> V2 corpus -> V2 training prereg. Commits 59c06c1, 0de7daa, 25a3e36, 35f7ff2.
