@@ -1,128 +1,118 @@
 # Hermes Router Retraining Research
 
-Research on **cost-effective, adaptive LLM/agent routing** for [`thepragmatik/hermes-pi-agentic-stack`](https://github.com/thepragmatik/hermes-pi-agentic-stack).
+Research on **cost-effective, adaptive LLM and agentic routing** for [`thepragmatik/hermes-pi-agentic-stack`](https://github.com/thepragmatik/hermes-pi-agentic-stack).
 
-## Current status — 2026-09-06 pivot MISSION COMPLETE
+## Current branch status — Router Innovation Program (2026-09-08)
 
-**Outcome (2026-09-06): `ROUTING NOT ECONOMIC` — promotion decision E.** See **[PIVOT_FINAL_RECOMMENDATION.md](PIVOT_FINAL_RECOMMENDATION.md)** and **[MISSION_LOG.md](MISSION_LOG.md)**.
+This branch (`research/router-innovation-2026-09-08`) is a **new research/specification phase** created after:
 
-The stackable trust-and-escalation mission ran to completion across seven preregistered experiment families (P0–P6), at **$0.00 total spend** (stored responses only), with the RouterBench test split never loaded. Every deployable dynamic layer failed its frozen quality/cost gate on both the v1-anchored and the weak-first architecture. The only configuration that beats V1 — a three-tier cascade under a *perfect* correctness arbiter (+6.7pp accuracy at −39% cost, holdout-confirmed) — requires a signal this corpus cannot supply. The final operational artifact is **V1 @ threshold 0.30** (tag `router-v1-frozen`): holdout accuracy 0.6475 at $0.0025943/row.
+- the previous router-uplift experiment program mostly failed its frozen gates;
+- frozen V1 nevertheless demonstrated real routing value versus weak/random baselines;
+- operationalisation showed V1 can run cheaply as an HTTP/in-process shadow service;
+- the attempted shadow data collection proved unusable for training because the live HTTP path did not log joinable decisions/outcomes;
+- the generator branch improved synthetic-label integrity substantially by R7a, but synthetic evidence remains lower fidelity than real outcomes.
 
-Measured per-phase verdicts (single frozen-gate holdout passes, full detail in `results/`):
+The current objective is **not another large prompt classifier**. The program explores nine materially different mechanisms that change the information source, decision mathematics, model pool, supervision fidelity, or unit of routing.
 
-| phase | question | verdict |
-|---|---|---|
-| P0 | is the weak tier still the right foundation? | keep mistral-7b; Yi-34B best mid-tier (47% repair @ 4.05× cost) |
-| P1 | do extra cheap samples avoid frontier calls? | disagree-escalate KILLED; oracle pair ceiling +6.7pp/−39% (not deployable) |
-| P2 | can deterministic verifiers safely accept weak answers? | all 4 families FAIL precision gate (best 0.67 vs 0.90) |
-| P3 | does an answer-aware confidence probe beat embedding-only routing? | all 3 arms FAIL; v1-weak rows are 95% both-models-fail |
-| P4 | do killed layers pay as a stack on weak-first? | no layer survives retention; V1 ALONE IS THE STACK |
-| P5 | does a mid tier justify a three-tier cascade? | oracle-only PASS (+6.7pp/−39%); no deployable arbiter exists |
-| P6 | can weak-model failures be mined into uplift training? | 98.3% of v1-weak failures are both-fail; 94 minable rows; ceiling +0.38pp — FAIL |
+### Start here
 
-**Revival conditions** (recorded in the final recommendation): a corpus with logprobs/hidden states, machine-checkable answer contracts, or a paid trained arbiter — under new preregs.
+- **Orchestrator launch prompt:** [`ideas/META_PROMPT.md`](ideas/META_PROMPT.md)
+- **Idea/dependency index:** [`ideas/README.md`](ideas/README.md)
+- **Program status ledger:** [`ideas/STATUS.md`](ideas/STATUS.md)
+- **Agent entrypoint:** [`AGENTS.md`](AGENTS.md)
+- **Research constitution:** [`.specify/memory/constitution.md`](.specify/memory/constitution.md)
+- **Spec-of-specs roadmap:** [`specs/router-innovation-2026-09-08/roadmap.md`](specs/router-innovation-2026-09-08/roadmap.md)
+- **Deep research synthesis:** [`research/2026-09-08-innovation-deep-research.md`](research/2026-09-08-innovation-deep-research.md)
+- **Adversarial review:** [`research/2026-09-08-adversarial-review.md`](research/2026-09-08-adversarial-review.md)
+- **Branch evidence map:** [`research/2026-09-08-branch-evidence-map.md`](research/2026-09-08-branch-evidence-map.md)
 
-### Active execution documents
+## Nine implementation-ready Spec Kit ideas
 
-- **[Canonical mission — Stackable Trust, Escalation, and Agentic Routing](STACKABLE_ROUTING_MISSION.md)** — source of truth for objective, experiment order, gates, economics, stop rules, and deliverables.
-- **[Launch prompt](LAUNCH_AGENT_PROMPT.md)** — ready-to-paste instruction for an execution-capable agent.
-- [Agent entrypoint](AGENTS.md) — concise repository-level instructions that point to the canonical mission.
-- [Pivot memo — stackable gains after the first experiments failed](memo/2026-09-06_pivot-stackable-gains.md)
-- [Pivot evidence/source ledger](evidence/pivot-source-ledger.md)
-- [Dataset strategy](DATASETS.md)
+Every idea lives in its own `specs/<idea>/` folder and contains `spec.md`, `plan.md`, `tasks.md`, and a ready-to-paste `PROMPT.md`.
 
-The older `PIVOT_EXECUTION_PLAN.md` remains useful design provenance, but `STACKABLE_ROUTING_MISSION.md` is now the canonical active specification if the two differ.
+1. **101 Counterfactual Shadow Telemetry** — make shadow traffic statistically learnable with joinable outcomes, exact propensities, safe exploration and off-policy evaluation.
+2. **102 Doubly Robust Uplift Router** — learn the marginal benefit of choosing the strong action rather than generic prompt difficulty.
+3. **103 Bayesian Semantic Performance Memory** — semantic retrieval of measured historical model outcomes with partial pooling, support and OOD fallback; not cluster→model routing.
+4. **104 Whitened Latent Marginal-Gain Probe** — test true local-model hidden states/logits and PCA whitening as a low-cost escalation-value signal.
+5. **105 Conformal Safety Envelope** — convert an imperfect router score into explicit risk-vs-coverage selective routing/abstention.
+6. **106 Sequential Value-of-Information Controller** — buy the next model/sample/tool/verifier action only when expected information value exceeds cost.
+7. **107 Diversity-Optimized Model Portfolio** — choose a small complementary model pool before routing; a better pool may dominate a better router.
+8. **108 Multi-Fidelity Synthetic→Real Fusion** — use the R7a generator as low-fidelity prior/direct-model data while real propensity-corrected outcomes remain authoritative.
+9. **109 Hermes Stage-Aware Agent Router** — route intelligence by agent workflow stage/state rather than selecting one model for the whole mission.
 
-The prior FEV/weak-correctness/judge/semantic/bandit research is preserved below as **historical provenance**, not the current recommended center of effort.
+Use [`ideas/README.md`](ideas/README.md) for prompt links, dependencies, stackability and recommended waves.
 
-## Why the pivot
+## Recommended execution strategy
 
-Recent unified evidence suggests router architecture itself often has limited leverage: many sophisticated routers perform similarly, embeddings are not the main bottleneck, and careful model-pool curation matters. At the same time, newer cascade research shows gains from using information that exists **after a cheap model answers**, from adaptive multiple cheap samples, from internal confidence signals, from verification, and from routing across workflow stages rather than only at the initial prompt.
+### Wave A — cheapest information first
 
-The new design therefore treats routing as an **adaptive trust-and-escalation ladder**:
+Run mostly independently:
 
-```text
-policy-safe request
-      ↓
-cheap model answers
-      ↓
-trust bundle
-  ├─ deterministic checks / tests / tools
-  ├─ internal hidden-state/logit confidence
-  ├─ adaptive extra cheap sample + agreement
-  ├─ task verifier
-  └─ OOD / abstention calibration
-      ↓
-accept? ─ yes → return
-  │
-  no
-  ↓
-curated mid-tier / specialist
-      ↓
-accept? ─ yes → return
-  │
-  no
-  ↓
-frontier
-      ↓
-store rescue → improve cheap tier
-```
+- 101 Stage-0 OPE/telemetry simulator;
+- 107 current model-portfolio audit;
+- 103 train-only semantic performance memory;
+- 104 latent representation feasibility/Stage 0;
+- 105 safety envelope on V1/current scores.
 
-Every layer must independently move the measured cost/quality frontier or it is removed. The objective is **not to maximize stack complexity**.
+These are designed to be `$0` API-spend experiments first.
 
-## Highest-value pivot tests
+### Wave B — identified learning
 
-1. **Model-pool audit:** determine whether the historical Mistral weak tier itself is now the bottleneck; screen a few current inexpensive models for complementary successes, not just aggregate score.
-2. **Adaptive cheap sampling:** test whether a second/third local answer resolves enough uncertainty to avoid frontier calls.
-3. **Deterministic verification:** use tests, schemas, tools and task-native checks to safely accept/reject a subset before learned trust models.
-4. **Internal confidence probe:** use the answering model's hidden states/logits rather than only prompt embeddings or verbal confidence.
-5. **Trust-stack ablation:** add answer-aware layers one at a time; retain only paying layers and measure error overlap.
-6. **Three-tier cascade:** test `local → inexpensive modern mid-tier → frontier` instead of forcing a binary old-7B/frontier boundary.
-7. **Failure-focused weak-model uplift:** LoRA/distill on recurring economically valuable failure/rescue clusters using stored strong evidence first.
-8. **Hermes workflow-stage routing:** measure whether expensive intelligence is needed only at particular turns/stages of real agent missions.
-9. **Optional draft/repair:** reuse cheap work when escalating rather than discarding it.
+- 102 can run retrospective causal replay immediately, but real-data qualification waits for 101;
+- 108 can run retrospective synthetic→real transfer immediately, but real deployment claims wait for 101;
+- 105 can wrap independently qualified candidates.
 
-See [STACKABLE_ROUTING_MISSION.md](STACKABLE_ROUTING_MISSION.md) for the complete frozen execution discipline and deliverables.
+### Wave C — composition / different routing unit
 
-## Public dataset strategy
+- 106 starts only after at least two actions/signals independently pay;
+- 109 runs when Hermes mission traces meet its trace-quality gate and remains a separate agentic estimand.
 
-Use [`DATASETS.md`](DATASETS.md) deliberately. External data is an evidence amplifier, not exact-pair truth.
+## Governing principle
 
-- pinned RouterBench 0-shot remains the historical exact-pair qualification corpus;
-- RoutingCompendium and LLMRouterBench are useful cross-pool stress tests;
-- RouteLLM/EmbedLLM are transfer/method priors;
-- Arena/LMSYS are useful for semantic/OOD coverage, not local correctness truth.
+> **Falsify cheaply, qualify independently, then stack only measured complementary gains.**
 
-## Historical phase — retained for provenance
+A literature-supported idea is not a qualified component. A retrospective replay is not live evidence. Synthetic labels are not real outcomes. Oracle complementarity is not deployability. A failed gate is recorded and stopped rather than relaxed after the result.
 
-The earlier research explored:
+## Core guardrails
 
-- Factorized Escalation Value / sparse strong rescue labels;
-- evaluator-first weak correctness;
-- one-sided judge / positive-unlabeled learning;
-- semantic performance memory/OOD signals;
-- bandit feedback;
-- selective hybrid labels.
+- RouterBench **test remains sealed**.
+- Frozen V1 remains a mandatory control where applicable.
+- Historical validation is finalists-only; iteration uses train-only development/holdout protocols.
+- Default paid research spend is **$0**. No current idea prompt authorizes paid calls.
+- Any paid work requires a new preregistration, current model/provider pricing, explicit cap and fail-closed operator authorization.
+- Current model ids/prices must be refreshed at execution time; historical GPT-4/Mistral pairs are historical evidence.
+- External/public datasets are evidence amplifiers, not silent exact-pair truth.
+- Synthetic data must beat a matched real-only control on real held-out outcomes to earn promotion.
+- Semantics may retrieve measured evidence, but semantic cluster→fixed model routing remains retired.
+- User-controlled text routing must receive basic adversarial cost-manipulation testing before promotion.
 
-Those documents remain useful as evidence and negative results. Do not rerun them unchanged after the reported failure of that experiment phase.
+## Historical evidence retained
 
-Historical starting points:
+The 2026-09-06 stackable routing mission remains valuable **historical negative evidence**, not the active execution program on this branch.
 
-- [2026-09-05 ranked options memo](memo/2026-09-05_ranked-options-memo.md)
-- [Adversarial review](evidence/adversarial-review.md)
-- [Semantic routing review](evidence/semantic-routing-review.md)
-- [Original learning flywheel](designs/router-learning-flywheel.md)
+Key historical artifacts:
 
-## Guardrails
+- [`PIVOT_FINAL_RECOMMENDATION.md`](PIVOT_FINAL_RECOMMENDATION.md)
+- [`MISSION_LOG.md`](MISSION_LOG.md)
+- [`results/P0_MODEL_POOL.md`](results/P0_MODEL_POOL.md)
+- [`results/P1_CHEAP_SAMPLING.md`](results/P1_CHEAP_SAMPLING.md)
+- [`results/P2_VERIFIERS.md`](results/P2_VERIFIERS.md)
+- [`results/P3_INTERNAL_CONFIDENCE.md`](results/P3_INTERNAL_CONFIDENCE.md)
+- [`results/P4_TRUST_STACK.md`](results/P4_TRUST_STACK.md)
+- [`results/P5_THREE_TIER.md`](results/P5_THREE_TIER.md)
+- [`results/P6_WEAK_UPLIFT.md`](results/P6_WEAK_UPLIFT.md)
 
-- RouterBench test split remains sealed.
-- Research/experiment code is expected; production runtime integration belongs in the parent Hermes stack after qualification.
-- Previously falsified/failed approaches are not recycled unchanged.
-- Public/external data must be provenance-tracked and must not contaminate local validation.
-- Iterative pivot work should use train-only development / the canonical pivot-holdout protocol; historical validation is reserved for finalists.
-- Cost, latency, retries and end-to-end accepted mission quality matter more than router-classifier accuracy alone.
-- Prefer a simple stack of independently positive components over a complicated system with unproven interactions.
+The generator/shadow operational evidence is preserved on/inherited from `feat/generator-pivot-r0`, including `GENERATOR_PREREG.md` and `results/V1_BASELINE_GAPS.md`.
+
+## Dataset policy
+
+Read [`DATASETS.md`](DATASETS.md) before introducing external data. The current program is especially strict about separating:
+
+- exact-pair/local evidence;
+- real current traffic;
+- public transfer/stress evidence;
+- synthetic low-fidelity evidence.
 
 ## License
 
-Apache License 2.0. See [LICENSE](LICENSE).
+Apache License 2.0. See [`LICENSE`](LICENSE).
