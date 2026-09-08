@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "program": "router-innovation-2026-09-08",
+  "branch": "research/router-innovation-2026-09-08",
+  "constitution": ".specify/memory/constitution.md",
+  "orchestrator_prompt": "ideas/META_PROMPT.md",
+  "status_ledger": "ideas/STATUS.md",
+  "roadmap": "specs/router-innovation-2026-09-08/roadmap.md",
+  "required_package_files": ["spec.md", "plan.md", "tasks.md", "PROMPT.md"],
+  "ideas": [
+    {"id": 101, "slug": "counterfactual-shadow-telemetry", "path": "specs/101-counterfactual-shadow-telemetry", "wave": "A", "dependencies": [], "role": "foundation"},
+    {"id": 102, "slug": "doubly-robust-uplift-router", "path": "specs/102-doubly-robust-uplift-router", "wave": "B", "dependencies": ["101-for-real-qualification"], "role": "single-turn-policy"},
+    {"id": 103, "slug": "bayesian-semantic-memory", "path": "specs/103-bayesian-semantic-memory", "wave": "A", "dependencies": [], "role": "evidence-signal"},
+    {"id": 104, "slug": "whitened-latent-gain-probe", "path": "specs/104-whitened-latent-gain-probe", "wave": "A", "dependencies": ["accessible-local-hidden-states"], "role": "evidence-signal"},
+    {"id": 105, "slug": "conformal-safety-envelope", "path": "specs/105-conformal-safety-envelope", "wave": "A", "dependencies": ["candidate-score"], "role": "risk-wrapper"},
+    {"id": 106, "slug": "sequential-voi-controller", "path": "specs/106-sequential-voi-controller", "wave": "C", "dependencies": [">=2-qualified-actions-or-signals"], "role": "meta-controller"},
+    {"id": 107, "slug": "diversity-model-portfolio", "path": "specs/107-diversity-model-portfolio", "wave": "A", "dependencies": ["outcome-matrix", "current-model-metadata"], "role": "model-pool"},
+    {"id": 108, "slug": "multifidelity-synthetic-real", "path": "specs/108-multifidelity-synthetic-real", "wave": "B", "dependencies": ["R7a-for-stage0", "101-for-real-qualification"], "role": "supervision-fusion"},
+    {"id": 109, "slug": "hermes-stage-router", "path": "specs/109-hermes-stage-router", "wave": "C-independent", "dependencies": ["replayable-hermes-traces"], "role": "agentic-routing"}
+  ],
+  "global_rules": {
+    "routerbench_test": "SEALED",
+    "default_paid_spend_usd": 0,
+    "paid_work_requires_new_prereg_and_operator_gate": true,
+    "synthetic_only_promotion_forbidden": true,
+    "stack_requires_independent_qualification_and_error_overlap_ablation": true
+  }
+}
