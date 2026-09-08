@@ -1,21 +1,21 @@
 # Router Innovation Program Status
 
 **Program branch:** `research/router-innovation-2026-09-08`  
-**Last updated:** 2026-09-09 — Wave A COMPLETE (5/5 Stage 0 done). Qualifying signals for 106: 1 of 4 (105 V1_SAFE_SLICE). Launching Wave B.
+**Last updated:** 2026-09-09 — Waves A+B COMPLETE (8/9 ideas terminal). 106 gate evaluated: 1/4 qualifying signals (105 only) → not launched. Writing integration recommendation.
 
 The orchestrator MUST update this table before/after launching child idea agents. Do not infer completion from commit count alone.
 
 | ID | Idea | Stage | Status | Latest SHA | Spend | Evidence tier | Primary result | Blocker / next action |
 |---|---|---|---|---|---:|---|---|---|
 | 101 | Counterfactual Shadow Telemetry | Stage 0 done | STAGE0_PASS | 307beda | $0 | train retrospective | OPE harness: policy ordering 10/10 seeds; |err|<=0.0031 (gate 0.015); CI coverage 10/10; unsupported-policy + corrupted-propensity alarms fire | T030+ live plumbing gated on operator-approved shadow prereg |
-| 102 | Doubly Robust Uplift Router | not started | SURVIVED-RESEARCH | — | $0 | research/spec | — | run retrospective Stage 0; real phase waits for 101 |
+| 102 | Doubly Robust Uplift Router | Stage 0 done (sim-only) | KILLED | 739e091 | $0 | train retrospective | Gates per specs/102/ plan.md+tasks.md T053: G1/G2/G4/G5 pass after 1 preregistered correction, G3 fail — DR-uplift frontier dominated by zero-cost threshold-on-p control on the same V1 score (best Q 0.63641 vs bar 0.65031); NEEDS_101_COVERAGE rejected (support benign, no actionable uplift) | none — real-data phase stays locked; negative result final |
 | 103 | Bayesian Semantic Performance Memory | Stage 0 done | KILLED | d124b51 | $0 | train retrospective | Hierarchical shrinkage beat kNN/task-prior 9/10 folds but 0.0pp quality + 0.0% cost gain vs task prior at matched cost (Gate B fail) | none — negative result final; frozen spec not weakened |
 | 104 | Whitened Latent Marginal-Gain Probe | Stage 0 done | KILLED | 59951e7 | $0 | train retrospective | Latent OOF AUROC 0.7399 vs prompt-BGE 0.7396 (delta <=0.0003; gate >=0.03); task-only baseline 0.7486 beats everything — signal is task identity | none — frozen spec not weakened; latent adds nothing over BGE |
 | 105 | Conformal Safety Envelope | Stage 0 done | V1_SAFE_SLICE | fedbc92 | $0 | train retrospective | Held-out risk <= alpha 9/10 folds at all alpha in {0.01,0.025,0.05}; 22-25% coverage; 55-60% cost saving at <=0.8pp acc gap; drift alarms disable envelope | wrap future qualified candidate scores; recalibrate on any new pool |
-| 106 | Sequential VOI Controller | blocked by evidence | SURVIVED-RESEARCH | — | $0 | research/spec | — | wait for >=2 useful actions/signals |
+| 106 | Sequential VOI Controller | gate evaluated — not launched | BLOCKED_PREREQ_NOT_MET | — | $0 | research/spec | Prereq >=2 qualifying signals from {103,104,105,107} measured 1/4 (105 V1_SAFE_SLICE only); per manifest dependency the idea does not launch | revisit only if 101 live telemetry later qualifies >=1 more action/signal |
 | 107 | Diversity-Optimized Model Portfolio | Stage 0 done | ORACLE_ONLY_PORTFOLIO | bbf52b8 | $0 | train retrospective | Frontier quality/cost gates pass but pool-overlap realizability <35% of oracle gain (G3 fail) | none — historical-pool complementarity not realizable; needs current-price pool refresh to revisit |
-| 108 | Multi-Fidelity Synthetic→Real Fusion | not started | SURVIVED-RESEARCH | — | $0 | research/spec | — | retrospective fusion first; real phase waits for 101 |
-| 109 | Hermes Stage-Aware Agent Router | dependency check | SURVIVED-RESEARCH | — | $0 | research/spec | — | inventory trace viability |
+| 108 | Multi-Fidelity Synthetic→Real Fusion | Stage 0 done (retrospective) | KILLED | c2af65e | $0 | train retrospective | Gates per specs/108/ tasks.md T062: fusion ties real-only EXACTLY at all 4 valid budgets (0/10 bootstrap wins) — R7a synthetic selects weak-solvable items, label-inverted vs real need-strong traffic; Gate 2 bias machinery PASS; LOW_FIDELITY_PRIOR_ONLY inapplicable (pretrain never beat real-only) | none — generator scaled-batch request NOT drafted; synthetic stays prior-only, never authority |
+| 109 | Hermes Stage-Aware Agent Router | Stage 0A done (trace viability) | TRACE_DATA_INSUFFICIENT | af16541 | $0 | research/spec | Spec line 88 terminal: 69 trace rows, 0 missions/0 stage decisions/0 outcome capture/join-key floor 0% — all gates fail; gaps G1-G5 confirmed exactly; telemetry-gap contract written (C1-C7, binding schema, re-audit gates) | BLOCKED on identified telemetry, NOT KILLED — unblock via 101-integrated collection plan in results/109/TELEMETRY_GAP_CONTRACT.md |
 
 ## Evidence-tier vocabulary
 
