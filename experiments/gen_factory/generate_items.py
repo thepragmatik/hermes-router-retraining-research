@@ -260,7 +260,7 @@ def _key_consistent(item, call_fn, model, api_key, seed):
     """R5 prereg: K=3 independent self-solves; the declared key is trusted
     only if >= 2 of K solves pass the item's own verifier on the solve's
     final-answer region. Returns (ok, passes, k)."""
-    from verifiers import run_verifier
+    from verifiers import _final_region, run_verifier
     question = item.get("question", "")
     passes = 0
     for j in range(K_SELF_SOLVE):
@@ -269,7 +269,8 @@ def _key_consistent(item, call_fn, model, api_key, seed):
                                  api_key, seed + j)
         except Exception:
             continue
-        region = _final_answer_region(solve_text)
+        region = _final_region(solve_text if isinstance(solve_text, str)
+                               else "")
         if run_verifier(item.get("verifier"), region) is True:
             passes += 1
     return passes >= 2, passes, K_SELF_SOLVE
