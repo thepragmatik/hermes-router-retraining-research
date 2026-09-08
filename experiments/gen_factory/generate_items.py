@@ -270,9 +270,14 @@ def _final_answer_region(text):
 def _key_consistent(item, call_fn, model, api_key, seed):
     """R5 prereg: K=3 independent self-solves; the declared key is trusted
     only if >= 2 of K solves pass the item's own verifier on the solve's
-    final-answer region. Returns (ok, passes, k)."""
-    from verifiers import _final_region, run_verifier
+    R6 prereg (Variant A, frozen): a solve passes if EITHER (a) the item's
+    verifier passes on the solve's final-answer region (R5 behavior), OR
+    (b) the solve's final-answer string is _norm-equal to the declared
+    `answer`. Majority unchanged: >=2 of K=3 (still the wrong-key check —
+    the agreement signal is only counted against the DECLARED key)."""
+    from verifiers import _final_region, _norm, run_verifier
     question = item.get("question", "")
+    declared = _norm(str(item.get("answer", "")))
     passes = 0
     for j in range(K_SELF_SOLVE):
         try:
@@ -282,7 +287,8 @@ def _key_consistent(item, call_fn, model, api_key, seed):
             continue
         region = _final_region(solve_text if isinstance(solve_text, str)
                                else "")
-        if run_verifier(item.get("verifier"), region) is True:
+        if (run_verifier(item.get("verifier"), region) is True
+                or _norm(region) == declared):
             passes += 1
     return passes >= 2, passes, K_SELF_SOLVE
 
