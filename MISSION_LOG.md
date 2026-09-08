@@ -218,3 +218,10 @@ $0.00 (cap $5.00). All experiments so far use stored labels only.
   is an operator-run step before R1. Next: operator approves R1 (~$0.10).
 | 2026-09-07 | R2 generator-quality rung executed (plan 2026-09-07_231651-r2-generator-quality-fix.md): fixed GEN_PROMPT-never-formatted bug (root cause 1), labeler 300->700 tok + Final-answer format (causes 2+3), routeability smoke wired pre-spend, salted batch ids. Live rung 2: 4/6 gates PASS (usable 64.6% vs >=50%, $0.00018/usable-label vs <=$0.00025, dedup 3%, spend $0.00543/$0.10); item yield 49% and both_fail 35.4% FAIL (generator-side). weak_ok 20%->60%, escalations 81%->40%. Qwen family blocked on account (404 x2 probes). Verdict PARTIAL PASS; R3 levers prereg'd in GENERATOR_PREREG.md. Commits 5117e23..15541dd. $0.00543 total spend. |
 | 2026-09-07 | R3 rung executed (JSON-compliance prereg): strict system message halved not_json (37%->19%), yield 49%->56% (still <60% gate); both_fail regressed 35.4%->44% (strong tier rescued 0/24) — selection effect + exact_match brittleness on cleaner-surviving questions. 4/6 gates PASS (usable 56%, $0.00019/label, dedup 7%, spend $0.00580/$0.10). Verdict PARTIAL PASS. R4 preregistered: normalized token-set verifier type (primary); generator swap (deepinfra) only if insufficient. Commits b642534, 3c3da6f, d902558. |
+
+## R4 (2026-09-08) — rung ladder PAUSES
+- R4 run complete: 5/6 gates PASS (yield 70%, usable 58.6%, $/label $0.00019, spend $0.00776, not_json 18%); both_fail 41.4% FAIL.
+- First fully-auditable rung (reject capture + strong_final). both_fail autopsy: 11/29 strong truncated at 700 tok, 15 numeric disagreements, 3 exact_match.
+- CRITICAL: generator answer keys untrustworthy (audited item: key 25.8%, true 78.3% — strong graded wrong). Weak_ok labels inherit this risk.
+- token_set verifier built + tested but generator adopted it 1/70 despite prompt preference.
+- Ladder pauses per kill criterion; R5 options (key self-consistency validation, strong-tier token raise, enforced token_set re-verification) need operator decision + fresh prereg.

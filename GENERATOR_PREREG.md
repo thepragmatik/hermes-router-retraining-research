@@ -359,3 +359,49 @@ Pre-registered kill criterion: if R4 fails BOTH yield and both_fail again,
 the rung ladder pauses and the operator decides between a generator-model
 swap (deepinfra scan) and abandoning the generator pivot. No fifth rung
 without operator review.
+
+## R4 outcome (2026-09-08)
+
+Run: `WEAK_MODEL=z-ai/glm-5.3-flash GEN_GO=1 SPEND_CAP_USD=0.10 run_rung.sh --rung 4 --n 100 --model z-ai/glm-5.3-flash`
+(batch_id prefix `r4_b1788858717_26041`; smoke PASS before spend; exit 0.)
+
+| gate | frozen | measured | verdict |
+|---|---|---|---|
+| item yield | >= 60% | **70%** (70/100) | PASS (from 56% in R3) |
+| both_fail | <= 35% | **41.4%** (29/70) | FAIL (from 44%) |
+| usable | >= 50% | **58.6%** (41/70) | PASS |
+| $/usable-label | <= $0.00025 | **$0.00019** | PASS |
+| spend | <= $0.10 | **$0.00776** | PASS |
+| not_json | <= 20% | **18%** | PASS |
+
+**Verdict: 5/6 PASS, both_fail FAIL. Rung ladder PAUSES per pre-registered kill criterion.**
+
+R4 changes and their measured effect:
+- Reject capture (commit 594c318): first rung where every reject and both_fail is
+  auditable post-hoc. verifier_shape rejects collapsed 14 -> 2; self_verifier 10 -> 4.
+- token_set verifier (94e6833): ADDITIVE, semantics verified by 5 new tests.
+  Generator ADOPTION was near-zero: 1/70 accepted items used token_set despite
+  the GEN_PROMPT preference line (4032dbf). Generator ignored the instruction.
+- strong_final capture (6c5c064): enabled the first real both_fail autopsy.
+
+both_fail autopsy (29 rows, now possible for the first time):
+- 11/29: strong answer EMPTY (truncated at the 700-token cap; 12/29 strong calls
+  hit exactly 700 completion tokens). Truncation is the top mechanical cause.
+- 15/29: numeric_tol disagreements (strong answered, value differs from key).
+- 3/29: exact_match misses on phrase answers (the token_set use case; moot given
+  adoption failure).
+- **CRITICAL data-quality finding:** independent recomputation of a sampled
+  both_fail item (two-stage sensitivity/specificity PPV) shows the generator's
+  answer key (25.8%) is WRONG; the true answer is 78.3%, which the strong tier
+  produced and was graded incorrect. The generator's answer keys are not
+  trustworthy, and this risk applies to weak_ok labels too (they are keyed by
+  the same generator). Yield/usable gates measured this rung therefore overstate
+  label quality.
+
+Per the pre-registered kill criterion (R4 prereg in this file): both gates did
+not fail again — yield passed — so the ladder pauses for operator review rather
+than a hard stop. Options for R5 (each needs a fresh prereg, none pre-authorized):
+(a) generator answer-key validation (self-consistency: k=3 generator self-solves
+its own item before acceptance), (b) raise strong-tier max_tokens beyond 700 for
+escalations only, (c) enforce token_set via post-hoc re-verification rather than
+prompt preference. Spend this rung: $0.00776. Cumulative arc spend: ~$0.037.
