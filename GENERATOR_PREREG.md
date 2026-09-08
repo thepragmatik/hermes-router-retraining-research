@@ -312,3 +312,50 @@ regressed -> R4 per prereg = two preregistered levers, now with evidence:
 exact_match — primary, attacks both verifier_shape rejects and both_fail;
 (b) generator-model switch (deepinfra scan) only if (a) is insufficient.
 Pair stays glm/v4-flash.
+
+## R4 prereg (added 2026-09-07, before any R4 spend)
+
+### Critical-review verdict: PROCEED = YES
+
+Justification:
+- (a) Both R2/R3 gate failures trace to two named, mechanically-fixable causes:
+  exact_match brittleness on formulation variance (both_fail is 20/24
+  exact_match + 4/24 numeric_tol; sampled both_fail answers are verified by
+  exact substring of a 66-char sentence — a formulation-sensitivity trap, not
+  a capability failure), and verifier-shape strictness on otherwise-parseable
+  JSON (14 verifier_shape + 10 self_verifier rejects are unauditable because
+  the raw item was discarded at the reject site — a measurement bug, now
+  repaired before R4).
+- (b) Economics gates passed two rungs running ($/usable-label $0.00018 →
+  $0.00019, well under cap); the ladder's premise (cheap usable labels) is
+  intact.
+- (c) R4 changes exactly one variable class (verifier semantics) with the
+  generator fixed (strict system message stays; GEN_JSON_MODE stays OFF).
+
+### Frozen R4 gates (rung 4, n=100, cap $0.10, weak=z-ai/glm-5.3-flash,
+strong=deepseek/deepseek-v4-flash, smoke-gated, salted batch ids)
+
+| gate                       | R4 frozen value | R3 actual |
+|----------------------------|-----------------|-----------|
+| item yield                 | >= 60%          | 56%       |
+| both_fail                  | <= 35%          | 44%       |
+| usable                     | >= 50%          | (from r3 eval) |
+| $/usable-label             | <= $0.00025     | $0.00019  |
+| spend                      | <= $0.10        | —         |
+| not_json                   | <= 20% (hold)   | 19%       |
+
+Generator prompt addition (one line in GEN_PROMPT): "Prefer verifiers of type
+token_set when the expected answer is a phrase or sentence; use numeric_tol
+for numbers; exact_match only for short single tokens."
+
+token_set semantics (pre-registered): normalize [a-z0-9] tokens of the
+final-answer region and the verifier value, drop stopwords {the, a, an, is,
+are, of, to, in, and, or, that, it}, pass iff
+len(value_tokens ∩ answer_tokens) / len(value_tokens) >= 0.8 (threshold 0.8,
+frozen; post-hoc threshold tuning is gate-weakening and out of bounds).
+token_set is ADDITIVE — exact_match / numeric_tol behavior unchanged.
+
+Pre-registered kill criterion: if R4 fails BOTH yield and both_fail again,
+the rung ladder pauses and the operator decides between a generator-model
+swap (deepinfra scan) and abandoning the generator pivot. No fifth rung
+without operator review.
