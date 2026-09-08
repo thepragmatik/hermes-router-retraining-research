@@ -34,16 +34,16 @@ Never promote an evidence tier by implication.
 
 ## Program integration notes
 
-Record only measured convergence here:
+Recorded 2026-09-09 — measured convergence (full detail: `ideas/INTEGRATION_RECOMMENDATION.md`):
 
-- qualified components:
-- killed ideas:
-- changed model portfolio:
-- dependencies newly unblocked:
-- mutually exclusive winners:
-- current best single-turn stack:
-- current best agentic-stage policy:
-- cumulative paid spend:
-- validation exposures:
+- qualified components: 105 conformal envelope (V1_SAFE_SLICE); 101 OPE harness (STAGE0_PASS) as measurement infrastructure
+- killed ideas: 102 (dominated by threshold-on-p), 103 (task prior unbeaten), 104 (latent ≈ BGE; task identity is the signal), 107 (oracle-only realizability), 108 (fusion ties real-only; synthetic label-inverted)
+- changed model portfolio: none — incumbent WEAK/STRONG pair frozen in V1 stays
+- dependencies newly unblocked: none; 109 remains blocked on identified telemetry (contract written), 106 blocked at 1/4 qualifying signals
+- mutually exclusive winners: none beyond the V1+105 stack
+- current best single-turn stack: frozen V1 router (mf_router.pt, threshold 0.30) + 105 conformal envelope; no explored mechanism beat it
+- current best agentic-stage policy: none estimable — TRACE_DATA_INSUFFICIENT
+- cumulative paid spend: $0.00 across all nine ideas
+- validation exposures: train-retrospective only; test split sealed all program; 2 preregistered corrections consumed (102, 108), neither changed a verdict
 
 The orchestrator should preserve failed rows rather than deleting them.
