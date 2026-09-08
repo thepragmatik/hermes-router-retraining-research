@@ -1,0 +1,102 @@
+=== HANDOFF PROMPT — gen-factory rung ladder, R7 phase ===
+Paste this whole file into a FRESH Hermes session (profile: uplift).
+
+You are taking over the generator-pivot ("gen-factory") rung ladder in the
+hermes-router-retraining-research repo. Everything below is verified fact —
+trust it, do not re-derive it, do not re-litigate frozen gates.
+
+--- REPO / ENVIRONMENT ---
+- Repo: ~/src/hermes-router-retraining-research, branch feat/generator-pivot-r0,
+  HEAD 0d4fd62 (R6 outcome commit). Nothing pushed (no-push rule).
+- Interpreter: /usr/bin/python3 (3.9, host deps). NEVER pyenv/venv for this work.
+- Test suite: /usr/bin/python3 -m pytest tests/ -q  → expect 108 passed,
+  zero network calls (tests inject fakes). ~8.5s.
+- OpenRouter key: source -a ~/.hermes/profiles/uplift/.env (NEVER echo it).
+- Account allowlist (verified twice): z-ai / alibaba / deepseek / deepinfra
+  ONLY. Entire qwen provider family returns HTTP 404 despite catalog listing.
+- Pair (frozen): weak = z-ai/glm-5.3-flash ($0.075/$0.25 per M),
+  strong = deepseek/deepseek-v4-flash ($0.0886/$0.177, ctx 1M).
+- Spend gating: run_rung.sh refuses (exit 1, REFUSED) without GEN_GO=1 AND
+  SPEND_CAP_USD>0. GEN_JSON_MODE=1 enables response_format json_object
+  (probe-verified PASS on glm-5.3-flash). Smoke gate (smoke_tiers.py) runs
+  inside run_rung.sh before generation, aborts on HTTP error.
+- Sealed frames NEVER read/trained on; mf_test_frame.parquet sha must stay
+  e938142c835b27bc... . router_v1/ is read-only Tier-0. Live shadow service
+  (launchd com.rath.router-shadow-v1) and its dirty config (router_config.yaml,
+  evidence/shadow/, pii_sweep.sh) are pre-existing dirty state — leave untouched.
+- PII rule: no absolute home paths (absolute home path → ~), no keys, no emails in
+  committed files. Sweep before every commit touching evidence/.
+- gotchas: piped pytest exit codes lie (run without pipe); process wait clamps
+  at 180s; benign NotOpenSSLWarning; launch background runs WITH notify.
+
+--- RUNG-LADDER HISTORY (all committed; verdicts in GENERATOR_PREREG.md) ---
+Commits in order: 58153eb 5e70d27 f29784b 5117e23 70adbf3 1a486c7 272d805
+ba26890 fc67936 424a86c daa853f 2ec3a11 162a691 932e3f5 28857d2 5afca1b
+08c01e5 40e0374 d16b0e1 cbe9332 0d4fd62
+- R0: built pipeline (taxonomy miner 234 prompts, pricing cache, verifiers,
+  generator + dedup 0.85 vs 3 parquet frames incl. sealed, append-only ledger
+  + spend gate, cascade labeler, ledger report, GENERATOR_PREREG.md,
+  run_rung.sh). $0.00.
+- R1: FAIL — weak tier qwen/qwen3.7-flash 404'd; 72/100 fenced-JSON rejects
+  (parse retry fix 58153eb). ~$0.0009 written off.
+- R1b (weak→glm): gates PASS (yield 81%, dedup 21%, $0.0094) but usable
+  labels only 23/79 (29%): weak_ok 16, strong rescued 7, both_fail 56 (71%);
+  strong truncated at 300 tokens 48%.
+- R2: fixed 3 root causes (prereg 5117e23: usable ≥50%, both_fail ≤35%) —
+  placeholder substitution wired to taxonomy (build_prompt, 1a486c7),
+  ANSWER_FORMAT_SUFFIX + max_tokens 700 (272d805), salted batch ids
+  (r%d_b<salt>_<x>, ba26890).
+- R3: 2 gates failed (yield 56%<60, both_fail 44%>35). Audit plan written;
+  R4 attacked both_fail.
+- R4: 5/6 PASS — yield 70%, usable 58.6%, $/label $0.00019, $0.00776.
+  both_fail 41.4% FAIL (11/29 strong truncations at 700, 15 numeric
+  disagreements). Led to R5 levers.
+- R5: 5/6 PASS — wrong-key 0/18, usable 89%, both_fail 11%, $/label
+  $0.000062, $0.00099. Yield 18% FAIL (38 key_inconsistent, 34 not_json).
+  K=3 self-consistency key gate wired (2ec3a11). None crash fixed (fc67936).
+- R6: 5/6 PASS — wrong-key 1/12=8.3% (marginal), usable 94%, both_fail 6.3%,
+  $/usable $0.000102, spend $0.00307. Yield 32% (json_mode + Variant A
+  agreement arm) — STILL <50. **PRE-REGISTERED STOP RULE ENGAGED: pipeline
+  ACCEPTED as-is; yield ladder stopped.** Robot-item wrong key (0 vs 12.65)
+  admitted by Variant A string agreement → R6 outcome recommends strict gate
+  for scaled runs.
+
+--- ECONOMICS (the point) ---
+$/usable label $0.000102 → 2,000 usable labels ≈ $0.20. Yield gate is
+informational, not a blocker. The real prize is the scaled batch for the V2
+router corpus.
+
+--- YOUR TASK: execute the R7 plan ---
+Read FIRST: ~/src/.hermes/plans/2026-09-08_150431-handoff-and-r7-yield-plan.md
+(follow its tasks in order — R7-1..R7-6; H1 handoff already done by this file).
+Summary of the frozen R7 design:
+1. R7-1 (read-only): classify all 33 key_inconsistent rejects in
+   evidence/gen_factory/gen_rejects_batch6.jsonl into (a) weak-model recompute
+   failure, (b) key genuinely wrong, (c) wording/ambiguity. Tally goes into
+   the prereg. If ≥60% (a) → include SOLVE_PROMPT lever; if ≥60% (b) → run
+   strict-gate-only, label rung R7a.
+2. R7-2: append `## R7 prereg` to GENERATOR_PREREG.md, frozen before the run:
+   n=100, cap $0.10, GEN_JSON_MODE=1, agreement arm OFF (restore R5-strict
+   verifier-only pass in _key_consistent, keep >=2 of K=3), optional
+   SOLVE_PROMPT scratchpad line, gates: yield ≥50%, wrong-key ≤5% (tightened),
+   usable ≥50%, both_fail ≤35%, $/usable ≤$0.00050, spend ≤$0.10. FAIL
+   handling pre-registered: yield-fail with integrity = stop, informational;
+   wrong-key-fail = revert R6 config and stop (NO R8).
+3. R7-3 (TDD): code change per plan §R7-3 (tests/test_gen_factory_r7_strict_gate.py
+   — test code is written verbatim in the plan). Update/replace
+   tests/test_gen_factory_key_agreement.py to pin the NEW strict behavior.
+   Full suite green before anything live.
+4. R7-4: offline replay test extending tests/test_gen_factory_r6_replay.py.
+5. R7-5 live run:
+   cd ~/src/hermes-router-retraining-research && set -a && source ~/.hermes/profiles/uplift/.env && set +a && WEAK_MODEL=z-ai/glm-5.3-flash GEN_GO=1 SPEND_CAP_USD=0.10 GEN_JSON_MODE=1 /bin/bash run_rung.sh --rung 7 --n 100 --model z-ai/glm-5.3-flash
+   (background WITH notify; smoke runs inside; batch_id will be r7_b<salt>_*).
+6. R7-6: evaluate gates from r7_b* rows ONLY; hand-recompute every
+   numeric_tol key independently (show work); append outcome table to
+   GENERATOR_PREREG.md + MISSION_LOG.md; commit; update mnemosyne
+   task_progress task 'gen-factory-rung-ladder'.
+
+AFTER R7 (needs operator go, do not start unprompted): scaled batch
+prereg (2,000 usable labels under winning config ≈ $0.20-2.00) → V2 corpus
+→ V2 router training prereg (operator gate on strong-tier model choice).
+
+=== END HANDOFF ===

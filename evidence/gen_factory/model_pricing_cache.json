@@ -1,0 +1,49 @@
+{
+ "fetched_at": "2026-09-07T21:13:58",
+ "source": "https://openrouter.ai/api/v1/models",
+ "models_scanned": 430,
+ "candidates": {
+  "llama33_70b": {
+   "id": "meta-llama/llama-3.3-70b-instruct",
+   "context_length": 131072,
+   "pricing_prompt_usd_per_m": 0.1,
+   "pricing_completion_usd_per_m": 0.32
+  },
+  "mixtral_or_mistral_small": {
+   "id": "mistralai/mixtral-8x22b-instruct",
+   "context_length": 65536,
+   "pricing_prompt_usd_per_m": 2.0,
+   "pricing_completion_usd_per_m": 6.0
+  },
+  "glm_flash": {
+   "id": "z-ai/glm-5.3-flash",
+   "context_length": 1310720,
+   "pricing_prompt_usd_per_m": 0.075,
+   "pricing_completion_usd_per_m": 0.25
+  },
+  "deepseek_flash": {
+   "id": "deepseek/deepseek-v4-flash",
+   "context_length": 1048576,
+   "pricing_prompt_usd_per_m": 0.088606,
+   "pricing_completion_usd_per_m": 0.177212
+  },
+  "qwen_flash": {
+   "id": "qwen/qwen3.7-flash",
+   "context_length": 1000000,
+   "pricing_prompt_usd_per_m": 0.03,
+   "pricing_completion_usd_per_m": 0.13
+  },
+  "gpt4_1106": {
+   "id": "openai/gpt-4-turbo-preview",
+   "context_length": 128000,
+   "pricing_prompt_usd_per_m": 10.0,
+   "pricing_completion_usd_per_m": 30.0
+  },
+  "mistral_7b": {
+   "id": "mistralai/ministral-8b-2512",
+   "context_length": 262144,
+   "pricing_prompt_usd_per_m": 0.15,
+   "pricing_completion_usd_per_m": 0.15
+  }
+ }
+}

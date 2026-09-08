@@ -1,0 +1,22 @@
+{
+ "verbs": {
+  "run": 41,
+  "plan": 38,
+  "write": 11,
+  "fix": 10,
+  "design": 10,
+  "test": 8,
+  "summarise": 4,
+  "explain": 4,
+  "compare": 1
+ },
+ "styles": {
+  "other": 149,
+  "planning": 42,
+  "debugging": 25,
+  "writing": 18
+ },
+ "source_dbs": [
+  "profiles/uplift/state.db"
+ ]
+}
