@@ -1,0 +1,11 @@
+{
+ "embedding": {"model": "BAAI/bge-small-en-v1.5", "snapshot": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a", "dim": 384, "normalized": true, "rows": 29193},
+ "neighbor_index": {"scope": "train split only", "same_fold_excluded": true, "cv": "10-fold leave-group-out over 86 eval_name groups"},
+ "n_eff_definition": "(sum w)^2 / sum w^2, w_i = exp(-d_i/T), d = 1 - cosine sim",
+ "frozen_grids": {"k": [8,16,32,64], "T": [0.05,0.1,0.2], "kappa": [4,16,64], "support_threshold": [2,5,10], "ood_median_dist": 0.6},
+ "best_grid_point": {"k": 16, "T": 0.05, "kappa": 4},
+ "cv_logloss": {"HIER": 0.521605, "TASK": 0.522057, "GLOBAL": 0.522738, "KNN": 0.619836},
+ "cv_brier": {"HIER": 0.169388, "TASK": 0.169526, "GLOBAL": 0.169758, "KNN": 0.194601},
+ "per_fold_wins": {"HIER_vs_KNN": "9/10", "HIER_vs_TASK": "9/10"},
+ "provenance": {"dataset": "routerbench_0shot train rows via frozen winrate_table", "outcome": "weak_correct binary, frozen labels", "cost_snapshot": "cost_w / cost_s columns", "model_pair": "single frozen strong/weak pair", "revision_checks": "single frozen dataset/pair; no cross-pair pooling"}
+}
