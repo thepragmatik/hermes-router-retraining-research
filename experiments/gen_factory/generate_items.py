@@ -288,7 +288,8 @@ def _key_consistent(item, call_fn, model, api_key, seed):
         region = _final_region(solve_text if isinstance(solve_text, str)
                                else "")
         if (run_verifier(item.get("verifier"), region) is True
-                or _norm(region) == declared):
+                or (region.strip() and declared
+                    and _norm(region) == declared)):
             passes += 1
     return passes >= 2, passes, K_SELF_SOLVE
 

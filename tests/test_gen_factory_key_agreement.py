@@ -11,7 +11,10 @@ if GEN not in sys.path:
 import generate_items as gi  # noqa: E402
 
 ITEM = {"question": "What is 3 + 3?", "answer": "6",
-        "verifier": {"type": "numeric_tol", "value": 6}}
+        "verifier": {"type": "exact_match", "value": "six"}}
+# NOTE: _norm is text-only (no numeric canonicalization), so the agreement
+# signal requires the solve to spell the answer like the declared key; the
+# verifier must FAIL on the agreement-matching region for this test.
 
 
 def solve(text):
@@ -19,10 +22,10 @@ def solve(text):
 
 
 def test_key_consistent_accepts_norm_equal_solve():
-    # verifier fails on the solve text (non-numeric phrasing), but the
-    # solve's final answer is _norm-equal to the declared key
+    # verifier fails on the solve text ("six" != "6" under exact_match),
+    # but the solve's final answer is _norm-equal to the declared key "6"
     ok, passes, k = gi._key_consistent(
-        ITEM, solve("six"), "test/gen", "k", 1)
+        ITEM, solve("6"), "test/gen", "k", 1)
     assert (ok, passes, k) == (True, 3, 3)
 
 
@@ -33,7 +36,7 @@ def test_key_consistent_still_rejects_disagreeing_solves():
 
 
 def test_key_consistent_mixed_verifier_and_agreement():
-    # 2 of 3 solves verifier-pass, 1 only agrees by string
+    # 1 of 3 solves verifier-passes ("six"), 2 agree by string ("6")
     texts = ["Final answer: 6", "Final answer: 6", "Final answer: six"]
     calls = {"i": 0}
 
