@@ -147,24 +147,31 @@ def _reject_dedup(item_id, max_sim, source_frame, dedup_path):
 
 # --------------------------------------------------------------- the caller
 
-def _run_openrouter(model, prompt, api_key, seed):
-    """THIN real OpenRouter caller — the only network code in this module.
-
-    Tests inject `call_fn` and NEVER execute this. Chat-completions POST with
-    temperature 0.9, max_tokens 500, deterministic seed.
-    """
-    # R3 JSON compliance (prereg b642534): strict system message always on;
-    # response_format opt-in via GEN_JSON_MODE=1 (glm support unknown — an
-    # unsupported field 400s, so default OFF).
+def _gen_body(model, prompt, seed):
+    """R6: pure body builder (max_tokens 500 -> 900; GEN_JSON_MODE=1 adds
+    response_format json_object — glm support unknown, default OFF, an
+    unsupported field 400s)."""
     messages = [{"role": "system",
                  "content": ("You output ONLY one raw JSON object. No prose, "
                              "no markdown fences, no extra keys.")},
                 {"role": "user", "content": prompt}]
     body = {"model": model, "messages": messages,
-            "temperature": 0.9, "max_tokens": 500, "seed": seed}
+            "temperature": 0.9, "max_tokens": 900, "seed": seed}
     if os.environ.get("GEN_JSON_MODE") == "1":
         body["response_format"] = {"type": "json_object"}
-    body = json.dumps(body).encode("utf-8")
+    return body
+
+
+def _run_openrouter(model, prompt, api_key, seed):
+    """THIN real OpenRouter caller — the only network code in this module.
+
+    Tests inject `call_fn` and NEVER execute this. Chat-completions POST with
+    temperature 0.9, max_tokens 900 (R6), deterministic seed.
+    """
+    # R3 JSON compliance (prereg b642534): strict system message always on;
+    # response_format opt-in via GEN_JSON_MODE=1 (glm support unknown — an
+    # unsupported field 400s, so default OFF). R6: body built by _gen_body.
+    body = json.dumps(_gen_body(model, prompt, seed)).encode("utf-8")
     req = urllib.request.Request(
         "https://openrouter.ai/api/v1/chat/completions", data=body,
         headers={"Authorization": "Bearer " + api_key,
