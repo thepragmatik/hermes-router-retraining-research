@@ -97,3 +97,46 @@ def test_r6_replay_parse_capture_and_agreement(tmp_path, monkeypatch):
     # R6 parse-capture: the not_json detail is NON-EMPTY and carries raw text
     assert r["detail"], "not_json reject must carry raw generator output"
     assert "Sure! the item is:" in r["detail"]
+
+
+def test_r7a_replay_strict_gate_end_to_end(tmp_path, monkeypatch):
+    """R7a: strict gate end-to-end through generate_batch. The V3 solve
+    replies still verifier-pass ("six" == verifier "six"), so acceptance is
+    unchanged; an extra item whose solves string-agree with the declared key
+    but verifier-fail must be rejected as key_inconsistent."""
+    monkeypatch.setattr(gi, "ITEMS_DIR", str(tmp_path))
+    monkeypatch.setattr(gi, "_PROMPT_CACHE", None)
+    monkeypatch.setattr(
+        gi, "load_prompt_sources",
+        lambda root=None: {"winrate_table": [Q_SEED],
+                           "mf_val_frame": ["Write a short memo about plants"],
+                           "mf_test_frame": ["Fix a login traceback"]})
+    v4 = json.dumps({"question": "What is 2*3 minus 1?",
+                     "answer": "5",
+                     "verifier": {"type": "exact_match", "value": "5"}})
+    gens = [V1_FENCED, V3, v4]          # TRUNCATED dropped: rung focuses
+    idx = {"i": 0}                       # on the strict gate
+
+    def call_fn(model, prompt, key, seed):
+        if _is_solve(prompt):
+            if "3 + 3" in prompt:
+                return "Solve step by step.\nFinal answer: six"
+            if "2*3 minus 1" in prompt:
+                # declared "5" is verifier-valid (self_verifier gate passes)
+                # but solves return the WRONG answer "7": strict gate must
+                # reject via key_inconsistent (no agreement arm to rescue)
+                return "Solve step by step.\nFinal answer: 7"
+            return "Solve step by step.\nFinal answer: 100 degrees Celsius"
+        out = gens[idx["i"]]
+        idx["i"] += 1
+        return out
+
+    rows = gi.generate_batch(rung=7, n_items=3, model="test/gen",
+                             api_key="k", seed_base=0, call_fn=call_fn,
+                             encode_fn=tiny_encode, corpus_encode_fn=tiny_encode)
+    assert [r["question"] for r in rows] == [V1_Q, V3_Q]
+    assert rows[0]["answer"] == "100 degrees Celsius"
+    assert rows[1]["answer"] == "six"
+    rejects = read_jsonl(os.path.join(str(tmp_path),
+                                      "gen_rejects_batch7.jsonl"))
+    assert [r["reason"] for r in rejects] == ["key_inconsistent"]
