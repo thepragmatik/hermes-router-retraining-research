@@ -4,7 +4,11 @@
 Generates benchmark-style questions with machine-checkable verifiers via
 OpenRouter chat completions, parses STRICTLY (non-JSON / missing keys /
 verifier-shape failures are counted rejects, never exceptions), self-verifies
-each item with the Task-3a verifiers, gates every accepted candidate through
+each item with the Task-3a verifiers, validates its answer key by K=3
+self-consistency (K_SELF_SOLVE solves via SOLVE_PROMPT; majority >= 2 must
+pass the item's own verifier on the solve's final-answer region, else the
+item is rejected with reason key_inconsistent), gates every accepted
+candidate through
 an embedding-dedup check against the sealed corpora (cosine >= 0.85 reject),
 and appends survivors to evidence/gen_factory/items_batch{rung}.jsonl.
 
@@ -49,6 +53,14 @@ No meta commentary."""
 
 _FINAL_MARKER = re.compile(
     r"(?:the\s+)?final\s+answer\b(?:\s+is)?\s*[:\-]?\s*|answer\s*[:\-]\s*", re.I)
+
+# R5 prereg: K=3 self-consistency key validation (majority >= 2 strict).
+K_SELF_SOLVE = 3
+
+SOLVE_PROMPT = """Solve this problem step by step. \
+Question: {question} \
+Reason carefully and end your response with 'Final answer: <answer>' on the \
+last line. No meta commentary."""
 
 # Taxonomy-grounded rotation (evidence/gen_factory/seed_taxonomy.json:
 # run/plan/fix dominate; styles other/planning/debugging/writing).
@@ -238,6 +250,31 @@ def _self_verifier_ok(item):
     return run_verifier(item.get("verifier"), item.get("answer")) is True
 
 
+def _final_answer_region(text):
+    """Same final-answer-region extraction as verifiers._final_region."""
+    from verifiers import _final_region
+    return _final_region(text)
+
+
+def _key_consistent(item, call_fn, model, api_key, seed):
+    """R5 prereg: K=3 independent self-solves; the declared key is trusted
+    only if >= 2 of K solves pass the item's own verifier on the solve's
+    final-answer region. Returns (ok, passes, k)."""
+    from verifiers import run_verifier
+    question = item.get("question", "")
+    passes = 0
+    for j in range(K_SELF_SOLVE):
+        try:
+            solve_text = call_fn(model, SOLVE_PROMPT.format(question=question),
+                                 api_key, seed + j)
+        except Exception:
+            continue
+        region = _final_answer_region(solve_text)
+        if run_verifier(item.get("verifier"), region) is True:
+            passes += 1
+    return passes >= 2, passes, K_SELF_SOLVE
+
+
 def generate_batch(rung, n_items, model, api_key, seed_base, call_fn=None,
                    encode_fn=None, corpus_encode_fn=None):
     """Generate `n_items` candidates for rung `rung`; return accepted items.
@@ -308,6 +345,12 @@ def generate_batch(rung, n_items, model, api_key, seed_base, call_fn=None,
             continue
         if not _self_verifier_ok(item):
             reject("self_verifier",
+                   json.dumps(item, sort_keys=True)[:400])
+            continue
+        # R5 prereg: K=3 self-consistency key validation (majority >= 2).
+        key_ok, _, _ = _key_consistent(item, call_fn, model, api_key, seed)
+        if not key_ok:
+            reject("key_inconsistent",
                    json.dumps(item, sort_keys=True)[:400])
             continue
         item_id = _sha16(question)

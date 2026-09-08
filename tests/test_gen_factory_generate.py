@@ -40,6 +40,16 @@ def tiny_encode(texts, dim=96):
     return out
 
 
+def _is_solve(prompt):
+    """R5: distinguish K=3 solve prompts from generation prompts."""
+    return "Final answer:" in prompt and "step" in prompt
+
+
+def solve_ok(answer):
+    """Fake model solve response that agrees with `answer`."""
+    return "Solve step by step.\\nFinal answer: " + str(answer)
+
+
 @pytest.fixture
 def env(monkeypatch, tmp_path):
     """Redirect all evidence writes to tmp_path; fake corpus; tiny encoder."""
@@ -98,6 +108,8 @@ def test_strict_parse_rejects_counted_not_raised(env):
     calls = {"i": 0}
 
     def call_fn(model, prompt, key, seed):
+        if _is_solve(prompt):
+            return solve_ok("100 degrees Celsius")
         out = resp["gen/1"][calls["i"]]
         calls["i"] += 1
         return out
@@ -126,6 +138,8 @@ def test_verifier_shape_and_self_verifier_gates(env):
     idx = {"i": 0}
 
     def call_fn(model, prompt, key, seed):
+        if _is_solve(prompt):
+            return solve_ok("100 degrees Celsius")
         out = resp["gen/1"][idx["i"]]
         idx["i"] += 1
         return out
@@ -186,6 +200,8 @@ def test_dedup_reject_within_batch_itself(env):
     idx = {"i": 0}
 
     def call_fn(model, prompt, key, seed):
+        if _is_solve(prompt):
+            return solve_ok("Jupiter")
         out = resp["gen/1"][idx["i"]]
         idx["i"] += 1
         return out
@@ -211,7 +227,12 @@ def test_unrelated_items_pass_dedup_gate(env):
     resp = {"gen/1": cands}
     idx = {"i": 0}
 
+    solve_answers = {"100 degrees Celsius": "100 degrees Celsius",
+                     "5000": "5000"}
     def call_fn(model, prompt, key, seed):
+        if _is_solve(prompt):
+            return solve_ok("5000") if "kilometers" in prompt \
+                else solve_ok("100 degrees Celsius")
         out = resp["gen/1"][idx["i"]]
         idx["i"] += 1
         return out
