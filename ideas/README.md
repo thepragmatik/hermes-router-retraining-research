@@ -11,6 +11,8 @@ The actual GitHub Spec Kit packages live under `../specs/<idea>/` so they retain
 
 Use [`META_PROMPT.md`](META_PROMPT.md) to launch an orchestrator over the whole program.
 
+**Status (2026-09-09): the program has converged.** Final verdicts: 101 `SHADOW_READY` (deployed to the production launchd service `com.rath.router-shadow-v1`, 127.0.0.1:8765); 105 `V1_SAFE_SLICE`; 102/103/104/107/108 killed; 106 `BLOCKED_PREREQ_NOT_MET`; 109 `TRACE_DATA_INSUFFICIENT`. Total spend $0. See [`STATUS.md`](STATUS.md) and [`INTEGRATION_RECOMMENDATION.md`](INTEGRATION_RECOMMENDATION.md); the waves below are the original execution plan, retained for reference.
+
 ## Ideas
 
 | ID | Idea | Role | Dependencies | Execution prompt |

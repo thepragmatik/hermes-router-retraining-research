@@ -9,7 +9,7 @@
 
 | ID | Idea | Status | Report |
 |---|---|---|---|
-| 101 | Counterfactual Shadow Telemetry | **STAGE0_PASS** | `results/101/STAGE0_OPE.md` (sha 307beda) |
+| 101 | Counterfactual Shadow Telemetry | **SHADOW_READY** (Phase 2-5, deployed to production; see §11) | `results/101/FINAL_VERDICT.md` (merge 70d46ca) |
 | 102 | Doubly Robust Uplift Router | **KILLED** | `results/102/STAGE0_REPORT.md` (sha 739e091) |
 | 103 | Bayesian Semantic Performance Memory | **KILLED** | `results/103/` final report (sha d124b51) |
 | 104 | Whitened Latent Marginal-Gain Probe | **KILLED** | `results/104/stage0_report.md` (sha 59951e7) |
@@ -96,3 +96,13 @@ This is an **operator decision point**; the program does not self-authorize live
 - Historical validation remained finalists-only; development used train-only holdouts with recorded seeds/splits in each PREREG.
 - Two preregistered single diagnostic corrections were consumed program-wide (102: isotonic recalibration; 108: shift-flag correction) — both declared in their CORRECTION_LOG/ERRATUM before the corrected run, neither changed a terminal verdict.
 - One prereg erratum set (108, E1–E6) was committed pre-results, before any gate evaluation.
+
+## 11. Post-convergence action (2026-09-09)
+
+Idea 101 Phase 2-5 (`SHADOW_READY`, merge `70d46ca`) has been **deployed to the production shadow service**: launchd `com.rath.router-shadow-v1` on 127.0.0.1:8765, live-verified — routes log decisions with sha256 join keys (`prompt_hash`, `session_id_hash`/`message_id_hash`), no raw prompt text, telemetry counters on `/health`, `exploration_mode="disabled"`. Evidence: `results/101/DEPLOY_VERIFICATION.md`.
+
+What this unblocks next:
+
+- **Real outcomes can now accumulate** — the production service logs joinable decisions, but no joined real outcomes exist yet (fixtures only). 102/108 real-data phases stay locked until an outcome-capture pipeline feeds real outcomes; 109's re-audit benefits from C6/C7 (content hash, production decision log) now closed.
+- **Live exploration remains disabled** — `shadow_dual`/`randomized_sentinel` are implemented but inert; activation requires an operator-countersigned `experiments/101-live-exploration-prereg.md` (fields unfilled).
+- **Frozen V1 remains the only deployed router** (threshold 0.30, engine `router-v1-frozen`); the best qualified stack — V1 + the 105 conformal envelope — is **not yet wrapped into production** and remains the recommended next integration if the operator proceeds.
