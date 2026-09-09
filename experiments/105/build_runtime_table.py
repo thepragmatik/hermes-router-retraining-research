@@ -170,6 +170,7 @@ def main():
             "stage0_report": "results/105/STAGE0_REPORT.md",
             "deploy_prereg": "results/105/ENVELOPE_DEPLOY_PREREG.md",
             "stage0_csv": "results/105/coverage_risk_global.csv",
+            "stage0_csv_sha256": sha256(CSV),
             "v1_train_probs_sha256": PREREG_HASHES[PROBS],
             "mf_router_pt_sha256": PREREG_HASHES[
                 os.path.join(REPO, "router_v1", "mf_router.pt")],

@@ -11694,6 +11694,7 @@
   "deploy_prereg": "results/105/ENVELOPE_DEPLOY_PREREG.md",
   "mf_router_pt_sha256": "db6706b14c5723acbb484dc66dc151fb6b9b010c5d749a1e80237c7a53951dc7",
   "stage0_csv": "results/105/coverage_risk_global.csv",
+  "stage0_csv_sha256": "076dbff0f1b7ada2e337b830d876ee7e1bad8fe7eb94941667dcce4b9c836d68",
   "stage0_prereg": "results/105/PREREG.md",
   "stage0_report": "results/105/STAGE0_REPORT.md",
   "v1_train_probs_sha256": "dfbe974ecadb93e8f2b78ebb5f87b33d6ae9c108b48b903a4c433dd5b017e1af",

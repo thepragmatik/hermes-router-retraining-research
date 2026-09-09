@@ -74,9 +74,11 @@ Producing folds (verified at build time, frozen here):
   duality p = 0.9566.
 
 Artifact sha256 (pinned at prereg commit, asserted by tests):
-`5af9696508f51e038218bfc3d2689b37c351e6c5ea99b87efa202891f0ffc5ae`
-(telemetry/envelope_config.json, 184388 bytes; embeds the frozen table, the CP verification
+`{ART_SHA}`
+(telemetry/envelope_config.json, {ART_BYTES} bytes; embeds the frozen table, the CP verification
 counts, the KS reference values, and provenance hashes — no prompt text, no raw data rows).
+Stage-0 CSV sha256 (pin for the stdlib load-time verbatim-threshold check):
+`076dbff0f1b7ada2e337b830d876ee7e1bad8fe7eb94941667dcce4b9c836d68` (results/105/coverage_risk_global.csv, 30 rows).
 
 **Artifact:** `telemetry/envelope_config.json` — a frozen JSON file containing the table above,
 `delta: 0.05`, `deployed_alpha: 0.01`, provenance hashes, and the frozen KS reference-window
