@@ -8,4 +8,4 @@ router:
   # Default OFF; flag OFF is byte-identical to the pre-105 service. Setting
   # true adds a record-only "envelope" verdict to /route + /health (never
   # changes the V1 decision, threshold, ledger, or any protected path).
-  envelope_enabled: false
+  envelope_enabled: true
