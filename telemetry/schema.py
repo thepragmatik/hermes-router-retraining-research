@@ -1,6 +1,6 @@
 """Telemetry schemas for idea 101 (frozen in results/101/LIVE_PREREG.md).
 
-Both ledgers are schema_version "1.0.0". Raw prompt text never enters any
+Both ledgers are schema_version "1.1.0" as of the outcome-capture schema bump (results/101/OUTCOME_CAPTURE_PREREG.md). Raw prompt text never enters any
 record: the only content-derived field is `prompt_hash` = sha256(text)[:12].
 """
 import hashlib
@@ -8,7 +8,7 @@ import re
 import uuid
 from datetime import datetime, timezone
 
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.1.0"
 
 DECISION_REQUIRED = (
     "schema_version", "event_id", "ts", "session_id_hash", "message_id_hash",
@@ -75,15 +75,25 @@ class SchemaValidationError(ValueError):
     """Raised when a record violates the frozen schema (fail loud, T034/A7)."""
 
 
+ACCEPTED_SCHEMA_VERSIONS = ("1.0.0", "1.1.0")
+
+
 def _check_known(rec, required, kind):
     missing = [k for k in required if k not in rec]
     if missing:
         raise SchemaValidationError(
             f"{kind} missing required fields: {missing}")
-    if rec.get("schema_version") != SCHEMA_VERSION:
+    if rec.get("schema_version") not in ACCEPTED_SCHEMA_VERSIONS:
         raise SchemaValidationError(
-            f"{kind} schema_version {rec.get('schema_version')!r} != "
-            f"{SCHEMA_VERSION!r} (drift must be quarantined, not accepted)")
+            f"{kind} schema_version {rec.get('schema_version')!r} not in "
+            f"{ACCEPTED_SCHEMA_VERSIONS} (drift must be quarantined, not accepted)")
+    # Cleanup A (OUTCOME_CAPTURE_PREREG): prompt_id dropped from NEW events in
+    # 1.1.0; legacy 1.0.0 rows carry the constant 0 and remain valid. Any other
+    # value is corruption, never a real identity.
+    if "prompt_id" in rec and rec["prompt_id"] != 0:
+        raise SchemaValidationError(
+            f"decision prompt_id must be the legacy constant 0 (deprecated; "
+            f"identity = event_id), got {rec['prompt_id']!r}")
 
 
 def validate_decision(rec):
@@ -181,7 +191,10 @@ def make_decision_event(prompt, confidence, chosen_action, *, threshold=0.30,
         "price_snapshot_id": PRICE_SNAPSHOT_ID,
         "exploration_mode": exploration_mode,
         "eligibility_reason": eligibility_reason,
-        "prompt_id": 0,  # legacy placeholder retained for response-shape compat (deprecated; identity = event_id)
+        # prompt_id REMOVED in schema 1.1.0 (pre-approved cleanup A,
+        # results/101/OUTCOME_CAPTURE_PREREG.md): new events no longer carry
+        # it. Legacy 1.0.0 rows keep it and still validate. Old consumers
+        # keying on prompt_id must move to prompt_hash / event_id.
     }
 
 

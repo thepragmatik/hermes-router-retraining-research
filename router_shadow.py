@@ -90,6 +90,74 @@ def _envelope_health():
     return _get_envelope().health()
 
 
+# ---------------- Idea-101 outcome capture + edge/missing-id counters -------
+# In-memory per-process counters (reset on restart; frozen semantics,
+# OUTCOME_CAPTURE_PREREG). Additive-only on /health.
+_EDGE_REJECTION_SHAPES = ("empty_prompt", "missing_prompt", "whitespace_prompt",
+                          "non_string_prompt", "malformed_json",
+                          "missing_session_id", "missing_message_id")
+_EDGE_COUNTERS = {k: 0 for k in _EDGE_REJECTION_SHAPES}
+_EDGE_COUNTERS_LOCK = threading.Lock()
+_MISSING_IDS_LOGGED = [0]  # boxed int guarded by the same lock
+_EDGE_DECISIONS_SEEN = 0   # decisions logged this process (for missing-ids rate)
+
+_OUTCOME_WRITER = None
+_OUTCOME_WRITER_LOCK = threading.Lock()
+
+
+def _classify_edge_rejection(malformed, payload):
+    """Frozen shape precedence for the 400-edge counters (prereg section 0).
+    malformed_json wins (body never parsed); then non-string; then missing;
+    then whitespace; then empty."""
+    if malformed:
+        return "malformed_json"
+    prompt = payload.get("prompt") if isinstance(payload, dict) else None
+    if "prompt" not in (payload if isinstance(payload, dict) else {}):
+        return "missing_prompt"
+    if not isinstance(prompt, str):
+        return "non_string_prompt"
+    if prompt == "":
+        return "empty_prompt"
+    if not prompt.strip():
+        return "whitespace_prompt"
+    return None
+
+
+def validate_outcome_request_wrapped(payload):
+    from telemetry.service_outcome_log import validate_outcome_request
+    return validate_outcome_request(payload)
+
+
+def _missing_id_reason(v):
+    """Frozen id-validity rule (ERRATUM 1): str with non-whitespace content.
+    Missing key / None / non-string / empty / whitespace-only all count as
+    missing."""
+    if not isinstance(v, str) or not v.strip():
+        return True
+    return False
+
+
+def _bump_edge(shape):
+    with _EDGE_COUNTERS_LOCK:
+        _EDGE_COUNTERS[shape] += 1
+
+
+def _get_outcome_writer():
+    global _OUTCOME_WRITER
+    if _OUTCOME_WRITER is not None:
+        return _OUTCOME_WRITER
+    with _OUTCOME_WRITER_LOCK:
+        if _OUTCOME_WRITER is None:
+            from telemetry.service_outcome_log import ServiceOutcomeWriter
+            d = os.environ.get("ROUTER_TELEMETRY_DIR")
+            if not d:
+                d = os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)),
+                    "evidence", "telemetry")
+            _OUTCOME_WRITER = ServiceOutcomeWriter(log_dir=d)
+    return _OUTCOME_WRITER
+
+
 def _warmup_model():
     try:
         t0 = time.time()
@@ -117,6 +185,13 @@ class Handler(BaseHTTPRequestHandler):
             h = {"status": "ok", "enabled": load_config()["enabled"],
                  "engine": ENGINE,
                  "telemetry": get_logger().health()}
+            # Idea-101 outcome capture: additive-only health keys (frozen
+            # OUTCOME_CAPTURE_PREREG). edge_rejections/missing_ids_logged are
+            # in-memory per-process counters, reset on restart.
+            with _EDGE_COUNTERS_LOCK:
+                h["edge_rejections"] = dict(_EDGE_COUNTERS)
+                h["missing_ids_logged"] = _MISSING_IDS_LOGGED[0]
+            h["outcomes"] = _get_outcome_writer().health()
             env_h = _envelope_health()  # None when the envelope flag is OFF
             if env_h is not None:
                 h["envelope"] = env_h
@@ -125,22 +200,46 @@ class Handler(BaseHTTPRequestHandler):
             self._send({"error": "not found"}, 404)
 
     def do_POST(self):
+        if self.path == "/outcome":
+            return self._do_outcome()
         if self.path != "/route":
             return self._send({"error": "not found"}, 404)
         n = int(self.headers.get("Content-Length", 0))
+        malformed = False
         try:
             payload = json.loads(self.rfile.read(n) or b"{}")
         except (ValueError, UnicodeDecodeError):
             payload = {}
+            malformed = True
         # Input validation (frozen: results/101/EDGE_REJECTION_PREREG.md).
         # Precedes config/kill-switch/threshold checks: request validity is a
         # property of the request, not of service state, so it must not be
         # shadowed by (nor shadow) the disabled path or threshold-drift 500.
         # Rejects missing/null/non-string/empty/whitespace-only prompts with
-        # NO model call and NO ledger write.
-        prompt = payload.get("prompt")
-        if not isinstance(prompt, str) or not prompt.strip():
+        # NO model call and NO ledger write. The response body is UNCHANGED;
+        # only the per-shape edge_rejections counters are new (frozen
+        # OUTCOME_CAPTURE_PREREG, in-memory, reset on restart).
+        shape = _classify_edge_rejection(malformed, payload)
+        if shape is not None:
+            _bump_edge(shape)
             return self._send({"error": "empty or missing prompt"}, 400)
+        prompt = payload.get("prompt")
+        # Caller-id enforcement (frozen ERRATUM 1, operator policy change):
+        # session_id and message_id are REQUIRED so every logged decision is
+        # joinable by construction. Same handling shape as the prompt edge:
+        # 400 + frozen body + per-shape counter, NO model call, NO ledger
+        # write, precedes config/kill-switch/threshold checks. Prompt edges
+        # keep precedence; session_id is checked before message_id; a request
+        # missing both increments BOTH counters.
+        sid_missing = _missing_id_reason(payload.get("session_id"))
+        mid_missing = _missing_id_reason(payload.get("message_id"))
+        if sid_missing or mid_missing:
+            if sid_missing:
+                _bump_edge("missing_session_id")
+            if mid_missing:
+                _bump_edge("missing_message_id")
+            return self._send(
+                {"error": "session_id and message_id are required"}, 400)
         cfg = load_config()
         base = {"mode": "shadow", "engine": ENGINE,
                 "ts": datetime.now(timezone.utc).isoformat()}
@@ -167,6 +266,12 @@ class Handler(BaseHTTPRequestHandler):
                 traffic_stratum=traffic_stratum)
             if ev is not None:
                 event_id = ev["event_id"]
+                # missing_ids_logged (frozen OUTCOME_CAPTURE_PREREG): count
+                # THIS process's logged decisions with a null id hash.
+                if ev.get("session_id_hash") is None or \
+                        ev.get("message_id_hash") is None:
+                    with _EDGE_COUNTERS_LOCK:
+                        _MISSING_IDS_LOGGED[0] += 1
         except Exception:
             event_id = None  # telemetry must never break routing
         out = {"decision": decision, "confidence": conf, "threshold": thr, **base}
@@ -180,6 +285,48 @@ class Handler(BaseHTTPRequestHandler):
         if env_frame is not None:
             out["envelope"] = env_frame
         self._send(out)
+
+    def _do_outcome(self):
+        """POST /outcome (frozen OUTCOME_CAPTURE_PREREG). No model call; no
+        decisions.jsonl touch; request-validity 4xxs bump NOTHING."""
+        n = int(self.headers.get("Content-Length", 0))
+        try:
+            payload = json.loads(self.rfile.read(n) or b"")
+        except (ValueError, UnicodeDecodeError):
+            payload = None
+        from telemetry.service_outcome_log import (
+            OutcomeRequestError, load_decisions_index)
+        try:
+            eid, outcome, cost, latency_ms, note = \
+                validate_outcome_request_wrapped(payload)
+        except OutcomeRequestError as e:
+            return self._send({"error": e.message}, e.code)
+        writer = _get_outcome_writer()
+        ddir = writer.log_dir
+        decisions_path = os.path.join(ddir, "decisions.jsonl")
+        index = load_decisions_index(decisions_path)
+        if len(eid) < 32:
+            matches = [k for k in index if k.startswith(eid)]
+            if not matches:
+                return self._send({"error": "unknown event_id"}, 404)
+            if len(matches) > 1:
+                return self._send({"error": "ambiguous event_id prefix"}, 409)
+            eid = matches[0]
+        elif eid not in index:
+            return self._send({"error": "unknown event_id"}, 404)
+        dec = index[eid]
+        pairs = writer.load_existing_pairs()
+        if (eid, outcome) in pairs:
+            return self._send({"error": "duplicate outcome"}, 409)
+        row = writer.append(
+            event_id=eid, outcome=outcome, cost=cost, latency_ms=latency_ms,
+            note=note,
+            joined_session_id_hash=dec.get("session_id_hash"),
+            joined_message_id_hash=dec.get("message_id_hash"))
+        if row is None:
+            return self._send({"error": "outcome write failed"}, 500)
+        self._send({"outcome_id": row["outcome_id"], "event_id": eid,
+                    "status": "logged"}, 202)
 
     def log_message(self, *a):  # silence default stderr spam
         pass

@@ -80,11 +80,12 @@ def _cfg_paths(tmp_path):
 # ---------- 1. flag-OFF byte-identity ----------
 
 def test_flag_off_byte_identical(svc_off):
-    out = svc_off.post("/route", {"prompt": PROMPTS[0]})
+    out = svc_off.post("/route", {"prompt": PROMPTS[0], "session_id": "env-test", "message_id": "env-msg"})
     assert set(out) == BASE_ROUTE_KEYS          # frozen pre-105 shape
     assert "envelope" not in out
     h = svc_off.get("/health")
-    assert set(h) == {"status", "enabled", "engine", "telemetry"}
+    assert set(h) == {"status", "enabled", "engine", "telemetry",
+                      "outcomes", "edge_rejections", "missing_ids_logged"}
     assert "envelope" not in h
 
 
@@ -94,7 +95,7 @@ def test_flag_off_missing_key_defaults_off(tmp_path):
     svc = Service(cfg, str(tmp_path / "telemetry"), tmpdir=str(tmp_path))
     try:
         assert svc.wait_ready()
-        out = svc.post("/route", {"prompt": PROMPTS[0]})
+        out = svc.post("/route", {"prompt": PROMPTS[0], "session_id": "env-test", "message_id": "env-msg"})
         assert "envelope" not in out
     finally:
         svc.stop()
@@ -103,7 +104,7 @@ def test_flag_off_missing_key_defaults_off(tmp_path):
 # ---------- 2. flag-ON envelope fields ----------
 
 def test_flag_on_envelope_fields(svc_on):
-    out = svc_on.post("/route", {"prompt": PROMPTS[0]})
+    out = svc_on.post("/route", {"prompt": PROMPTS[0], "session_id": "env-test", "message_id": "env-msg"})
     assert "envelope" in out
     env = out["envelope"]
     assert set(env) == ENVELOPE_KEYS
@@ -121,8 +122,8 @@ def test_flag_on_envelope_fields(svc_on):
 
 def test_flag_on_decision_matches_flag_off(svc_on, svc_off):
     """Same prompt: decision/confidence/threshold identical, envelope additive."""
-    a = svc_on.post("/route", {"prompt": PROMPTS[1]})
-    b = svc_off.post("/route", {"prompt": PROMPTS[1]})
+    a = svc_on.post("/route", {"prompt": PROMPTS[1], "session_id": "env-test", "message_id": "env-msg"})
+    b = svc_off.post("/route", {"prompt": PROMPTS[1], "session_id": "env-test", "message_id": "env-msg"})
     for k in ("decision", "confidence", "threshold", "mode", "engine"):
         assert a[k] == b[k]
     assert "envelope" in a and "envelope" not in b
@@ -133,11 +134,12 @@ def test_flag_on_decision_matches_flag_off(svc_on, svc_off):
 def test_action_mapping(svc_on):
     """Frozen prompts (verified against the real engine, conf 0.1527 / 0.6304):
     one weak+accepted (s=0.8473 >= 0.82435), one escalated (s=0.3696)."""
-    a = svc_on.post("/route", {"prompt": "Solve: x + 3 = 5. x ="})
+    a = svc_on.post("/route", {"prompt": "Solve: x + 3 = 5. x =",
+                            "session_id": "env-test", "message_id": "env-msg"})
     assert a["decision"] == "weak"
     assert a["envelope"]["action"] == "accept-weak"
     assert a["envelope"]["threshold_used"] == FROZEN_THRESHOLD
-    e = svc_on.post("/route", {"prompt": "hi"})
+    e = svc_on.post("/route", {"prompt": "hi", "session_id": "env-test", "message_id": "env-msg"})
     assert e["envelope"]["action"] == "escalate-strong"
 
 
@@ -145,7 +147,8 @@ def test_action_mapping(svc_on):
 
 def test_health_envelope_counter_flag_on(svc_on, tmp_path):
     h = svc_on.get("/health")
-    assert set(h) == {"status", "enabled", "engine", "telemetry", "envelope"}
+    assert set(h) == {"status", "enabled", "engine", "telemetry", "envelope",
+                      "outcomes", "edge_rejections", "missing_ids_logged"}
     e = h["envelope"]
     assert e["enabled"] is True and e["mode"] == "shadow"
     assert e["alpha"] == FROZEN_ALPHA and e["state"] == "active"
@@ -154,7 +157,7 @@ def test_health_envelope_counter_flag_on(svc_on, tmp_path):
     assert set(e["alarm_counts"]) == {"ks_fire", "ks_evaluations",
                                       "risk_breach", "load_failed", "error"}
     before = sum(e["action_counts"].values())
-    svc_on.post("/route", {"prompt": PROMPTS[2]})
+    svc_on.post("/route", {"prompt": PROMPTS[2], "session_id": "env-test", "message_id": "env-msg"})
     after = sum(svc_on.get("/health")["envelope"]["action_counts"].values())
     assert after == before + 1
 
@@ -164,7 +167,7 @@ def test_alarm_disable_via_artifact_swap(svc_on, tmp_path, monkeypatch):
     injection is the frozen test path, prereg §5.4); here we verify the
     service-side health plumbing end-to-end with a tampered artifact that
     fails verification -> load_failed state, envelope still never blocks."""
-    svc_on.post("/route", {"prompt": PROMPTS[0]})
+    svc_on.post("/route", {"prompt": PROMPTS[0], "session_id": "env-test", "message_id": "env-msg"})
     h = svc_on.get("/health")["envelope"]
     assert h["state"] in ("active", "alarm_disabled")  # real artifact verifies
 
@@ -185,7 +188,7 @@ def test_no_safe_coverage_abstain_falls_through_spawn(tmp_path, monkeypatch):
     svc = Service(rcfg, str(tmp_path / "telemetry"), tmpdir=str(tmp_path))
     try:
         assert svc.wait_ready()
-        out = svc.post("/route", {"prompt": PROMPTS[0]})
+        out = svc.post("/route", {"prompt": PROMPTS[0], "session_id": "env-test", "message_id": "env-msg"})
         assert out["decision"] in ("weak", "strong")   # raw V1 unmodified
         env = out["envelope"]
         assert env["action"] == "abstain"
@@ -205,7 +208,7 @@ def test_kill_switch_no_envelope_key(tmp_path):
     svc = Service(cfg, str(tmp_path / "telemetry"), tmpdir=str(tmp_path))
     try:
         assert svc.wait_ready()
-        out = svc.post("/route", {"prompt": PROMPTS[0]})
+        out = svc.post("/route", {"prompt": PROMPTS[0], "session_id": "env-test", "message_id": "env-msg"})
         assert out["decision"] == "disabled"
         assert "envelope" not in out            # kill switch precedes envelope
     finally:
@@ -219,7 +222,9 @@ def test_threshold_drift_500_no_envelope_key(tmp_path):
     svc = Service(cfg, str(tmp_path / "telemetry"), tmpdir=str(tmp_path))
     try:
         assert svc.wait_ready()
-        code, body = _post_raw(svc, {"prompt": "valid synthetic prompt"})
+        code, body = _post_raw(svc, {"prompt": "valid synthetic prompt",
+                                     "session_id": "env-test",
+                                     "message_id": "env-msg"})
         assert code == 500 and body == {"error": "threshold drift"}
         assert "envelope" not in body
         h = svc.get("/health")
@@ -261,7 +266,7 @@ def test_load_fail_closed_fail_open(tmp_path, monkeypatch):
     svc = Service(rcfg, str(tmp_path / "telemetry"), tmpdir=str(tmp_path))
     try:
         assert svc.wait_ready()
-        out = svc.post("/route", {"prompt": PROMPTS[0]})
+        out = svc.post("/route", {"prompt": PROMPTS[0], "session_id": "env-test", "message_id": "env-msg"})
         assert out["decision"] in ("weak", "strong")   # raw V1 unmodified
         env = out["envelope"]
         assert env["action"] == "disabled"
@@ -279,8 +284,8 @@ def test_load_fail_closed_fail_open(tmp_path, monkeypatch):
 def test_ledger_schema_unchanged_flag_on(svc_on, svc_off, tmp_path):
     """Flag-ON ledger records must be key-identical to flag-OFF records (the
     C1-C7 schema is frozen; the envelope adds nothing to any ledger)."""
-    on = svc_on.post("/route", {"prompt": PROMPTS[0]})
-    off = svc_off.post("/route", {"prompt": PROMPTS[0]})
+    on = svc_on.post("/route", {"prompt": PROMPTS[0], "session_id": "env-test", "message_id": "env-msg"})
+    off = svc_off.post("/route", {"prompt": PROMPTS[0], "session_id": "env-test", "message_id": "env-msg"})
     assert "event_id" in on and "event_id" in off
     recs_on, _ = read_decisions(os.path.join(
         str(tmp_path / "telemetry_on"), "decisions.jsonl"))
