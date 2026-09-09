@@ -141,7 +141,7 @@ def _run_cli(prompt, config_path, telemetry_dir, extra_args=(), env_extra=None,
 # ---------- T042: service traffic actually logs + parity (A14) ----------
 
 def test_service_route_logs_decision(service, tmp_path):
-    out = service.post("/route", {"prompt": PROMPTS[0]})
+    out = service.post("/route", {"prompt": PROMPTS[0], "session_id": "svc-test", "message_id": "m-test"})
     assert out["decision"] in ("weak", "strong")
     assert 0.0 <= out["confidence"] <= 1.0
     assert out["mode"] == "shadow"
@@ -172,7 +172,7 @@ def test_cli_service_parity(service, tmp_path, enabled_config):
     p = _run_cli(PROMPTS[0], enabled_config, tdir)
     assert p.returncode == 0, p.stderr[-800:]
     cli_out = json.loads(p.stdout.strip().splitlines()[-1])
-    svc_out = service.post("/route", {"prompt": PROMPTS[0]})
+    svc_out = service.post("/route", {"prompt": PROMPTS[0], "session_id": "svc-test", "message_id": "m-test"})
     # same decision for the same prompt (frozen deterministic router)
     assert cli_out["decision"] == svc_out["decision"]
     assert abs(cli_out["confidence"] - svc_out["confidence"]) < 1e-9
@@ -196,8 +196,8 @@ def test_cli_service_parity(service, tmp_path, enabled_config):
 
 
 def test_duplicate_prompt_stable_hash_distinct_ids(service, tmp_path):
-    a = service.post("/route", {"prompt": PROMPTS[1]})
-    b = service.post("/route", {"prompt": PROMPTS[1]})
+    a = service.post("/route", {"prompt": PROMPTS[1], "session_id": "svc-test", "message_id": "m-test"})
+    b = service.post("/route", {"prompt": PROMPTS[1], "session_id": "svc-test", "message_id": "m-test"})
     assert a["event_id"] != b["event_id"]
     recs, _ = read_decisions(os.path.join(str(tmp_path / "telemetry"), "decisions.jsonl"))
     assert recs[0]["prompt_hash"] == recs[1]["prompt_hash"]
@@ -255,7 +255,7 @@ def test_threshold_drift_http_500(tmp_path):
     try:
         assert svc.wait_ready()
         with pytest.raises(urllib.error.HTTPError) as ei:
-            svc.post("/route", {"prompt": "hello"})
+            svc.post("/route", {"prompt": "hello", "session_id": "svc-test", "message_id": "m-test"})
         assert ei.value.code == 500
         h = svc.get("/health")
         # drift path: no decision events logged
@@ -287,7 +287,7 @@ def test_logging_io_failure_http_route_survives(tmp_path, enabled_config):
         svc = Service(enabled_config, str(tdir))
         try:
             assert svc.wait_ready()
-            out = svc.post("/route", {"prompt": "hello world"})
+            out = svc.post("/route", {"prompt": "hello world", "session_id": "svc-test", "message_id": "m-test"})
             assert out["decision"] in ("weak", "strong")
             assert "event_id" not in out
             h = svc.get("/health")
@@ -303,7 +303,7 @@ def test_service_restart_appends_without_clobber(tmp_path, enabled_config):
     for _ in range(2):  # start, route, stop, start again
         svc = Service(enabled_config, tdir)
         assert svc.wait_ready()
-        svc.post("/route", {"prompt": "restart synthetic prompt"})
+        svc.post("/route", {"prompt": "restart synthetic prompt", "session_id": "svc-test", "message_id": "m-test"})
         svc.stop()
     recs, quar = read_decisions(os.path.join(tdir, "decisions.jsonl"))
     assert quar == []
@@ -315,7 +315,8 @@ def test_concurrent_requests_all_logged_exactly_once(service, tmp_path):
     n = 12
     with ThreadPoolExecutor(max_workers=6) as ex:
         outs = list(ex.map(lambda i: service.post(
-            "/route", {"prompt": f"concurrent synthetic prompt {i}"}), range(n)))
+            "/route", {"prompt": f"concurrent synthetic prompt {i}",
+                      "session_id": f"s-{i}", "message_id": f"m-{i}"}), range(n)))
     assert all("event_id" in o for o in outs)
     assert len({o["event_id"] for o in outs}) == n
     recs, quar = read_decisions(os.path.join(str(tmp_path / "telemetry"), "decisions.jsonl"))
@@ -375,7 +376,7 @@ def test_valid_prompt_after_400s_unchanged(service, tmp_path):
     for bad in ({}, {"prompt": ""}, {"prompt": None}):
         code, _ = _post_raw(service, bad)
         assert code == 400
-    out = service.post("/route", {"prompt": PROMPTS[0]})
+    out = service.post("/route", {"prompt": PROMPTS[0], "session_id": "svc-test", "message_id": "m-test"})
     assert out["decision"] in ("weak", "strong")
     assert out["mode"] == "shadow" and "event_id" in out
     recs, _ = _ledger_rows(str(tmp_path / "telemetry"))
@@ -394,7 +395,10 @@ def test_invalid_prompt_does_not_shadow_threshold_drift_500(tmp_path):
         # prompts (test_threshold_drift_http_500).
         assert code == 400
         assert body == {"error": "empty or missing prompt"}
-        code, body = _post_raw(svc, {"prompt": "valid synthetic prompt"})
+        code, body = _post_raw(svc, {"prompt": "valid synthetic prompt",
+                                     "session_id": "s", "message_id": "m"})
+        # id enforcement precedes the drift check too (same edge family); the
+        # drift 500 stays reachable for VALID prompts carrying both ids
         assert code == 500
         assert body == {"error": "threshold drift"}
     finally:

@@ -94,7 +94,8 @@ def _envelope_health():
 # In-memory per-process counters (reset on restart; frozen semantics,
 # OUTCOME_CAPTURE_PREREG). Additive-only on /health.
 _EDGE_REJECTION_SHAPES = ("empty_prompt", "missing_prompt", "whitespace_prompt",
-                          "non_string_prompt", "malformed_json")
+                          "non_string_prompt", "malformed_json",
+                          "missing_session_id", "missing_message_id")
 _EDGE_COUNTERS = {k: 0 for k in _EDGE_REJECTION_SHAPES}
 _EDGE_COUNTERS_LOCK = threading.Lock()
 _MISSING_IDS_LOGGED = [0]  # boxed int guarded by the same lock
@@ -125,6 +126,15 @@ def _classify_edge_rejection(malformed, payload):
 def validate_outcome_request_wrapped(payload):
     from telemetry.service_outcome_log import validate_outcome_request
     return validate_outcome_request(payload)
+
+
+def _missing_id_reason(v):
+    """Frozen id-validity rule (ERRATUM 1): str with non-whitespace content.
+    Missing key / None / non-string / empty / whitespace-only all count as
+    missing."""
+    if not isinstance(v, str) or not v.strip():
+        return True
+    return False
 
 
 def _bump_edge(shape):
@@ -214,6 +224,22 @@ class Handler(BaseHTTPRequestHandler):
             _bump_edge(shape)
             return self._send({"error": "empty or missing prompt"}, 400)
         prompt = payload.get("prompt")
+        # Caller-id enforcement (frozen ERRATUM 1, operator policy change):
+        # session_id and message_id are REQUIRED so every logged decision is
+        # joinable by construction. Same handling shape as the prompt edge:
+        # 400 + frozen body + per-shape counter, NO model call, NO ledger
+        # write, precedes config/kill-switch/threshold checks. Prompt edges
+        # keep precedence; session_id is checked before message_id; a request
+        # missing both increments BOTH counters.
+        sid_missing = _missing_id_reason(payload.get("session_id"))
+        mid_missing = _missing_id_reason(payload.get("message_id"))
+        if sid_missing or mid_missing:
+            if sid_missing:
+                _bump_edge("missing_session_id")
+            if mid_missing:
+                _bump_edge("missing_message_id")
+            return self._send(
+                {"error": "session_id and message_id are required"}, 400)
         cfg = load_config()
         base = {"mode": "shadow", "engine": ENGINE,
                 "ts": datetime.now(timezone.utc).isoformat()}

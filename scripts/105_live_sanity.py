@@ -90,7 +90,7 @@ def main():
 
         rows = []
         for i, pr in enumerate(prompts):
-            out = svc_on.post("/route", {"prompt": pr}, timeout=120)
+            out = svc_on.post("/route", {"prompt": pr, "session_id": "105-sanity", "message_id": f"105-sanity-{i}"}, timeout=120)
             env = out.get("envelope")
             # L1 schema
             assert env is not None, f"missing envelope on route {i}"
@@ -101,7 +101,7 @@ def main():
             assert env["threshold_used"] == thr
             # L2 parity (frozen subset; full suite covers parity elsewhere)
             if i < PARITY_N:
-                off = svc_off.post("/route", {"prompt": pr}, timeout=120)
+                off = svc_off.post("/route", {"prompt": pr, "session_id": "105-sanity", "message_id": f"105-sanity-{i}"}, timeout=120)
                 for k in ("decision", "confidence", "threshold", "mode",
                           "engine"):
                     assert out[k] == off[k], (k, i)

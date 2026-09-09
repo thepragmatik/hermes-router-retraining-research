@@ -51,7 +51,7 @@ def _dec_path(tmp_path):
 # ---------------- POST /outcome ----------------
 
 def test_outcome_happy_path(service, tmp_path):
-    r = service.post("/route", {"prompt": "outcome happy synthetic prompt"})
+    r = service.post("/route", {"prompt": "outcome happy synthetic prompt", "session_id": "s", "message_id": "m"})
     eid = r["event_id"]
     code, body = _post_raw(service, "/outcome",
                            {"event_id": eid, "outcome": "success",
@@ -77,9 +77,9 @@ def test_outcome_unknown_event_id_404(service):
 
 
 def test_outcome_ambiguous_prefix_409(service, tmp_path):
-    service.post("/route", {"prompt": "prefix synthetic prompt A"})
-    service.post("/route", {"prompt": "prefix synthetic prompt B"})
-    service.post("/route", {"prompt": "prefix synthetic prompt C"})
+    service.post("/route", {"prompt": "prefix synthetic prompt A", "session_id": "s", "message_id": "m"})
+    service.post("/route", {"prompt": "prefix synthetic prompt B", "session_id": "s", "message_id": "m2"})
+    service.post("/route", {"prompt": "prefix synthetic prompt C", "session_id": "s", "message_id": "m3"})
     decs, _ = read_decisions(_dec_path(tmp_path))
     ids = [d["event_id"] for d in decs]
     shared = None
@@ -132,7 +132,7 @@ def test_outcome_ambiguous_prefix_deterministic(tmp_path):
 
 
 def test_outcome_prefix_of_one_is_202(service, tmp_path):
-    eid = service.post("/route", {"prompt": "prefix one synthetic prompt"})["event_id"]
+    eid = service.post("/route", {"prompt": "prefix one synthetic prompt", "session_id": "s", "message_id": "m"})["event_id"]
     code, body = _post_raw(service, "/outcome",
                            {"event_id": eid[:6], "outcome": "failure"})
     assert code == 202, (code, body)
@@ -148,7 +148,7 @@ def test_outcome_bad_prefix_shape_400(service):
 
 
 def test_outcome_malformed_and_invalid_shapes(service, tmp_path):
-    eid = service.post("/route", {"prompt": "shape synthetic prompt"})["event_id"]
+    eid = service.post("/route", {"prompt": "shape synthetic prompt", "session_id": "s", "message_id": "m"})["event_id"]
     cases = [
         (None, 400, {"error": "malformed json"}),          # non-JSON body
         ({"outcome": "success"}, 400, {"error": "invalid event_id"}),
@@ -180,7 +180,7 @@ def test_outcome_malformed_and_invalid_shapes(service, tmp_path):
 
 
 def test_outcome_duplicate_409_no_second_append(service, tmp_path):
-    eid = service.post("/route", {"prompt": "dup synthetic prompt"})["event_id"]
+    eid = service.post("/route", {"prompt": "dup synthetic prompt", "session_id": "s", "message_id": "m"})["event_id"]
     code, _ = _post_raw(service, "/outcome",
                         {"event_id": eid, "outcome": "success"})
     assert code == 202
@@ -198,7 +198,7 @@ def test_outcome_duplicate_409_no_second_append(service, tmp_path):
 
 
 def test_outcome_does_not_touch_decisions_and_needs_no_model(service, tmp_path):
-    eid = service.post("/route", {"prompt": "outcome no-touch synthetic"})["event_id"]
+    eid = service.post("/route", {"prompt": "outcome no-touch synthetic", "session_id": "s", "message_id": "m"})["event_id"]
     before = open(_dec_path(tmp_path), "rb").read()
     # disabled-config service: /route cannot run, but /outcome must still work
     cfg = tmp_path / "disabled.yaml"
@@ -217,7 +217,7 @@ def test_outcome_does_not_touch_decisions_and_needs_no_model(service, tmp_path):
 def test_health_outcomes_counters_additive(service):
     h = service.get("/health")
     assert h["outcomes"] == {"logged": 0, "errors": 0}
-    eid = service.post("/route", {"prompt": "health synthetic prompt"})["event_id"]
+    eid = service.post("/route", {"prompt": "health synthetic prompt", "session_id": "s", "message_id": "m"})["event_id"]
     _post_raw(service, "/outcome", {"event_id": eid, "outcome": "timeout"})
     h = service.get("/health")
     assert h["outcomes"] == {"logged": 1, "errors": 0}
@@ -261,13 +261,16 @@ def test_edge_rejection_malformed_json_counter(service):
 
 # ---------------- missing_ids_logged ----------------
 
-def test_missing_ids_logged_counter(service):
-    service.post("/route", {"prompt": "noid synthetic prompt"})          # null ids
-    service.post("/route", {"prompt": "id synthetic prompt",
-                            "session_id": "s", "message_id": "m"})       # both set
-    service.post("/route", {"prompt": "halfid synthetic prompt",
-                            "session_id": "s"})                          # msg null
-    assert service.get("/health")["missing_ids_logged"] == 2
+def test_missing_ids_logged_pinned_at_zero_with_enforcement(service, tmp_path):
+    """ERRATUM 1: /route requires both ids, so no logged decision can carry a
+    null id hash — the invariant counter must stay pinned at 0."""
+    service.post("/route", {"prompt": "enforced ids prompt",
+                            "session_id": "s", "message_id": "m"})
+    assert service.get("/health")["missing_ids_logged"] == 0
+    # every logged row carries both hashes (null ids impossible by construction)
+    recs, quar = read_decisions(_dec_path(tmp_path))
+    assert quar == [] and recs
+    assert all(r["session_id_hash"] and r["message_id_hash"] for r in recs)
 
 
 # ---------------- decision schema bump 1.0.0 -> 1.1.0 ----------------
@@ -405,3 +408,54 @@ def test_join_tool_orphan_counted(tmp_path):
     assert p.returncode == 0, p.stdout + p.stderr
     assert "orphan_outcomes: 1" in p.stdout
     assert "join_rate: 0.0" in p.stdout
+
+
+# ---------------- /route id enforcement (ERRATUM 1) ----------------
+
+_ID400 = {"error": "session_id and message_id are required"}
+
+
+def _post_route_raw(svc, payload):
+    return _post_raw(svc, "/route", payload)
+
+
+def test_route_requires_both_ids(service, tmp_path):
+    before = open(_dec_path(tmp_path), "rb").read() if \
+        os.path.exists(_dec_path(tmp_path)) else b""
+    h0 = service.get("/health")
+    cases = [
+        {"prompt": "no ids at all"},                                   # both missing
+        {"prompt": "only session", "session_id": "s"},                 # message missing
+        {"prompt": "only message", "message_id": "m"},                 # session missing
+        {"prompt": "empty sid", "session_id": "", "message_id": "m"},  # empty session
+        {"prompt": "empty mid", "session_id": "s", "message_id": ""},  # empty message
+        {"prompt": "ws sid", "session_id": "  \t ", "message_id": "m"},
+        {"prompt": "ws mid", "session_id": "s", "message_id": "   "},
+        {"prompt": "null sid", "session_id": None, "message_id": "m"},
+        {"prompt": "nonstr sid", "session_id": 123, "message_id": "m"},
+        {"prompt": "nonstr mid", "session_id": "s", "message_id": 4.5},
+    ]
+    for payload in cases:
+        code, body = _post_route_raw(service, payload)
+        assert code == 400, (payload, code, body)
+        assert body == _ID400, (payload, body)
+    # NO ledger write on any of them
+    after = open(_dec_path(tmp_path), "rb").read() if \
+        os.path.exists(_dec_path(tmp_path)) else b""
+    assert after == before
+    # Counters (both-missing increments BOTH; independent checks):
+    # sid bad in: both-missing(1), only-message(3), empty sid(4), ws sid(6),
+    #             null sid(8), nonstr sid(9)          -> 6
+    # mid bad in: both-missing(1), only-session(2), empty mid(5), ws mid(7),
+    #             nonstr mid(10)                      -> 5
+    er = service.get("/health")["edge_rejections"]
+    assert er["missing_session_id"] == 6
+    assert er["missing_message_id"] == 5
+    # prompt-edge counters untouched by id enforcement
+    assert er["empty_prompt"] == 0 and er["missing_prompt"] == 0
+    # a fully valid call still routes and logs (protected paths reachable)
+    out = service.post("/route", {"prompt": "valid after id 400s",
+                                  "session_id": "s", "message_id": "m"})
+    assert out["decision"] in ("weak", "strong")
+    recs, quar = read_decisions(_dec_path(tmp_path))
+    assert quar == [] and len(recs) == 1

@@ -62,13 +62,14 @@ def run_stage1(n_target=1100, log_dir=None):
     service_out = []
     t0 = time.time()
     for i in range(n_service):
+        # id enforcement (101 ERRATUM 1): every /route call MUST carry both
+        # ids; join variety now comes from distinct values instead of nulls.
         payload = {
             "prompt": PROMPT_POOL[i % len(PROMPT_POOL)],
             "session_id": SESSIONS[i % len(SESSIONS)],
+            "message_id": f"stage1-msg-{i}",
             "traffic_stratum": "stage1_fixture",
         }
-        if i % 7 == 0:  # some events carry message ids (join variety)
-            payload["message_id"] = f"stage1-msg-{i}"
         service_out.append(svc.post("/route", payload))
     service_elapsed = time.time() - t0
     h = svc.get("/health")
