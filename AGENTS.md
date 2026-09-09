@@ -115,3 +115,7 @@ The program is complete when all runnable ideas have converged to their exact sp
 - and the exact next Hermes shadow action—or a recommendation to stop router work.
 
 A negative program conclusion is valid if the evidence shows a simpler model/workflow policy is superior.
+
+## Program state (2026-09-09)
+
+Converged. Final verdicts: 101 `SHADOW_READY` (deployed to production launchd `com.rath.router-shadow-v1`, 127.0.0.1:8765, live-verified); 105 `V1_SAFE_SLICE`; 102/103/104/107/108 `KILLED`; 106 `BLOCKED_PREREQ_NOT_MET`; 109 `TRACE_DATA_INSUFFICIENT`. Spend $0. Frozen V1 (threshold 0.30) remains the only deployed router; best qualified stack is V1 + 105 envelope (not yet in production). Telemetry logs decisions with sha256 join keys only; no joined real outcomes yet; live exploration disabled pending operator-countersigned prereg. Live telemetry ledgers are local-only (untracked). See `ideas/STATUS.md` and `ideas/INTEGRATION_RECOMMENDATION.md`.
