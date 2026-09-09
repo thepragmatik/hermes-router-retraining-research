@@ -1,0 +1,86 @@
+{
+  "all_passed": true,
+  "fixture_config": {
+    "config": null,
+    "note": "gates recomputed from preserved ledgers; traffic unchanged (correction C-4)",
+    "remeasured": true,
+    "telemetry_dir": "/var/folders/8h/lg0qdpj914q_y20pjrw9yk200000gn/T/stage1_ngyalwbv/telemetry"
+  },
+  "gates": {
+    "G1_unique_ids": {
+      "detail": "1100/1100 unique",
+      "measured": 1.0,
+      "passed": true,
+      "threshold": 0.999
+    },
+    "G2_provenance": {
+      "detail": "0 rows missing provenance",
+      "measured": 1.0,
+      "passed": true,
+      "threshold": 1.0
+    },
+    "G3_propensities": {
+      "detail": "0 randomized events (all modes disabled this stage: 0 randomized; property proven by Phase-4 10k sim + schema refusal)",
+      "measured": 1.0,
+      "passed": true,
+      "threshold": 1.0
+    },
+    "G4_join_fixture_outcomes": {
+      "detail": "594/594 fixtured events resolved 'joined'; 0 ambiguous, 0 orphan outcomes surfaced (overall joined/decisions = 594/1100 \u2014 partial-feedback design leaves a no-outcome slice by construction)",
+      "measured": 1.0,
+      "passed": true,
+      "threshold": 0.99
+    },
+    "G5_no_prompt_text": {
+      "detail": "prompt-text key scan over both ledgers",
+      "measured": 0,
+      "passed": true,
+      "threshold": 0
+    },
+    "G6_service_parity": {
+      "detail": "service parity re-verified by tests/test_101_service.py (A14) and health counters {'logged': 'preserved-ledger'}",
+      "measured": 1.0,
+      "passed": true,
+      "threshold": 1.0
+    }
+  },
+  "health_counters": {
+    "logged": "preserved-ledger"
+  },
+  "n_cli": null,
+  "n_decisions": 1100,
+  "n_outcomes": 594,
+  "n_service": null,
+  "n_target": 1100,
+  "quarantined": {
+    "decisions": 0
+  },
+  "report": {
+    "ambiguous_event_ids": [],
+    "ambiguous_joins": 0,
+    "duplicate_ids": 0,
+    "join_success_rate": 0.54,
+    "joined": 594,
+    "log_dir": "/var/folders/8h/lg0qdpj914q_y20pjrw9yk200000gn/T/stage1_ngyalwbv/telemetry",
+    "missing_propensity_on_randomized": 0,
+    "missing_provenance": 0,
+    "orphan_outcomes": 0,
+    "prompt_text_hits": [],
+    "propensity_share_on_randomized": 1.0,
+    "randomized_events": 0,
+    "schema_drift_examples": {
+      "decisions": [],
+      "outcomes": []
+    },
+    "schema_drift_quarantined": {
+      "decisions": 0,
+      "outcomes": 0
+    },
+    "total_decisions": 1100,
+    "total_outcomes": 594,
+    "unique_event_ids": 1100,
+    "unique_share": 1.0,
+    "unjoined": 506
+  },
+  "service_elapsed_s": null
+}
