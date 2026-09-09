@@ -84,7 +84,8 @@ def test_flag_off_byte_identical(svc_off):
     assert set(out) == BASE_ROUTE_KEYS          # frozen pre-105 shape
     assert "envelope" not in out
     h = svc_off.get("/health")
-    assert set(h) == {"status", "enabled", "engine", "telemetry"}
+    assert set(h) == {"status", "enabled", "engine", "telemetry",
+                      "outcomes", "edge_rejections", "missing_ids_logged"}
     assert "envelope" not in h
 
 
@@ -145,7 +146,8 @@ def test_action_mapping(svc_on):
 
 def test_health_envelope_counter_flag_on(svc_on, tmp_path):
     h = svc_on.get("/health")
-    assert set(h) == {"status", "enabled", "engine", "telemetry", "envelope"}
+    assert set(h) == {"status", "enabled", "engine", "telemetry", "envelope",
+                      "outcomes", "edge_rejections", "missing_ids_logged"}
     e = h["envelope"]
     assert e["enabled"] is True and e["mode"] == "shadow"
     assert e["alpha"] == FROZEN_ALPHA and e["state"] == "active"

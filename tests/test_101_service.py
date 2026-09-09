@@ -362,10 +362,11 @@ def test_invalid_prompt_400_no_side_effects(service, tmp_path, payload):
     assert body == {"error": "empty or missing prompt"}
     recs, quar = _ledger_rows(tdir)
     assert recs == [] and quar == []
-    # service stays healthy and unchanged after the 400s
+    # service stays healthy and unchanged after the 400s (health keys are
+    # additive in 1.1.0: outcomes/edge_rejections/missing_ids_logged)
     h = service.get("/health")
     assert h["status"] == "ok"
-    assert set(h) == {"status", "enabled", "engine", "telemetry"}
+    assert {"status", "enabled", "engine", "telemetry"} <= set(h)
     assert h["telemetry"]["logged"] == 0
     assert h["telemetry"]["errors"] == 0
 
