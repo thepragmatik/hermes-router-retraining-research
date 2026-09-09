@@ -192,3 +192,42 @@ here and flagged in telemetry/README limitations.
 $0. No model API calls anywhere in Phases 2–5; the only inference is the
 local frozen V1 torch model on fixture prompts (free, already installed).
 No new dependencies: stdlib + PyYAML (+ pytest 8.4.2 for tests).
+
+## 10. CORRECTION_LOG (deviations from this prereg; each recorded before the
+affected test/report consumed results)
+
+- **C-1 (join supersede semantics, recorded before the affected tests ran in
+  their final form):** §2's join rule said finality precedence
+  `final > superseded > provisional` applied to the STORED finality of each
+  row. In an append-only ledger a superseded row cannot be rewritten to carry
+  `finality: "superseded"` retroactively, so supersession is implemented
+  **by reference**: any row whose `outcome_id` appears in another row's
+  `supersedes_outcome_id` is dead regardless of its stored finality. Same
+  frozen outcome (exactly-one live final per event); the mechanism is
+  reference-based, matching the append-only discipline. Duplicate outcomes
+  sharing an outcome chain resolve via this rule; two live finals with NO
+  supersession link remain `ambiguous` (T033 fixture A1 asserts this).
+  Also: join units are per-UNIQUE decision `event_id` (a duplicated
+  decision row is one join unit, not two) — duplicate decision appends count
+  once in the quality report's join stats and once in the duplicate-id count.
+- **C-1b (outcome metadata whitelist):** `note` removed from the metadata
+  whitelist (T034 review: a free-text-bearing key is a PII surface).
+  Whitelist frozen as `("source", "fixture")` — controlled vocabulary only.
+  Recorded before the affected validation test ran.
+- **C-2 (service concurrency guard):** the plan did not specify model-load
+  behavior under concurrent requests. Observed: simultaneous first /route
+  requests raced the lazy torch/encoder import inside `router_v1.route`,
+  killing handler threads mid-import (RemoteDisconnected bursts). Fix at the
+  wrapper level only (no `router_v1/` change): the service performs a
+  single-threaded model warmup BEFORE accepting traffic and serializes
+  `route()` calls under a process-wide `ROUTE_LOCK`. Recorded here because
+  the prereg's test matrix (A13) exercised concurrency before this guard
+  existed; the fix precedes the passing A13 run.
+- **C-3 (G3' propensity gate scope):** spec line 114 requires "100%
+  propensities present for randomized events". In the Stage-1 evidence stream
+  ALL events are deterministic (`exploration_mode="disabled"`, zero
+  randomized events), so the gate measures 100% propensity coverage over an
+  EMPTY randomized set (vacuous). The property itself is proven by the Phase-4
+  10k simulation (every randomized event carries a propensity in (0,1]) and
+  by schema-level refusal (`validate_decision` rejects randomized events
+  without propensities). Recorded here rather than silently redefining G3'.
