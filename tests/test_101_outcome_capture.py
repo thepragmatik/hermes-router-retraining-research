@@ -15,13 +15,14 @@ import pytest
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, REPO)
+sys.path.insert(0, os.path.join(REPO, "tests"))
 
 from telemetry.decision_log import read_decisions  # noqa: E402
 from telemetry.schema import (SCHEMA_VERSION, make_decision_event,  # noqa: E402
                               validate_decision)
 
-from tests.test_101_service import (Service, _run_cli, enabled_config,  # noqa: E402,F401
-                                    isolated_telemetry, service)
+from test_101_service import (Service, _run_cli, enabled_config,  # noqa: E402,F401
+                              isolated_telemetry, service)
 
 JOIN_TOOL = os.path.join(REPO, "experiments", "101", "join_outcomes.py")
 
