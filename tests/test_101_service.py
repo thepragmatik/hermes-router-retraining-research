@@ -324,6 +324,113 @@ def test_concurrent_requests_all_logged_exactly_once(service, tmp_path):
     assert len({r["event_id"] for r in recs}) == n
 
 
+# ---------- T044-edge: empty/missing/whitespace/non-string prompt 400 ----------
+# Contract frozen in results/101/EDGE_REJECTION_PREREG.md (prereg commit
+# precedes this code). 400 = NO model call, NO ledger write.
+
+def _post_raw(svc, payload, timeout=120):
+    """POST returning (status, body_dict); does not raise on 4xx/5xx."""
+    req = urllib.request.Request(
+        svc._url("/route"), data=json.dumps(payload).encode(),
+        headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.status, json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        return e.code, json.loads(e.read())
+
+
+def _ledger_rows(tdir):
+    from telemetry.decision_log import read_decisions
+    path = os.path.join(tdir, "decisions.jsonl")
+    if not os.path.exists(path):
+        return [], []
+    return read_decisions(path)
+
+
+@pytest.mark.parametrize("payload", [
+    {"prompt": ""},          # empty
+    {},                      # missing prompt field
+    {"prompt": "   "},       # whitespace-only
+    {"prompt": 123},         # non-string int
+    {"prompt": None},        # null
+])
+def test_invalid_prompt_400_no_side_effects(service, tmp_path, payload):
+    tdir = str(tmp_path / "telemetry")
+    code, body = _post_raw(service, payload)
+    assert code == 400
+    assert body == {"error": "empty or missing prompt"}
+    recs, quar = _ledger_rows(tdir)
+    assert recs == [] and quar == []
+    # service stays healthy and unchanged after the 400s
+    h = service.get("/health")
+    assert h["status"] == "ok"
+    assert set(h) == {"status", "enabled", "engine", "telemetry"}
+    assert h["telemetry"]["logged"] == 0
+    assert h["telemetry"]["errors"] == 0
+
+
+def test_valid_prompt_after_400s_unchanged(service, tmp_path):
+    for bad in ({}, {"prompt": ""}, {"prompt": None}):
+        code, _ = _post_raw(service, bad)
+        assert code == 400
+    out = service.post("/route", {"prompt": PROMPTS[0]})
+    assert out["decision"] in ("weak", "strong")
+    assert out["mode"] == "shadow" and "event_id" in out
+    recs, _ = _ledger_rows(str(tmp_path / "telemetry"))
+    assert len(recs) == 1
+
+
+def test_invalid_prompt_does_not_shadow_threshold_drift_500(tmp_path):
+    cfg = tmp_path / "cfg.yaml"
+    cfg.write_text("router:\n  enabled: true\n  threshold: 0.50\n")
+    svc = Service(cfg, str(tmp_path / "telemetry"))
+    try:
+        assert svc.wait_ready()
+        code, body = _post_raw(svc, {"prompt": ""})
+        # frozen (erratum): validation precedes the threshold check, so the
+        # empty prompt's 400 wins; the drift 500 stays reachable for valid
+        # prompts (test_threshold_drift_http_500).
+        assert code == 400
+        assert body == {"error": "empty or missing prompt"}
+        code, body = _post_raw(svc, {"prompt": "valid synthetic prompt"})
+        assert code == 500
+        assert body == {"error": "threshold drift"}
+    finally:
+        svc.stop()
+
+
+def test_invalid_prompt_does_not_shadow_kill_switch(tmp_path):
+    cfg = tmp_path / "cfg.yaml"
+    cfg.write_text("router:\n  enabled: false\n  threshold: 0.30\n")
+    svc = Service(cfg, str(tmp_path / "telemetry"))
+    try:
+        assert svc.wait_ready()
+        code, body = _post_raw(svc, {"prompt": "   "})
+        # frozen: input validation precedes service-state checks
+        assert code == 400
+        assert body == {"error": "empty or missing prompt"}
+    finally:
+        svc.stop()
+
+
+def test_malformed_json_body_now_400(tmp_path, enabled_config):
+    svc = Service(enabled_config, str(tmp_path / "telemetry"))
+    try:
+        assert svc.wait_ready()
+        req = urllib.request.Request(
+            svc._url("/route"), data=b"{not json",
+            headers={"Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                code, body = r.status, json.loads(r.read())
+        except urllib.error.HTTPError as e:
+            code, body = e.code, json.loads(e.read())
+        assert code == 400 and body == {"error": "empty or missing prompt"}
+    finally:
+        svc.stop()
+
+
 # ---------- env-based disable (logging off switch) ----------
 
 def test_telemetry_env_disable(tmp_path, enabled_config):

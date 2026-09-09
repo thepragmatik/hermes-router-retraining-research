@@ -66,6 +66,20 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if self.path != "/route":
             return self._send({"error": "not found"}, 404)
+        n = int(self.headers.get("Content-Length", 0))
+        try:
+            payload = json.loads(self.rfile.read(n) or b"{}")
+        except (ValueError, UnicodeDecodeError):
+            payload = {}
+        # Input validation (frozen: results/101/EDGE_REJECTION_PREREG.md).
+        # Precedes config/kill-switch/threshold checks: request validity is a
+        # property of the request, not of service state, so it must not be
+        # shadowed by (nor shadow) the disabled path or threshold-drift 500.
+        # Rejects missing/null/non-string/empty/whitespace-only prompts with
+        # NO model call and NO ledger write.
+        prompt = payload.get("prompt")
+        if not isinstance(prompt, str) or not prompt.strip():
+            return self._send({"error": "empty or missing prompt"}, 400)
         cfg = load_config()
         base = {"mode": "shadow", "engine": ENGINE,
                 "ts": datetime.now(timezone.utc).isoformat()}
@@ -74,12 +88,6 @@ class Handler(BaseHTTPRequestHandler):
         thr = float(cfg.get("threshold", FROZEN_THRESHOLD))
         if abs(thr - FROZEN_THRESHOLD) > 1e-9:
             return self._send({"error": "threshold drift"}, 500)
-        n = int(self.headers.get("Content-Length", 0))
-        try:
-            payload = json.loads(self.rfile.read(n) or b"{}")
-        except (ValueError, UnicodeDecodeError):
-            payload = {}
-        prompt = payload.get("prompt", "")
         # Caller-supplied join identity (idea 101 / gap G1). Only hashes are
         # persisted; the raw values never enter any ledger.
         session_id = payload.get("session_id")
