@@ -15,6 +15,7 @@ frozen in `results/101/LIVE_PREREG.md` (commit `6ecd41e`, before any code).
 | `fixtures.py` | T033 | duplicate / late / provisional-final / contradictory outcome fixtures |
 | `report.py` | T035 | data-quality report CLI (unique ids, provenance, propensities, joins, drift, prompt-text scan) |
 | `wiring.py` | T040/T041 | the ONE shared logger both routing paths import (service parity, G2) |
+| `envelope.py` | idea 105 | conformal safety envelope (record-only verdict + drift alarms); stdlib-only runtime; frozen calibration in `envelope_config.json` |
 | `exploration.py` | T050-T053 | eligibility predicates, modes (`disabled` default / `shadow_dual` / `randomized_sentinel`), seeded epsilon with exact propensities, rate+spend caps |
 | `stage0.py`, `stage0_runner.py` | Phase 0/1 | OPE simulator (Stage-0, `STAGE0_PASS`) |
 | `stage1_runner.py` | T044 | Stage-1 evidence generator + gate measurement (>=1,000 events) |
@@ -89,3 +90,18 @@ raise loudly (G4 tests).
 - Live decision ledger: `evidence/telemetry/decisions.jsonl` (outcomes:
   `evidence/telemetry/outcomes.jsonl`). Real traffic is being logged; no joined
   real outcomes exist yet.
+
+## Idea-105 conformal safety envelope (shipped, flag OFF by default)
+
+`envelope.py` + `envelope_config.json` implement the qualified 105 envelope
+(`results/105/STAGE0_REPORT.md`, verdict `V1_SAFE_SLICE`); deployment contract
+frozen in `results/105/ENVELOPE_DEPLOY_PREREG.md`. Enable with
+`router.envelope_enabled: true` in `router_config.yaml` (default OFF; flag OFF
+is byte-identical to the pre-105 service). With the flag ON the envelope is
+RECORD-ONLY: `/route` responses gain one additive `envelope` dict
+(enabled/mode/alpha/action/threshold_used; actions accept-weak /
+escalate-strong / abstain / disabled); the V1 decision, confidence, threshold,
+ledger schema and all protected paths (kill switch, drift 500, edge 400) are
+untouched. Drift alarms (non-overlapping KS score-shift cadence; inert
+risk-breach path) fail OPEN to the raw V1 decision and are visible on
+`/health` under `envelope`. Runtime is stdlib-only.

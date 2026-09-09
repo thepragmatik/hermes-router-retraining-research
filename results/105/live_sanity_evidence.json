@@ -1,0 +1,37 @@
+{
+ "S1_pass": true,
+ "S2_pass": true,
+ "action_counts": {
+  "abstain": 0,
+  "accept-weak": 327,
+  "disabled": 0,
+  "escalate-strong": 1173
+ },
+ "alpha": 0.01,
+ "binom_p": 0.6358100884121661,
+ "event_id_prefixes": [
+  "02ba726f",
+  "e7e780aa",
+  "b0d1f666",
+  "43815aa9",
+  "606039e6"
+ ],
+ "flag_off_port": 50480,
+ "flag_on_port": 50479,
+ "health_state": "active",
+ "ks_evaluations": 3,
+ "ks_fire": 0,
+ "n_accepted": 327,
+ "n_escalated": 1173,
+ "n_failures": 3,
+ "note": "prompt text read at runtime from local winrate table; never stored here",
+ "offline_expected_accepts": 327,
+ "realized_risk": 0.009174311926605505,
+ "s2_critical": 6,
+ "slice": {
+  "n": 1500,
+  "seed": 10,
+  "segment": "eval[0:100]of40-80pct"
+ },
+ "threshold_used": 0.8243549466133118
+}
