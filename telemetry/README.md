@@ -78,3 +78,12 @@ raise loudly (G4 tests).
   constructs it without an operator-approved, countersigned prereg
   (`experiments/101-live-exploration-prereg.md` — DRAFT, approval fields
   unfilled). Default mode is and remains `disabled`.
+
+## Production notes (deployed 2026-09-09)
+
+- The production shadow service runs via launchd `com.rath.router-shadow-v1` on
+  `127.0.0.1:8765` (`router_shadow.py`); health at `GET /health`, decisions at
+  `POST /route`. See `results/101/DEPLOY_VERIFICATION.md`.
+- Live decision ledger: `evidence/telemetry/decisions.jsonl` (outcomes:
+  `evidence/telemetry/outcomes.jsonl`). Real traffic is being logged; no joined
+  real outcomes exist yet.

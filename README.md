@@ -2,9 +2,17 @@
 
 Research on **cost-effective, adaptive LLM and agentic routing** for [`thepragmatik/hermes-pi-agentic-stack`](https://github.com/thepragmatik/hermes-pi-agentic-stack).
 
-## Current branch status — Router Innovation Program (2026-09-08)
+## Current branch status — Router Innovation Program (2026-09-08) — CONVERGED (2026-09-09)
 
-This branch (`research/router-innovation-2026-09-08`) is a **new research/specification phase** created after:
+The nine-idea program has **converged** (total paid spend: **$0.00**). Final verdicts:
+
+- **101 Counterfactual Shadow Telemetry — `SHADOW_READY`, deployed to production.** Stage-1 gates all PASS; Phase 2-5 merged (`70d46ca`) and live as the launchd service `com.rath.router-shadow-v1` on 127.0.0.1:8765, verified logging real route decisions with sha256 join keys (no raw prompt text; exploration disabled). See [`results/101/DEPLOY_VERIFICATION.md`](results/101/DEPLOY_VERIFICATION.md).
+- **105 Conformal Safety Envelope — `V1_SAFE_SLICE`** (the only qualified routing-relevant component).
+- **102, 103, 104, 107, 108 — killed** (negative results, prereg-gated, no thresholds weakened); **106 — `BLOCKED_PREREQ_NOT_MET`**; **109 — `TRACE_DATA_INSUFFICIENT`** (blocked on identified telemetry, not killed).
+
+The frozen V1 router (threshold 0.30, engine `router-v1-frozen`) remains the only deployed router; the best qualified stack is **V1 + the 105 envelope** (not yet wrapped into production). Telemetry now logs real traffic decisions but has **no joined real outcomes yet** (fixtures only) — 102/108 real-data phases stay locked until outcomes accumulate; live exploration is implemented but disabled and requires an operator-countersigned prereg (`experiments/101-live-exploration-prereg.md`). Full detail: [`ideas/INTEGRATION_RECOMMENDATION.md`](ideas/INTEGRATION_RECOMMENDATION.md).
+
+Program origin (historical): this branch was created after:
 
 - the previous router-uplift experiment program mostly failed its frozen gates;
 - frozen V1 nevertheless demonstrated real routing value versus weak/random baselines;
