@@ -28,7 +28,10 @@ from collections import deque
 
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR = os.path.dirname(_THIS_DIR)
-ARTIFACT_DEFAULT = os.path.join(_THIS_DIR, "envelope_config.json")
+# Artifact path: repo default, overridable for tests/ops (ROUTER_ENVELOPE_CONFIG).
+# The enable FLAG itself comes only from router_config.yaml (router.envelope_enabled).
+ARTIFACT_DEFAULT = os.environ.get("ROUTER_ENVELOPE_CONFIG") or os.path.join(
+    _THIS_DIR, "envelope_config.json")
 MODEL_PATH = os.path.join(REPO_DIR, "router_v1", "mf_router.pt")
 STAGE0_CSV = os.path.join(REPO_DIR, "results", "105", "coverage_risk_global.csv")
 
@@ -159,8 +162,14 @@ def load_envelope_config(repo_dir=REPO_DIR, artifact_path=ARTIFACT_DEFAULT):
         return None
     try:
         table = cfg["table"]
-        alphas = {r["alpha"] for r in table}
-        if alphas != {0.01, 0.025, 0.05} or len(table) != 3:
+        if not isinstance(table, list) or len(table) != 3:
+            return None
+        alphas = set()
+        for r in table:
+            if not isinstance(r, dict) or "alpha" not in r:
+                return None
+            alphas.add(round(float(r["alpha"]), 6))
+        if alphas != {0.01, 0.025, 0.05}:
             return None
         if cfg["deployed_alpha"] not in alphas or cfg["delta"] != 0.05:
             return None
@@ -179,15 +188,16 @@ def load_envelope_config(repo_dir=REPO_DIR, artifact_path=ARTIFACT_DEFAULT):
                 a = round(float(row["alpha"]), 6)
                 csv_thresholds.setdefault(a, set()).add(row["threshold"])
         for r in table:
-            t = r["threshold"]
-            if t is None:
-                return None
+            t = r.get("threshold")
             a = round(float(r["alpha"]), 6)
+            if t is None:
+                continue  # NO_SAFE_COVERAGE row: legal; abstain at runtime
             if repr(float(t)) not in csv_thresholds.get(a, set()) \
                     and str(t) not in csv_thresholds.get(a, set()):
                 return None
             # exact CP duality: P(Bin(m_cal, a) >= k_cal + 1) >= 1 - delta
-            tail = 1.0 - binom_cdf(r["k_cal"], r["m_cal"], float(r["alpha"]))
+            tail = 1.0 - binom_cdf(int(r["k_cal"]), int(r["m_cal"]),
+                                   float(r["alpha"]))
             if tail < 0.95:
                 return None
         want = cfg.get("provenance", {}).get("mf_router_pt_sha256")

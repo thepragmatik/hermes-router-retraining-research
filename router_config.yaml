@@ -4,3 +4,8 @@ router:
   enabled: true
   threshold: 0.30         # frozen; CLI exits 2 if this is changed
   log: evidence/shadow/shadow_log.jsonl
+  # Idea-105 conformal safety envelope (results/105/ENVELOPE_DEPLOY_PREREG.md).
+  # Default OFF; flag OFF is byte-identical to the pre-105 service. Setting
+  # true adds a record-only "envelope" verdict to /route + /health (never
+  # changes the V1 decision, threshold, ledger, or any protected path).
+  envelope_enabled: false

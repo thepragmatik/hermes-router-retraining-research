@@ -32,6 +32,63 @@ from telemetry.wiring import get_logger  # shared logger, G2 parity
 # handler threads die mid-import (observed: RemoteDisconnected bursts).
 ROUTE_LOCK = threading.Lock()
 
+# ---------------- Idea-105 conformal safety envelope (feature-flagged) --------
+# Flag: router_config.yaml -> router.envelope_enabled (default OFF). Read per
+# request; the Envelope instance (calibration load + alarm state) is built ONCE
+# on the first flagged request and lives for the process lifetime (restart
+# resets alarms). Flag OFF => telemetry.envelope is never imported and no
+# "envelope" key appears in ANY response (byte-identical to pre-105 service).
+_ENVELOPE = None
+_ENVELOPE_LOCK = threading.Lock()
+
+
+def _envelope_flag(cfg_path=None):
+    """Read router.envelope_enabled from the router config (default False)."""
+    try:
+        import yaml
+        path = cfg_path or os.environ.get(
+            "ROUTER_CONFIG", os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "router_config.yaml"))
+        if not os.path.exists(path):
+            return False
+        with open(path) as f:
+            raw = yaml.safe_load(f) or {}
+        return bool((raw.get("router") or {}).get("envelope_enabled", False))
+    except Exception:
+        return False  # any config trouble keeps the envelope OFF
+
+
+def _get_envelope():
+    """Lazily build the process-wide Envelope on first flagged request."""
+    global _ENVELOPE
+    if _ENVELOPE is not None:
+        return _ENVELOPE
+    with _ENVELOPE_LOCK:
+        if _ENVELOPE is None:
+            from telemetry.envelope import Envelope, load_envelope_config
+            cfg = load_envelope_config()  # None -> fail-closed disabled frames
+            _ENVELOPE = Envelope(cfg, flag_on=True)
+    return _ENVELOPE
+
+
+def _envelope_frame(decision, confidence):
+    """Record-only envelope verdict for one route; None when flag OFF."""
+    if not _envelope_flag():
+        return None
+    env = _get_envelope()
+    try:
+        return env.evaluate(score=1.0 - float(confidence), decision=decision)
+    except Exception:  # belt & braces: evaluate() already never raises
+        return {"enabled": False, "mode": "shadow", "alpha": None,
+                "action": "disabled", "threshold_used": None}
+
+
+def _envelope_health():
+    if not _envelope_flag():
+        return None
+    return _get_envelope().health()
+
 
 def _warmup_model():
     try:
@@ -57,9 +114,13 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == "/health":
-            self._send({"status": "ok", "enabled": load_config()["enabled"],
-                        "engine": ENGINE,
-                        "telemetry": get_logger().health()})
+            h = {"status": "ok", "enabled": load_config()["enabled"],
+                 "engine": ENGINE,
+                 "telemetry": get_logger().health()}
+            env_h = _envelope_health()  # None when the envelope flag is OFF
+            if env_h is not None:
+                h["envelope"] = env_h
+            self._send(h)
         else:
             self._send({"error": "not found"}, 404)
 
@@ -111,6 +172,13 @@ class Handler(BaseHTTPRequestHandler):
         out = {"decision": decision, "confidence": conf, "threshold": thr, **base}
         if event_id is not None:
             out["event_id"] = event_id
+        # Idea-105 envelope verdict (record-only). Added strictly AFTER the raw
+        # V1 decision is fixed and telemetry has run: the envelope can only ADD
+        # this key — it never alters decision/confidence/threshold, the ledger
+        # event, or any protected path (kill switch / drift 500 / edge 400).
+        env_frame = _envelope_frame(decision, conf)
+        if env_frame is not None:
+            out["envelope"] = env_frame
         self._send(out)
 
     def log_message(self, *a):  # silence default stderr spam
