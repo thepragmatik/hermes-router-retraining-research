@@ -64,9 +64,12 @@ be 0 after any sequence of 400-producing requests.
 3. `test_route_whitespace_prompt_400` — `"   "` → 400, zero ledger rows.
 4. `test_route_nonstring_int_prompt_400` — `123` → 400, zero ledger rows.
 5. `test_route_null_prompt_400` — `null` → 400, zero ledger rows.
-6. `test_route_400_precedes_threshold_drift` — drifted-threshold config +
-   empty prompt → **500** (drift wins, not shadowed) with body
-   `{"error": "threshold drift"}`.
+6. `test_invalid_prompt_does_not_shadow_threshold_drift_500` — drifted
+   threshold (0.50) config: an empty-prompt request returns **400**
+   (validation precedes the threshold check), while a VALID prompt under the
+   same drifted config still returns **500** `{"error": "threshold drift"}`
+   (the drift path is reachable and unshadowed; covered by existing
+   `test_threshold_drift_http_500`).
 7. `test_service_healthy_after_400s` — after several 400s, `/health` returns
    200 with unchanged shape and a subsequent valid prompt routes normally.
 8. `test_valid_prompt_unchanged` — existing valid-prompt 200 envelope intact
