@@ -1,13 +1,13 @@
 # Router Innovation Program Status
 
 **Program branch:** `research/router-innovation-2026-09-08`  
-**Last updated:** 2026-09-09 — Program converged; operator approved next action: 101 Phase 2-5 live telemetry plumbing (T030-T063). LIVE_PREREG required before any code. Terminal target: SHADOW_READY (Stage 2 live randomization remains separately operator-gated).
+**Last updated:** 2026-09-09 — 101 Phase 2-5 SHADOW_READY merged (`70d46ca`), pushed, and deployed to production (launchd restart); live route-logging verified end-to-end.
 
 The orchestrator MUST update this table before/after launching child idea agents. Do not infer completion from commit count alone.
 
 | ID | Idea | Stage | Status | Latest SHA | Spend | Evidence tier | Primary result | Blocker / next action |
 |---|---|---|---|---|---:|---|---|---|
-| 101 | Counterfactual Shadow Telemetry | Phase 2-5 live plumbing IN PROGRESS (operator approved 2026-09-09) | STAGE0_PASS | 307beda | $0 | train retrospective | OPE harness: policy ordering 10/10 seeds; \|err\|<=0.0031 (gate 0.015); CI coverage 10/10; unsupported-policy + corrupted-propensity alarms fire | T030-T063 executing in worktree on branch 101-counterfactual-shadow-telemetry; LIVE_PREREG.md must be committed before any code; all tests on port >=8766; production deploy (8765 launchd) is orchestrator-only after merge |
+| 101 | Counterfactual Shadow Telemetry | Phase 2-5 DONE + deployed to production | SHADOW_READY | 70d46ca | $0 | train retrospective | OPE harness: policy ordering 10/10 seeds; \|err\|<=0.0031 (gate 0.015); CI coverage 10/10; unsupported-policy + corrupted-propensity alarms fire | T030-T063 executing in worktree on branch 101-counterfactual-shadow-telemetry; LIVE_PREREG.md must be committed before any code; all tests on port >=8766; production deploy (8765 launchd) is orchestrator-only after merge |
 | 102 | Doubly Robust Uplift Router | Stage 0 done (sim-only) | KILLED | 739e091 | $0 | train retrospective | Gates per specs/102/ plan.md+tasks.md T053: G1/G2/G4/G5 pass after 1 preregistered correction, G3 fail — DR-uplift frontier dominated by zero-cost threshold-on-p control on the same V1 score (best Q 0.63641 vs bar 0.65031); NEEDS_101_COVERAGE rejected (support benign, no actionable uplift) | none — real-data phase stays locked; negative result final |
 | 103 | Bayesian Semantic Performance Memory | Stage 0 done | KILLED | d124b51 | $0 | train retrospective | Hierarchical shrinkage beat kNN/task-prior 9/10 folds but 0.0pp quality + 0.0% cost gain vs task prior at matched cost (Gate B fail) | none — negative result final; frozen spec not weakened |
 | 104 | Whitened Latent Marginal-Gain Probe | Stage 0 done | KILLED | 59951e7 | $0 | train retrospective | Latent OOF AUROC 0.7399 vs prompt-BGE 0.7396 (delta <=0.0003; gate >=0.03); task-only baseline 0.7486 beats everything — signal is task identity | none — frozen spec not weakened; latent adds nothing over BGE |
