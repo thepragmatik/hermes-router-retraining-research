@@ -231,3 +231,15 @@ affected test/report consumed results)
   10k simulation (every randomized event carries a propensity in (0,1]) and
   by schema-level refusal (`validate_decision` rejects randomized events
   without propensities). Recorded here rather than silently redefining G3'.
+- **C-4 (G4' join-success denominator — recorded BEFORE the corrected gate
+  measurement consumed results):** the first Stage-1 gate run measured G4' as
+  joined/ALL-decisions = 0.54 (FAIL) because the evidence stream deliberately
+  assigns fixture outcomes to a subset of events (partial-feedback design:
+  90% of service events, 0% of CLI events) — unjoined-by-construction events
+  were counted as join failures. The spec's frozen gate text (line 116) is
+  ">=99% join success **for fixture outcomes**": the correct denominator is
+  the set of decision events that RECEIVED a fixture outcome. G4' is
+  re-measured as joined/fixtured-events on the SAME preserved ledgers (no new
+  traffic, no data change — measurement-fix only, no gate weakened). The
+  0.54 overall-join fraction is still reported as descriptive context, not
+  as the gate.
