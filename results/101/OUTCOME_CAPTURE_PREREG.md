@@ -152,3 +152,48 @@ counters. Production 8765 never contacted or bound.
 None at freeze time. SCOPE ADDITION (missing_ids_logged + join-readiness)
 received before any code was written and is folded into this prereg
 normally (no erratum needed).
+
+
+---
+
+## ERRATUM 1 (2026-09-09, BEFORE enforcement code — operator policy change)
+
+**Policy change: id ENFORCEMENT supersedes the missing_ids_logged counter
+steer.** The operator mandates 100%-joinable traffic: null-id decisions must
+become impossible by construction, not merely counted.
+
+1. **POST /route now REQUIRES session_id AND message_id.** Missing, empty,
+   or whitespace-only value for either -> HTTP 400 with frozen body
+   {"error": "session_id and message_id are required"} and NO ledger write,
+   NO model call, handled exactly like the empty-prompt edge rejection
+   (precedes config/kill-switch/threshold checks; protected paths stay
+   reachable). Counters: the edge_rejections family gains sibling keys
+   `missing_session_id`, `missing_message_id` (in-memory per-process, reset
+   on restart, incremented per offending request; both increment when both
+   are missing — precedence: session_id checked first, message_id second;
+   prompt-edge shapes unchanged and still win via the frozen precedence
+   malformed > non-string/missing/whitespace/empty prompt... FROZEN ORDER:
+   prompt edge checks first (existing bodies), then id checks). Whitespace
+   definition: str value with .strip() == "" (after isinstance str check);
+   non-string id values (e.g. 123) count as missing. Both missing increments
+   BOTH counters (independent checks).
+2. **/outcome UNCHANGED** by this erratum: keys on event_id only; the
+   already-frozen /outcome contract stands exactly as written above.
+3. **Rationale**: operator mandates 100% joinable traffic; null-id decisions
+   should be impossible by construction.
+4. **missing_ids_logged counter**: RETAINED as a cheap invariant check that
+   must stay pinned at 0 (with enforcement, no logged decision can have a
+   null id hash; a nonzero value after restart signals enforcement bypass
+   or pre-existing legacy rows appended in-process — alarm-worthy).
+5. **Join tool join-readiness section**: STAYS as preregistered (it audits
+   the historical ledger, which contains 22 null-id rows from earlier test
+   traffic; the WARNING remains the operator's id-hygiene signal for
+   legacy rows).
+6. **Tests**: 400 shapes for missing session_id, missing message_id, both,
+   whitespace-only session_id, whitespace-only message_id, empty-string
+   values, non-string values; NO ledger write on each; health counters
+   asserted. All prior service tests updated to POST with explicit ids.
+   Callers: no internal cron/verifier scripts POST /route in this repo
+   (verified by grep at erratum time; production callers are external to
+   this repo — deploy note: any external caller omitting ids will start
+   receiving 400s after the orchestrator deploys).
