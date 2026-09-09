@@ -49,6 +49,17 @@ def main():
     if not prompt:
         print(json.dumps({"error": "empty prompt"}))
         sys.exit(1)
+    # Caller-supplied join identity (idea 101 / gap G1): optional flags and/or
+    # env vars. Only their sha256[:12] hashes ever reach a ledger.
+    def _opt(name):
+        if name in args:
+            return args[args.index(name) + 1]
+        return None
+
+    session_id = _opt("--session-id") or os.environ.get("ROUTER_SESSION_ID")
+    message_id = _opt("--message-id") or os.environ.get("ROUTER_MESSAGE_ID")
+    traffic_stratum = _opt("--traffic-stratum") or os.environ.get(
+        "ROUTER_TRAFFIC_STRATUM") or "unknown"
 
     cfg = load_config()
     base = {"mode": "shadow", "engine": ENGINE, "ts": datetime.now(timezone.utc).isoformat()}
@@ -66,17 +77,27 @@ def main():
 
     from router_v1.route import route  # read-only import of the tagged artifact
     decision, conf = route(prompt)
+
+    # Idea-101 telemetry (T040/T041): append-only JSONL decision event via the
+    # shared logger (same path the HTTP service uses — G2 parity). Best
+    # effort: a logging failure never breaks the route (error counter instead).
+    event_id = None
+    try:
+        from telemetry.wiring import record_route_decision
+        ev = record_route_decision(
+            prompt=prompt, decision=decision, confidence=conf,
+            threshold=thr, session_id=session_id, message_id=message_id,
+            traffic_stratum=traffic_stratum)
+        if ev is not None:
+            event_id = ev["event_id"]
+    except Exception:
+        event_id = None  # telemetry must never break routing
+
     out = {"prompt_id": 0, "decision": decision, "confidence": conf,
            "threshold": thr, **base}
+    if event_id is not None:
+        out["event_id"] = event_id  # real identity; prompt_id stays legacy/constant
     print(json.dumps(out))
-    # Append-only shadow evidence (best effort; logging failure must not break the call)
-    try:
-        logdir = os.path.join(REPO, "evidence", "shadow")
-        os.makedirs(logdir, exist_ok=True)
-        with open(os.path.join(logdir, "shadow_log.jsonl"), "a") as f:
-            f.write(json.dumps(out) + "\n")
-    except OSError:
-        pass
 
 
 if __name__ == "__main__":
