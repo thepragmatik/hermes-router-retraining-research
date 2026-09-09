@@ -110,10 +110,12 @@ ids do not dedupe, text differentiates. PASS.
 ## Edge cases
 
 - Empty prompt `""`: HTTP 200, valid decision envelope (decision `weak`, confidence 0.2977,
-  threshold 0.3, full event_id). Ledger event has `prompt_hash: null` — a reasonable
-  representation of "no content" (sha256("")[:12] would have been well-defined; behavior
-  recorded, not judged a failure). Counted in health delta (+1).
-- Missing `prompt` field: HTTP 200, same shape, also logged with `prompt_hash: null`.
+  threshold 0.3, full event_id). Ledger event has `prompt_hash: e3b0c44298fc`
+  (= sha256("")[:12] — well-defined, behavior recorded, not judged a failure).
+  Counted in health delta (+1). [Orchestrator correction: original report said
+  `null`; the ledger in fact stores the empty-string hash.]
+- Missing `prompt` field: HTTP 200, same shape, also logged with
+  `prompt_hash: e3b0c44298fc`. [Same orchestrator correction.]
 - Service did **not** crash: `/health` immediately after returned `status ok, errors 0`,
   `logged` incremented for each edge event as expected.
 - Anomaly note (non-blocking): the service accepts empty/missing prompts and routes them
